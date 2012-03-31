@@ -1,22 +1,45 @@
-.. flask-docs-ja documentation master file, created by
-   sphinx-quickstart on Fri Mar 23 23:44:29 2012.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+:orphan:
 
-Welcome to flask-docs-ja's documentation!
-=========================================
+.. Welcome to Flask
+   ================
 
-Contents:
+Flaskへようこそ
+===================
 
-.. toctree::
-   :maxdepth: 2
+.. warning:: このドキュメントは `flask <http://flask.pocoo.org/docs/>`_ を翻訳したものです。
+   翻訳の間違いなどについては、開発者ではなく '翻訳リポジトリのIssues <https://github.com/tokuda109/flask-docs-ja/issues>'_ に登録をお願いします。
 
+.. image:: _static/logo-full.png
+   :alt: Flask: web development, one drop at a time
+   :class: floatingflask
 
+.. Welcome to Flask's documentation.  This documentation is divided into
+   different parts.  I recommend that you get started with
+   :ref:`installation` and then head over to the :ref:`quickstart`.
+   Besides the quickstart, there is also a more detailed :ref:`tutorial` that
+   shows how to create a complete (albeit small) application with Flask.  If
+   you'd rather dive into the internals of Flask, check out
+   the :ref:`api` documentation.  Common patterns are described in the
+   :ref:`patterns` section.
 
-Indices and tables
-==================
+Flaskのドキュメントにようこそ。このドキュメントはいくつかのパートにわかれています。
+:ref:`installation` から始めて、 :ref:`quickstart` へ進むことをお勧めします。
+クイックスタートの他にも、Flaskで小さなアプリケーションを作り方を載せている、より詳細な :ref:`tutorial` もあります。
+Flaskの内部まで踏み込みたい場合は :ref:`api` ドキュメントをチェックしてください。
+一般的なパターンについては、 :ref:`patterns` の章で後述しています。
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. Flask depends on two external libraries: the `Jinja2`_ template
+   engine and the `Werkzeug`_ WSGI toolkit.  These libraries are not documented
+   here.  If you want to dive into their documentation, check out the
+   following links:
 
+Flaskは `Jinja2`_ テンプレートエンジンと `Werkzeug`_ WSGIツールキットの２つのライブラリに依存しています。
+これらのライブラリはここではドキュメントにしていません。これらのライブラリのドキュメントを見たい場合は以下のリンクをチェックして下さい。
+
+- `Jinja2 ドキュメント <http://jinja.pocoo.org/2/documentation/>`_
+- `Werkzeug ドキュメント <http://werkzeug.pocoo.org/documentation/>`_
+
+.. _Jinja2: http://jinja.pocoo.org/2/
+.. _Werkzeug: http://werkzeug.pocoo.org/
+
+.. include:: contents.rst.inc
