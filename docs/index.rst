@@ -7,7 +7,7 @@ Flaskへようこそ
 ===================
 
 .. warning:: このドキュメントは `flask <http://flask.pocoo.org/docs/>`_ を翻訳したものです。
-   翻訳の間違いなどについては、開発者ではなく '翻訳リポジトリのIssues <https://github.com/tokuda109/flask-docs-ja/issues>'_ に登録をお願いします。
+   翻訳の間違いなどの指摘は、 `翻訳リポジトリのIssues <https://github.com/tokuda109/flask-docs-ja/issues>`_ に登録して頂けるとうれしいです。
 
 .. image:: _static/logo-full.png
    :alt: Flask: web development, one drop at a time
