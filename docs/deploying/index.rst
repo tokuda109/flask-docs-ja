@@ -20,7 +20,8 @@ For hosted options to get up and running quickly, see
    :maxdepth: 2
 
    mod_wsgi
-   cgi
-   fastcgi
+   wsgi-standalone
    uwsgi
    others
+   fastcgi
+   cgi
