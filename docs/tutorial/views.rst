@@ -1,24 +1,41 @@
 .. _tutorial-views:
 
-Step 5: The View Functions
-==========================
+ステップ5: ビュー関数
+=============================
 
-Now that the database connections are working we can start writing the
-view functions.  We will need four of them:
+.. Step 5: The View Functions
+   ==========================
 
-Show Entries
-------------
+.. Now that the database connections are working we can start writing the
+   view functions.  We will need four of them:
 
-This view shows all the entries stored in the database.  It listens on the
-root of the application and will select title and text from the database.
-The one with the highest id (the newest entry) will be on top.  The rows
-returned from the cursor are tuples with the columns ordered like specified
-in the select statement.  This is good enough for small applications like
-here, but you might want to convert them into a dict.  If you are
-interested in how to do that, check out the :ref:`easy-querying` example.
+データベース接続ができたので、ビュー関数を書いていきましょう。四つのことが必要です。 :
 
-The view function will pass the entries as dicts to the
-`show_entries.html` template and return the rendered one::
+.. Show Entries
+   ------------
+
+エントリーの表示
+------------------
+
+.. This view shows all the entries stored in the database.  It listens on the
+   root of the application and will select title and text from the database.
+   The one with the highest id (the newest entry) will be on top.  The rows
+   returned from the cursor are tuples with the columns ordered like specified
+   in the select statement.  This is good enough for small applications like
+   here, but you might want to convert them into a dict.  If you are
+   interested in how to do that, check out the :ref:`easy-querying` example.
+
+このビューはデータベースに保管されている全てのエントリーを表示します。
+アプリケーションのルートにアクセスして、データベースからタイトルと本文を選択します。
+idの値が最も高いもの(一番新しいエントリー)が上にあると思います。
+カーソルから返された行は、select文で指定されているような順序付けされた列で
+これは、小さなアプリケーションには十分がそれをディクショナリに変換したいかもしれません。
+どのようにするか興味があるなら、 :ref:`easy-querying` の例をチェックして下さい。
+
+.. The view function will pass the entries as dicts to the
+   `show_entries.html` template and return the rendered one::
+
+ビュー関数は、 `show_entries.html` テンプレートにディクショナリとしてエントリーを渡して、レンダリングしたものを返します。 ::
 
     @app.route('/')
     def show_entries():
@@ -26,8 +43,11 @@ The view function will pass the entries as dicts to the
         entries = [dict(title=row[0], text=row[1]) for row in cur.fetchall()]
         return render_template('show_entries.html', entries=entries)
 
-Add New Entry
--------------
+.. Add New Entry
+   -------------
+
+新しいエントリーの追加
+------------------------
 
 This view lets the user add new entries if they are logged in.  This only
 responds to `POST` requests, the actual form is shown on the
@@ -45,8 +65,10 @@ redirect back to the `show_entries` page::
         flash('New entry was successfully posted')
         return redirect(url_for('show_entries'))
 
-Note that we check that the user is logged in here (the `logged_in` key is
-present in the session and `True`).
+.. Note that we check that the user is logged in here (the `logged_in` key is
+   present in the session and `True`).
+
+ユーザーがログインしている(セッション内に `logged_in` キーがあって、 `True` になっている)かチェックして下さい。
 
 .. admonition:: Security Note
 
@@ -55,8 +77,11 @@ present in the session and `True`).
    you use string formatting to build SQL statements.
    See :ref:`sqlite3` for more.
 
-Login and Logout
-----------------
+.. Login and Logout
+   ----------------
+
+ログインとログアウト
+---------------------
 
 These functions are used to sign the user in and out.  Login checks the
 username and password against the ones from the configuration and sets the
@@ -95,4 +120,6 @@ if the user was logged in.
         flash('You were logged out')
         return redirect(url_for('show_entries'))
 
-Continue with :ref:`tutorial-templates`.
+.. Continue with :ref:`tutorial-templates`.
+
+続いては :ref:`tutorial-templates` 。
