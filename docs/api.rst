@@ -5,21 +5,28 @@ API
 
 .. module:: flask
 
-This part of the documentation covers all the interfaces of Flask.  For
-parts where Flask depends on external libraries, we document the most
-important right here and provide links to the canonical documentation.
+.. This part of the documentation covers all the interfaces of Flask.  For
+   parts where Flask depends on external libraries, we document the most
+   important right here and provide links to the canonical documentation.
 
+ドキュメントのこの章では、Flaskの全てのインターフェースをカバーしています。
 
-Application Object
-------------------
+.. Application Object
+   ------------------
+
+アプリケーションオブジェクト
+----------------------------------
 
 .. autoclass:: Flask
    :members:
    :inherited-members:
 
 
-Blueprint Objects
------------------
+.. Blueprint Objects
+   -----------------
+
+Blueprintオブジェクト
+--------------------------
 
 .. autoclass:: Blueprint
    :members:
@@ -134,8 +141,11 @@ Incoming Request Data
    just shows a quick overview of the most important ones.
 
 
-Response Objects
-----------------
+.. Response Objects
+   ----------------
+
+レスポンスオブジェクト
+-------------------------
 
 .. autoclass:: flask.Response
    :members: set_cookie, data, mimetype
@@ -153,8 +163,11 @@ Response Objects
       The response status as integer.
 
 
-Sessions
---------
+.. Sessions
+   --------
+
+セッション
+----------------
 
 If you have the :attr:`Flask.secret_key` set you can use sessions in Flask
 applications.  A session basically makes it possible to remember
@@ -199,13 +212,18 @@ To access the current session you can use the :class:`session` object:
       session will be deleted when the user closes the browser.
 
 
-Session Interface
------------------
+.. Session Interface
+   -----------------
+
+セッションインターフェース
+----------------------------
 
 .. versionadded:: 0.8
 
-The session interface provides a simple way to replace the session
-implementation that Flask is using.
+.. The session interface provides a simple way to replace the session
+   implementation that Flask is using.
+
+セッションインターフェースはFlaskで使われているセッションの実装を置き換えるための簡単な方法を提供します。
 
 .. currentmodule:: flask.sessions
 
@@ -229,8 +247,11 @@ implementation that Flask is using.
    app which converts the result to an integer automatically.
 
 
-Test Client
------------
+.. Test Client
+   -----------
+
+テストクライアント
+------------------------
 
 .. currentmodule:: flask.testing
 
@@ -265,11 +286,15 @@ Useful Functions and Classes
 
    Points to the application handling the request.  This is useful for
    extensions that want to support multiple applications running side
-   by side.
+   by side.  This is powered by the application context and not by the
+   request context, so you can change the value of this proxy by
+   using the :meth:`~flask.Flask.app_context` method.
 
    This is a proxy.  See :ref:`notes-on-proxies` for more information.
 
 .. autofunction:: has_request_context
+
+.. autofunction:: has_app_context
 
 .. autofunction:: url_for
 
@@ -412,6 +437,16 @@ Useful Internals
           if ctx is not None:
               return ctx.session
 
+.. autoclass:: flask.ctx.AppContext
+   :members:
+
+.. data:: _app_ctx_stack
+
+   Works similar to the request context but only binds the application.
+   This is mainly there for extensions to store data.
+
+   .. versionadded:: 0.9
+
 .. autoclass:: flask.blueprints.BlueprintSetupState
    :members:
 
@@ -455,8 +490,18 @@ Signals
 .. data:: request_tearing_down
 
    This signal is sent when the application is tearing down the request.
-   This is always called, even if an error happened.  No arguments are
-   provided.
+   This is always called, even if an error happened.  An `exc` keyword
+   argument is passed with the exception that caused the teardown.
+
+   .. versionchanged:: 0.9
+      The `exc` parameter was added.
+
+.. data:: appcontext_tearing_down
+
+   This signal is sent when the application is tearing down the
+   application context.  This is always called, even if an error happened.
+   An `exc` keyword argument is passed with the exception that caused the
+   teardown.
 
 .. currentmodule:: None
 

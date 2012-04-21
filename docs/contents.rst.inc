@@ -23,6 +23,7 @@
    config
    signals
    views
+   appcontext
    reqcontext
    blueprints
    extensions
