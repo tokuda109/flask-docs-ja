@@ -193,7 +193,7 @@ The following converters exist:
    with a trailing slash will produce a 404 "Not Found" error.
 
    This behavior allows relative URLs to continue working if users access the
-   page when they forget a trailing slash, consistent with how with how Apache
+   page when they forget a trailing slash, consistent with how Apache
    and other servers work.  Also, the URLs will stay unique, which helps search
    engines avoid indexing the same page twice.
 
@@ -333,8 +333,7 @@ configured to serve them for you, but during development Flask can do that
 as well.  Just create a folder called `static` in your package or next to
 your module and it will be available at `/static` on the application.
 
-To generate URLs that part of the URL, use the special ``'static'`` URL
-name::
+To generate URLs for static files, use the special ``'static'`` endpoint name::
 
     url_for('static', filename='style.css')
 
@@ -675,8 +674,11 @@ converting return values into response objects is as follows:
     returned from the view.
 2.  If it's a string, a response object is created with that data and the
     default parameters.
-3.  If a tuple is returned the response object is created by passing the
-    tuple as arguments to the response object's constructor.
+3.  If a tuple is returned the items in the tuple can provide extra
+    information.  Such tuples have to be in the form ``(response, status,
+    headers)`` where at least one item has to be in the tuple.  The
+    `status` value will override the status code and `headers` can be a
+    list or dictionary of additional header values.
 4.  If none of that works, Flask will assume the return value is a
     valid WSGI application and convert that into a response object.
 

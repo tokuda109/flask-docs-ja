@@ -28,7 +28,7 @@ from .helpers import _PackageBoundObject, url_for, get_flashed_messages, \
     find_package
 from .wrappers import Request, Response
 from .config import ConfigAttribute, Config
-from .ctx import RequestContext
+from .ctx import RequestContext, AppContext
 from .globals import _request_ctx_stack, request
 from .sessions import SecureCookieSessionInterface
 from .module import blueprint_is_module
@@ -65,35 +65,51 @@ def setupmethod(f):
 
 
 class Flask(_PackageBoundObject):
-    """The flask object implements a WSGI application and acts as the central
-    object.  It is passed the name of the module or package of the
-    application.  Once it is created it will act as a central registry for
-    the view functions, the URL rules, template configuration and much more.
+    """
+    .. The flask object implements a WSGI application and acts as the central
+       object.  It is passed the name of the module or package of the
+       application.  Once it is created it will act as a central registry for
+       the view functions, the URL rules, template configuration and much more.
 
-    The name of the package is used to resolve resources from inside the
-    package or the folder the module is contained in depending on if the
-    package parameter resolves to an actual python package (a folder with
-    an `__init__.py` file inside) or a standard module (just a `.py` file).
+    flaskオブジェクトはWSGIアプリケーションとして実装されていて、中心的なオブジェクトとして動作します。
+    モジュール名やアプリケーションのパッケージを渡します。ビュー関数やURLルールを登録したり、
+    テンプレートの設定等をするために作成されます。
 
-    For more information about resource loading, see :func:`open_resource`.
+    .. The name of the package is used to resolve resources from inside the
+       package or the folder the module is contained in depending on if the
+       package parameter resolves to an actual python package (a folder with
+       an `__init__.py` file inside) or a standard module (just a `.py` file).
 
-    Usually you create a :class:`Flask` instance in your main module or
-    in the `__init__.py` file of your package like this::
+    パッケージ名はパッケージ内やモジュールフォルダ内からリソースの
+
+    .. For more information about resource loading, see :func:`open_resource`.
+
+    リソースのローディングについての詳細は、 :func:`open_resource` を見て下さい。
+
+    .. Usually you create a :class:`Flask` instance in your main module or
+       in the `__init__.py` file of your package like this::
+
+    通常はメインモジュールやパッケージの `__init__.py` ファイル内で以下のように、 :class:`Flask` インスタンスを作成します。
 
         from flask import Flask
         app = Flask(__name__)
 
     .. admonition:: About the First Parameter
 
-        The idea of the first parameter is to give Flask an idea what
-        belongs to your application.  This name is used to find resources
-        on the file system, can be used by extensions to improve debugging
-        information and a lot more.
+        .. The idea of the first parameter is to give Flask an idea what
+           belongs to your application.  This name is used to find resources
+           on the file system, can be used by extensions to improve debugging
+           information and a lot more.
+
+        最初のパラメーターのアイデアは
+        この名前はファイルシステムでリソースを探すために使われます。
 
         So it's important what you provide there.  If you are using a single
         module, `__name__` is always the correct value.  If you however are
         using a package, it's usually recommended to hardcode the name of
         your package there.
+
+        
 
         For example if your application is defined in `yourapplication/app.py`
         you should create it with one of the two versions below::
@@ -463,11 +479,14 @@ class Flask(_PackageBoundObject):
 
     @locked_cached_property
     def name(self):
-        """The name of the application.  This is usually the import name
-        with the difference that it's guessed from the run file if the
-        import name is main.  This name is used as a display name when
-        Flask needs the name of the application.  It can be set and overriden
-        to change the value.
+        """
+        .. The name of the application.  This is usually the import name
+           with the difference that it's guessed from the run file if the
+           import name is main.  This name is used as a display name when
+           Flask needs the name of the application.  It can be set and overriden
+           to change the value.
+
+        アプリケーションの名前です。これは、
 
         .. versionadded:: 0.8
         """
@@ -827,17 +846,25 @@ class Flask(_PackageBoundObject):
 
     @setupmethod
     def add_url_rule(self, rule, endpoint=None, view_func=None, **options):
-        """Connects a URL rule.  Works exactly like the :meth:`route`
-        decorator.  If a view_func is provided it will be registered with the
-        endpoint.
+        """
+        .. Connects a URL rule.  Works exactly like the :meth:`route`
+           decorator.  If a view_func is provided it will be registered with the
+           endpoint.
 
-        Basically this example::
+        URLルールを結びつけます。正確には、 :meth:`route` デコレーター
+        のように動作します。
+
+        .. Basically this example::
+
+        基本的な例として ::
 
             @app.route('/')
             def index():
                 pass
 
-        Is equivalent to the following::
+        .. Is equivalent to the following::
+
+        以下のようにしても同じです。 ::
 
             def index():
                 pass
@@ -852,7 +879,9 @@ class Flask(_PackageBoundObject):
         to customize the behavior via subclassing you only need to change
         this method.
 
-        For more information refer to :ref:`url-route-registrations`.
+        .. For more information refer to :ref:`url-route-registrations`.
+
+        さらに詳しい情報は、 :ref:`url-route-registrations` を参照して下さい。
 
         .. versionchanged:: 0.2
            `view_func` parameter added.
@@ -1047,8 +1076,12 @@ class Flask(_PackageBoundObject):
 
     @setupmethod
     def add_template_filter(self, f, name=None):
-        """Register a custom template filter.  Works exactly like the
-        :meth:`template_filter` decorator.
+        """
+        .. Register a custom template filter.  Works exactly like the
+           :meth:`template_filter` decorator.
+
+        カスタムテンプレートフィルターを登録します。正確には :meth:`template_filter`
+        デコレーターのように動作します。
 
         :param name: the optional name of the filter, otherwise the
                      function name will be used.
@@ -1353,13 +1386,20 @@ class Flask(_PackageBoundObject):
                                 string as body
         :class:`unicode`        a response object is created with the
                                 string encoded to utf-8 as body
-        :class:`tuple`          the response object is created with the
-                                contents of the tuple as arguments
         a WSGI function         the function is called as WSGI application
                                 and buffered as response object
+        :class:`tuple`          A tuple in the form ``(response, status,
+                                headers)`` where `response` is any of the
+                                types defined here, `status` is a string
+                                or an integer and `headers` is a list of
+                                a dictionary with header values.
         ======================= ===========================================
 
         :param rv: the return value from the view function
+
+        .. versionchanged:: 0.9
+           Previously a tuple was interpreted as the arguments for the
+           response object.
         """
         if rv is None:
             raise ValueError('View function did not return a response')
@@ -1478,6 +1518,21 @@ class Flask(_PackageBoundObject):
             if rv is not None:
                 return rv
         request_tearing_down.send(self)
+
+    def app_context(self):
+        """Binds the application only.  For as long as the application is bound
+        to the current context the :data:`flask.current_app` points to that
+        application.  An application context is automatically created when a
+        request context is pushed if necessary.
+
+        Example usage::
+
+            with app.app_context():
+                ...
+
+        .. versionadded:: 0.9
+        """
+        return AppContext(self)
 
     def request_context(self, environ):
         """Creates a :class:`~flask.ctx.RequestContext` from the given
