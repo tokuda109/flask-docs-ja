@@ -50,16 +50,43 @@ except ImportError:
 
 from jinja2 import FileSystemLoader
 
-from .globals import session, _request_ctx_stack, current_app, request
+from .globals import session, _request_ctx_stack, _app_ctx_stack, \
+     current_app, request
 
 
 def _assert_have_json():
     """Helper function that fails if JSON is unavailable."""
-    if not json_available:
-        raise RuntimeError('simplejson not installed')
+    appctx = _app_ctx_stack.top
+    reqctx = _request_ctx_stack.top
+
+    # If request specific information is available we have some extra
+    # features that support "relative" urls.
+    if reqctx is not None:
+        url_adapter = reqctx.url_adapter
+        blueprint_name = request.blueprint
+        if not reqctx.request._is_old_module:
+            if endpoint[:1] == '.':
+                if blueprint_name is not None:
+                    endpoint = blueprint_name + endpoint
+                else:
+                    endpoint = endpoint[1:]
+            else:
+                # TODO: get rid of this deprecated functionality in 1.0
+                if '.' not in endpoint:
+                    if blueprint_name is not None:
+                        endpoint = blueprint_name + '.' + endpoint
+                elif endpoint.startswith('.'):
+                    endpoint = endpoint[1:]
+            external = values.pop('_external', False)
+
+    # Otherwise go with the url adapter from the appctx and make
+    # the urls external by default.
+    else:
+        url_adapter = appctx.url_adapter
+        external = values.pop('_external', True)
 
 
-# figure out if simplejson escapes slashes.  This behaviour was changed
+# figure out if simplejson escapes slashes.  This behavior was changed
 # from one version to another without reason.
 if not json_available or '\\/' not in json.dumps('/'):
 
@@ -120,7 +147,7 @@ def jsonify(*args, **kwargs):
 
     .. versionadded:: 0.9
         If the ``padded`` argument is true, the JSON object will be padded
-        for JSONP calls and the response mimetype will be changed to 
+        for JSONP calls and the response mimetype will be changed to
         ``application/javascript``. By default, the request arguments ``callback``
         and ``jsonp`` will be used as the name for the callback function.
         This will work with jQuery and most other JavaScript libraries
@@ -356,7 +383,7 @@ def send_file(filename_or_fp, mimetype=None, as_attachment=False,
 
     .. versionadded:: 0.5
        The `add_etags`, `cache_timeout` and `conditional` parameters were
-       added.  The default behaviour is now to attach etags.
+       added.  The default behavior is now to attach etags.
 
     .. versionchanged:: 0.7
        mimetype guessing and etag support for file objects was
@@ -391,7 +418,7 @@ def send_file(filename_or_fp, mimetype=None, as_attachment=False,
         file = filename_or_fp
         filename = getattr(file, 'name', None)
 
-        # XXX: this behaviour is now deprecated because it was unreliable.
+        # XXX: this behavior is now deprecated because it was unreliable.
         # removed in Flask 1.0
         if not attachment_filename and not mimetype \
            and isinstance(filename, basestring):
@@ -402,7 +429,7 @@ def send_file(filename_or_fp, mimetype=None, as_attachment=False,
         if add_etags:
             warn(DeprecationWarning('In future flask releases etags will no '
                 'longer be generated for file objects passed to the send_file '
-                'function because this behaviour was unreliable.  Pass '
+                'function because this behavior was unreliable.  Pass '
                 'filenames instead if possible, otherwise attach an etag '
                 'yourself based on another value'), stacklevel=2)
 

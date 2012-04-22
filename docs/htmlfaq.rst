@@ -1,37 +1,56 @@
 HTML/XHTML FAQ
 ==============
 
-The Flask documentation and example applications are using HTML5.  You
-may notice that in many situations, when end tags are optional they are
-not used, so that the HTML is cleaner and faster to load.  Because there
-is much confusion about HTML and XHTML among developers, this document tries
-to answer some of the major questions.
+.. The Flask documentation and example applications are using HTML5.  You
+   may notice that in many situations, when end tags are optional they are
+   not used, so that the HTML is cleaner and faster to load.  Because there
+   is much confusion about HTML and XHTML among developers, this document tries
+   to answer some of the major questions.
 
+FlaskのドキュメントとサンプルのアプリケーションはHTML5を使っています。
+HTMLをよりきれいに、そしてロードするために速くなるように、多くの状況で、終了タグが省略可能である場合、それらが使用されないことがあります。
+なぜなら、開発者の間でHTMLとXHTMLについてかなりの混乱があるので、このドキュメントでは、代表的な質問にいくつか答えます。
 
-History of XHTML
+.. History of XHTML
+   ----------------
+
+XHTMLの歴史
 ----------------
 
-For a while, it appeared that HTML was about to be replaced by XHTML.
-However, barely any websites on the Internet are actual XHTML (which is
-HTML processed using XML rules).  There are a couple of major reasons
-why this is the case.  One of them is Internet Explorer's lack of proper
-XHTML support. The XHTML spec states that XHTML must be served with the MIME
-type `application/xhtml+xml`, but Internet Explorer refuses to read files
-with that MIME type.
-While it is relatively easy to configure Web servers to serve XHTML properly,
-few people do.  This is likely because properly using XHTML can be quite
-painful.
+.. For a while, it appeared that HTML was about to be replaced by XHTML.
+   However, barely any websites on the Internet are actual XHTML (which is
+   HTML processed using XML rules).  There are a couple of major reasons
+   why this is the case.  One of them is Internet Explorer's lack of proper
+   XHTML support. The XHTML spec states that XHTML must be served with the MIME
+   type `application/xhtml+xml`, but Internet Explorer refuses to read files
+   with that MIME type.
+   While it is relatively easy to configure Web servers to serve XHTML properly,
+   few people do.  This is likely because properly using XHTML can be quite
+   painful.
 
-One of the most important causes of pain is XML's draconian (strict and
-ruthless) error handling.  When an XML parsing error is encountered,
-the browser is supposed to show the user an ugly error message, instead
-of attempting to recover from the error and display what it can.  Most of
-the (X)HTML generation on the web is based on non-XML template engines
-(such as Jinja, the one used in Flask) which do not protect you from
-accidentally creating invalid XHTML.  There are XML based template engines,
-such as Kid and the popular Genshi, but they often come with a larger
-runtime overhead and, are not as straightforward to use because they have
-to obey XML rules.
+しばらくの間、HTMLはXHTMLによって置き換えられようとしています。
+しかし、実際にはXHTMLはインターネット上でかなり少数のウェブサイトでしか使われていません。
+この
+その理由の内の一つが、インターネットエクスプローラーがXHTMLを正しくサポートしていないことです。
+XHTMLの仕様は、MIMEタイプが `application/xhtml+xml` で配信するように定められていますが、
+インターネットエクスプローラーは、そのMIMEタイプだとファイルの読み込みを止めてしまいます。
+
+
+.. One of the most important causes of pain is XML's draconian (strict and
+   ruthless) error handling.  When an XML parsing error is encountered,
+   the browser is supposed to show the user an ugly error message, instead
+   of attempting to recover from the error and display what it can.  Most of
+   the (X)HTML generation on the web is based on non-XML template engines
+   (such as Jinja, the one used in Flask) which do not protect you from
+   accidentally creating invalid XHTML.  There are XML based template engines,
+   such as Kid and the popular Genshi, but they often come with a larger
+   runtime overhead and, are not as straightforward to use because they have
+   to obey XML rules.
+
+一番重要な原因の内の一つがXMLの厳格(strict and ruthless)なエラー処理です。
+XMLのパースでエラーが発生した時、エラーを回避しようとしたり、何ができるかを表示する代わりに、
+ブラウザは酷いエラーメッセージをユーザーに表示するようになっています。
+
 
 The majority of users, however, assumed they were properly using XHTML.
 They wrote an XHTML doctype at the top of the document and self-closed all
@@ -45,28 +64,42 @@ XHTML also changed the way JavaScript is used. To properly work with XHTML,
 programmers have to use the namespaced DOM interface with the XHTML
 namespace to query for HTML elements.
 
-History of HTML5
-----------------
+.. History of HTML5
+   ----------------
 
-Development of the HTML5 specification was started in 2004 under the name
-"Web Applications 1.0" by the Web Hypertext Application Technology Working
-Group, or WHATWG (which was formed by the major browser vendors Apple,
-Mozilla, and Opera) with the goal of writing a new and improved HTML
-specification, based on existing browser behaviour instead of unrealistic
-and backwards-incompatible specifications.
+HTML5の歴史
+-------------------
+
+.. Development of the HTML5 specification was started in 2004 under the name
+   "Web Applications 1.0" by the Web Hypertext Application Technology Working
+   Group, or WHATWG (which was formed by the major browser vendors Apple,
+   Mozilla, and Opera) with the goal of writing a new and improved HTML
+   specification, based on existing browser behavior instead of unrealistic
+   and backwards-incompatible specifications.
+
+HTML5の仕様の策定は、HTMLの仕様を改良したり新しく作成したりするのを目的として、
+Web Hypertext Application Technology Working GroupやWHATWG(AppleやMozillaやOperaなどの主要なブラウザベンダーに構成される)
+によって "Web Applications 1.0" として2004年に始まりました。
+後方互換性のない仕様で
 
 For example, in HTML4 ``<title/Hello/`` theoretically parses exactly the
 same as ``<title>Hello</title>``.  However, since people were using
 XHTML-like tags along the lines of ``<link />``, browser vendors implemented
 the XHTML syntax over the syntax defined by the specification.
 
+例えば、HTML4で ``<title/Hello/`` は ``<title>Hello</title>`` と同じようにパースされます。
+しかし、XHTML
+
 In 2007, the specification was adopted as the basis of a new HTML
 specification under the umbrella of the W3C, known as HTML5.  Currently,
 it appears that XHTML is losing traction, as the XHTML 2 working group has
 been disbanded and HTML5 is being implemented by all major browser vendors.
 
-HTML versus XHTML
------------------
+.. HTML versus XHTML
+   -----------------
+
+HTML対XHTML
+--------------------
 
 The following table gives you a quick overview of features available in
 HTML 4.01, XHTML 1.1 and HTML5. (XHTML 1.0 is not included, as it was
@@ -113,8 +146,11 @@ superseded by XHTML 1.1 and the barely-used XHTML5.)
 .. |N| image:: _static/no.png
        :alt: No
 
-What does "strict" mean?
-------------------------
+.. What does "strict" mean?
+   ------------------------
+
+"strict" が意味するものは?
+---------------------------
 
 HTML5 has strictly defined parsing rules, but it also specifies exactly
 how a browser should react to parsing errors - unlike XHTML, which simply
@@ -165,43 +201,77 @@ This means the following page in HTML5 is perfectly valid:
     </div>
 
 
-New technologies in HTML5
--------------------------
+.. New technologies in HTML5
+   -------------------------
 
-HTML5 adds many new features that make Web applications easier to write
-and to use.
+HTML5の新しい技術
+----------------------
 
--   The ``<audio>`` and ``<video>`` tags provide a way to embed audio and
-    video without complicated add-ons like QuickTime or Flash.
--   Semantic elements like ``<article>``, ``<header>``, ``<nav>``, and
-    ``<time>`` that make content easier to understand.
--   The ``<canvas>`` tag, which supports a powerful drawing API, reducing
-    the need for server-generated images to present data graphically.
--   New form control types like ``<input type="date">`` that allow user
-    agents to make entering and validating values easier.
--   Advanced JavaScript APIs like Web Storage, Web Workers, Web Sockets,
-    geolocation, and offline applications.
+.. HTML5 adds many new features that make Web applications easier to write
+   and to use.
 
-Many other features have been added, as well. A good guide to new features
-in HTML5 is Mark Pilgrim's soon-to-be-published book, `Dive Into HTML5`_.
-Not all of them are supported in browsers yet, however, so use caution.
+HTML5はウェブアプリケーションを作る時に、より簡単に書けて、より簡単に使える新しい機能がたくさん追加されました。
+
+.. The ``<audio>`` and ``<video>`` tags provide a way to embed audio and
+   video without complicated add-ons like QuickTime or Flash.
+.. Semantic elements like ``<article>``, ``<header>``, ``<nav>``, and
+   ``<time>`` that make content easier to understand.
+.. The ``<canvas>`` tag, which supports a powerful drawing API, reducing
+   the need for server-generated images to present data graphically.
+.. New form control types like ``<input type="date">`` that allow user
+   agents to make entering and validating values easier.
+.. Advanced JavaScript APIs like Web Storage, Web Workers, Web Sockets,
+   geolocation, and offline applications.
+
+- ``<audio>`` タグと ``<video>`` タグはQuickTimeやFlashのような紛らわしいアドオンを使わずに
+  オーディオファイルとビデオファイルを埋め込むことができます。
+- ``<article>`` 、 ``<header>`` 、 ``<nav>`` 、 ``<time>`` のようなセマンティックな要素
+  は内容の理解をより簡単にします。
+- ``<canvas>`` タグは強力な描画APIをサポートしています。
+  
+- ``<input type="date">`` のような新しいフォームは入力値のバリデーションと
+  フォームの入力
+- Web Storage、Web Workers、Web Sockets、ジオロケーション、オフラインアプリケーション
+  のような高度なJavaScriptのAPI。
+
+.. Many other features have been added, as well. A good guide to new features
+   in HTML5 is Mark Pilgrim's soon-to-be-published book, `Dive Into HTML5`_.
+   Not all of them are supported in browsers yet, however, so use caution.
+
+他にもたくさんの機能が追加されました。
+HTML5の新しい機能の良いガイドラインは、Mark Pilgrimのまもなく出版される `Dive Into HTML5`_ という本です。
+全てが、まだブラウザにサポートされているものだけではないので、注意して使って下さい。
 
 .. _Dive Into HTML5: http://www.diveintohtml5.org/
 
-What should be used?
---------------------
+.. What should be used?
+   --------------------
 
-Currently, the answer is HTML5.  There are very few reasons to use XHTML
-considering the latest developments in Web browsers.  To summarize the
-reasons given above:
+どちらを使うべきでしょうか？
+-----------------------------
 
--   Internet Explorer (which, sadly, currently leads in market share)
-    has poor support for XHTML.
--   Many JavaScript libraries also do not support XHTML, due to the more
-    complicated namespacing API it requires.
--   HTML5 adds several new features, including semantic tags and the
-    long-awaited ``<audio>`` and ``<video>`` tags.
--   It has the support of most browser vendors behind it.
--   It is much easier to write, and more compact.
+.. Currently, the answer is HTML5.  There are very few reasons to use XHTML
+   considering the latest developments in Web browsers.  To summarize the
+   reasons given above:
 
-For most applications, it is undoubtedly better to use HTML5 than XHTML.
+今答えるとしたらHTML5です。ウェブブラウザの最新のXHTMLを使う理由は少ししかありません。
+
+.. Internet Explorer (which, sadly, currently leads in market share)
+   has poor support for XHTML.
+.. Many JavaScript libraries also do not support XHTML, due to the more
+   complicated namespacing API it requires.
+.. HTML5 adds several new features, including semantic tags and the
+   long-awaited ``<audio>`` and ``<video>`` tags.
+.. It has the support of most browser vendors behind it.
+.. It is much easier to write, and more compact.
+
+- Internet Explorer(悲しいことに、現在シェアのトップです)はXHTMLをほとんどサポートしていない。
+- ほとんどのJavaScriptライブラリはXHTMLをサポートしていない。
+- HTML5では、望まれていた ``<audio>`` タグや ``<video>`` タグや
+  セマンティックなタグのような幾つかのあたらしいタグが追加されました。
+- ほとんどのブラウザベンダーがサポートしています。
+- より簡単に、よりシンプルに書けます。
+
+.. For most applications, it is undoubtedly better to use HTML5 than XHTML.
+
+ほとんどのアプリケーションで、XHTMLよりHTML5を使うほうが明らかにいいです。
