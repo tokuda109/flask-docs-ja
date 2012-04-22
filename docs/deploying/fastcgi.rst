@@ -3,13 +3,18 @@
 FastCGI
 =======
 
-FastCGI is a deployment option on servers like `nginx`_, `lighttpd`_, and
-`cherokee`_; see :ref:`deploying-uwsgi` and :ref:`deploying-wsgi-standalone`
-for other options.  To use your WSGI application with any of them you will need
-a FastCGI server first.  The most popular one is `flup`_ which we will use for
-this guide.  Make sure to have it installed to follow along.
+.. FastCGI is a deployment option on servers like `nginx`_, `lighttpd`_, and
+   `cherokee`_; see :ref:`deploying-uwsgi` and :ref:`deploying-wsgi-standalone`
+   for other options.  To use your WSGI application with any of them you will need
+   a FastCGI server first.  The most popular one is `flup`_ which we will use for
+   this guide.  Make sure to have it installed to follow along.
 
-.. admonition:: Watch Out
+FastCGIは、 `nginx`_ や `lighttpd`_ や `cherokee`_ のようなサーバー上にデプロイできます。
+他の選択肢を探しているなら、 :ref:`deploying-uwsgi` や :ref:`deploying-wsgi-standalone` を見てください。
+それらをWSGIアプリケーションで使うためには、まずFastCGIサーバーが必要です。
+最も一般的なものは、 `flup`_ で、このガイドで使っています。
+
+.. Watch Out
 
    Please make sure in advance that any ``app.run()`` calls you might
    have in your application file are inside an ``if __name__ ==
@@ -17,11 +22,25 @@ this guide.  Make sure to have it installed to follow along.
    not called because this will always start a local WSGI server which
    we do not want if we deploy that application to FastCGI.
 
-Creating a `.fcgi` file
------------------------
+.. admonition:: 注意すること
 
-First you need to create the FastCGI server file.  Let's call it
-`yourapplication.fcgi`::
+   Please make sure in advance that any ``app.run()`` calls you might
+   have in your application file are inside an ``if __name__ ==
+   '__main__':`` block or moved to a separate file.  Just make sure it's
+   not called because this will always start a local WSGI server which
+   we do not want if we deploy that application to FastCGI.
+
+.. Creating a `.fcgi` file
+   -----------------------
+
+`.fcgi` ファイルを作成する
+--------------------------------
+
+.. First you need to create the FastCGI server file.  Let's call it
+   `yourapplication.fcgi`::
+
+まず、FastCGIサーバーのファイルを作成しなければいけません。
+`yourapplication.fcgi` としましょう! ::
 
     #!/usr/bin/python
     from flup.server.fcgi import WSGIServer
@@ -30,15 +49,19 @@ First you need to create the FastCGI server file.  Let's call it
     if __name__ == '__main__':
         WSGIServer(app).run()
 
-This is enough for Apache to work, however nginx and older versions of
-lighttpd need a socket to be explicitly passed to communicate with the
-FastCGI server.  For that to work you need to pass the path to the
-socket to the :class:`~flup.server.fcgi.WSGIServer`::
+.. This is enough for Apache to work, however nginx and older versions of
+   lighttpd need a socket to be explicitly passed to communicate with the
+   FastCGI server.  For that to work you need to pass the path to the
+   socket to the :class:`~flup.server.fcgi.WSGIServer`::
+
+これは、Apacheを動かすためには十分ですが、nginxやlighttpdの古いバージョンでは、
+FastCGIサーバーと明示的に通信するためのソケットが必要です。
+動作させるために、 :class:`~flup.server.fcgi.WSGIServer` にソケットのパスを渡さなければいけません。
 
     WSGIServer(application, bindAddress='/path/to/fcgi.sock').run()
 
-The path has to be the exact same path you define in the server
-config.
+.. The path has to be the exact same path you define in the server
+   config.
 
 Save the `yourapplication.fcgi` file somewhere you will find it again.
 It makes sense to have that in `/var/www/yourapplication` or something
@@ -50,6 +73,61 @@ can execute it:
 .. sourcecode:: text
 
     # chmod +x /var/www/yourapplication/yourapplication.fcgi
+
+Configuring Apache
+------------------
+
+The example above is good enough for a basic Apache deployment but your `.fcgi` file will appear in your application URL e.g. www.example.com/yourapplication.fcgi/news/. There are few ways to resolve it. A preferable way is to use Apache ScriptAlias configuration directive::
+
+    <VirtualHost *>
+        ServerName example.com
+        ScriptAlias / /path/to/yourapplication.fcgi/
+    </VirtualHost>
+
+Another way is to use a custom WSGI middleware. For example on a shared web hosting::
+
+    .htaccess
+
+    <IfModule mod_fcgid.c>
+       AddHandler fcgid-script .fcgi
+       <Files ~ (\.fcgi)>
+           SetHandler fcgid-script
+           Options +FollowSymLinks +ExecCGI
+       </Files>
+    </IfModule>
+
+    <IfModule mod_rewrite.c>
+       Options +FollowSymlinks
+       RewriteEngine On
+       RewriteBase /
+       RewriteCond %{REQUEST_FILENAME} !-f
+       RewriteRule ^(.*)$ yourapplication.fcgi/$1 [QSA,L]
+    </IfModule>
+
+    yourapplication.fcgi
+
+    #!/usr/bin/python
+    #: optional path to your local python site-packages folder
+    import sys
+    sys.path.insert(0, '<your_local_path>/lib/python2.6/site-packages')
+
+    from flup.server.fcgi import WSGIServer
+    from yourapplication import app
+
+    class ScriptNameStripper(object):
+       to_strip = '/yourapplication.fcgi'
+
+       def __init__(self, app):
+           self.app = app
+
+       def __call__(self, environ, start_response):
+           environ['SCRIPT_NAME'] = ''
+       return self.app(environ, start_response)
+
+    app = ScriptNameStripper(app)
+
+    if __name__ == '__main__':
+        WSGIServer(app).run()
 
 Configuring lighttpd
 --------------------
@@ -84,7 +162,6 @@ root. Also, see the Lighty docs for more information on `FastCGI and
 Python <http://redmine.lighttpd.net/wiki/lighttpd/Docs:ModFastCGI>`_
 (note that explicitly passing a socket to run() is no longer necessary).
 
-
 Configuring nginx
 -----------------
 
@@ -97,7 +174,7 @@ A basic flask FastCGI configuration for nginx looks like this::
     location /yourapplication { try_files $uri @yourapplication; }
     location @yourapplication {
         include fastcgi_params;
-	fastcgi_split_path_info ^(/yourapplication)(.*)$;
+    fastcgi_split_path_info ^(/yourapplication)(.*)$;
         fastcgi_param PATH_INFO $fastcgi_path_info;
         fastcgi_param SCRIPT_NAME $fastcgi_script_name;
         fastcgi_pass unix:/tmp/yourapplication-fcgi.sock;
