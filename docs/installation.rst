@@ -101,7 +101,7 @@ Mac OS XかLinuxを使っているなら、以下の2つのコマンドの内の
 一度インストールしているなら上の同じコマンドを `sudo` プリフィックスなしで実行して下さい。
 
 .. Once you have virtualenv installed, just fire up a shell and create
-   your own environment.  I usually create a project folder and an `env`
+   your own environment.  I usually create a project folder and a `venv`
    folder within::
 
 Virtualenvをインストールしているなら、シェルを立ち上げて、自身の環境を作成して下さい。
