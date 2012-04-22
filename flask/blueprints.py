@@ -25,7 +25,7 @@ class BlueprintSetupState(object):
         #: a reference to the current application
         self.app = app
 
-        #: a reference to the blurprint that created this setup state.
+        #: a reference to the blueprint that created this setup state.
         self.blueprint = blueprint
 
         #: a dictionary with all options that were passed to the
@@ -77,11 +77,16 @@ class BlueprintSetupState(object):
 
 
 class Blueprint(_PackageBoundObject):
-    """Represents a blueprint.  A blueprint is an object that records
-    functions that will be called with the
-    :class:`~flask.blueprint.BlueprintSetupState` later to register functions
-    or other things on the main application.  See :ref:`blueprints` for more
-    information.
+    """
+    .. Represents a blueprint.  A blueprint is an object that records
+       functions that will be called with the
+       :class:`~flask.blueprint.BlueprintSetupState` later to register functions
+       or other things on the main application.  See :ref:`blueprints` for more
+       information.
+
+    blueprintを紹介します。blueprintは、メインのアプリケーションで機能やその他のことを登録するために、
+    後で、 :class:`~flask.blueprint.BlueprintSetupState` と一緒に呼ばれる関数を保持するオブジェクトです。
+    詳細は、 :ref:`blueprints` を見て下さい。
 
     .. versionadded:: 0.7
     """
@@ -163,8 +168,12 @@ class Blueprint(_PackageBoundObject):
         return decorator
 
     def add_url_rule(self, rule, endpoint=None, view_func=None, **options):
-        """Like :meth:`Flask.add_url_rule` but for a blueprint.  The endpoint for
-        the :func:`url_for` function is prefixed with the name of the blueprint.
+        """
+        .. Like :meth:`Flask.add_url_rule` but for a blueprint.  The endpoint for
+           the :func:`url_for` function is prefixed with the name of the blueprint.
+
+        :meth:`Flask.add_url_rule` のようですが、blueprint仕様です。
+        :func:`url_for` 関数のエンドポイントは、blueprintの名前の接頭辞になっています。
         """
         if endpoint:
             assert '.' not in endpoint, "Blueprint endpoint's should not contain dot's"
@@ -198,12 +207,19 @@ class Blueprint(_PackageBoundObject):
         return decorator
 
     def add_app_template_filter(self, f, name=None):
-        """Register a custom template filter, available application wide.  Like
-        :meth:`Flask.add_template_filter` but for a blueprint.  Works exactly
-        like the :meth:`app_template_filter` decorator.
+        """
+        .. Register a custom template filter, available application wide.  Like
+           :meth:`Flask.add_template_filter` but for a blueprint.  Works exactly
+           like the :meth:`app_template_filter` decorator.
 
-        :param name: the optional name of the filter, otherwise the
-                     function name will be used.
+        アプリケーション全体に有効なカスタムテンプレートフィルターを登録します。
+        :meth:`Flask.add_template_filter` のようですが、blueprint仕様です。
+        実際には、 :meth:`app_template_filter` デコレーターのような動作をします。
+
+        .. :param name: the optional name of the filter, otherwise the
+                        function name will be used.
+
+        :param name: フィルターのオプション名は、関数名としても使えます。
         """
         def register_template(state):
             state.app.jinja_env.filters[name or f.__name__] = f
@@ -234,17 +250,25 @@ class Blueprint(_PackageBoundObject):
         return f
 
     def after_request(self, f):
-        """Like :meth:`Flask.after_request` but for a blueprint.  This function
-        is only executed after each request that is handled by a function of
-        that blueprint.
+        """
+        .. Like :meth:`Flask.after_request` but for a blueprint.  This function
+           is only executed after each request that is handled by a function of
+           that blueprint.
+
+        :meth:`Flask.after_request` のようですが、blueprint仕様です。
+        この関数は、blueprintの関数によって処理されたリクエストの後のみに実行されます。
         """
         self.record_once(lambda s: s.app.after_request_funcs
             .setdefault(self.name, []).append(f))
         return f
 
     def after_app_request(self, f):
-        """Like :meth:`Flask.after_request` but for a blueprint.  Such a function
-        is executed after each request, even if outside of the blueprint.
+        """
+        .. Like :meth:`Flask.after_request` but for a blueprint.  Such a function
+           is executed after each request, even if outside of the blueprint.
+
+        :meth:`Flask.after_request` のようですが、blueprint仕様です。
+        関数のようですが、リクエスト
         """
         self.record_once(lambda s: s.app.after_request_funcs
             .setdefault(None, []).append(f))
@@ -279,8 +303,12 @@ class Blueprint(_PackageBoundObject):
         return f
 
     def app_context_processor(self, f):
-        """Like :meth:`Flask.context_processor` but for a blueprint.  Such a
-        function is executed each request, even if outside of the blueprint.
+        """
+        .. Like :meth:`Flask.context_processor` but for a blueprint.  Such a
+           function is executed each request, even if outside of the blueprint.
+
+        :meth:`Flask.context_processor` のようですが、blueprint仕様です。
+        blueprintの外で実行されているかのように、関数はリクエスト毎に実行されます。
         """
         self.record_once(lambda s: s.app.template_context_processors
             .setdefault(None, []).append(f))
@@ -296,9 +324,13 @@ class Blueprint(_PackageBoundObject):
         return decorator
 
     def url_value_preprocessor(self, f):
-        """Registers a function as URL value preprocessor for this
-        blueprint.  It's called before the view functions are called and
-        can modify the url values provided.
+        """
+        .. Registers a function as URL value preprocessor for this
+           blueprint.  It's called before the view functions are called and
+           can modify the url values provided.
+
+        blueprintにURLを値として関数を登録します。
+        
         """
         self.record_once(lambda s: s.app.url_value_preprocessors
             .setdefault(self.name, []).append(f))
@@ -321,7 +353,10 @@ class Blueprint(_PackageBoundObject):
         return f
 
     def app_url_defaults(self, f):
-        """Same as :meth:`url_defaults` but application wide.
+        """
+        .. Same as :meth:`url_defaults` but application wide.
+
+        :meth:`url_defaults` と同じですが、アプリケーション全体に反映されます。
         """
         self.record_once(lambda s: s.app.url_default_functions
             .setdefault(None, []).append(f))
