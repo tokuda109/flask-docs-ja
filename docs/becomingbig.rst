@@ -6,74 +6,63 @@
 大きくなってきたら
 ======================
 
-.. Your application is becoming more and more complex?  If you suddenly
-   realize that Flask does things in a way that does not work out for your
-   application there are ways to deal with that.
+.. Here are your options when growing your codebase or scaling your application.
 
-アプリケーションがもっと複雑になってきたら?
-Flaskの処理にいくつか方法があって、その方法が見つけられないならこともあります。
+この章は、コードの規模が大きくなってきたり、アプリケーションをスケールさせる時に参考にしてください。
 
-.. Flask is powered by Werkzeug and Jinja2, two libraries that are in use at
-   a number of large websites out there and all Flask does is bring those
-   two together.  Being a microframework Flask does not do much more than
-   combining existing libraries - there is not a lot of code involved.
-   What that means for large applications is that it's very easy to take the
-   code from Flask and put it into a new module within the applications and
-   expand on that.
+.. Read the Source.
+   ----------------
 
-FlaskはWerkzeugとJinja2に依存していて、この2つのライブラリは少ないながらも大規模なウェブサイトで使われています。
+ソースを読む
+----------------
 
-.. Flask is designed to be extended and modified in a couple of different
-   ways:
+Flask started in part to demonstrate how to build your own framework on top of
+existing well-used tools Werkzeug (WSGI) and Jinja (templating), and as it
+developed, it became useful to a wide audience.  As you grow your codebase,
+don't just use Flask -- understand it.  Read the source.  Flask's code is
+written to be read; it's documentation published so you can use its internal
+APIs.  Flask sticks to documented APIs in upstream libraries, and documents its
+internal utilities so that you can find the hook points needed for your
+project.
 
-Flaskはいくつかの異なる方法で拡張したり、挙動を変えたりできるようにデザインされています。 :
+Hook. Extend.
+-------------
 
-.. Flask extensions.  For a lot of reusable functionality you can create
-   extensions.  For extensions a number of hooks exist throughout Flask
-   with signals and callback functions.
+The :ref:`api` docs are full of available overrides, hook points, and
+:ref:`signals`. You can provide custom classes for things like the request and
+response objects.  Dig deeper on the APIs you use, and look for the
+customizations which are available out of the box in a Flask release.  Look for
+ways in which your project can be refactored into a collection of utilities and
+Flask extensions.  Explore the many extensions in the community, and look for
+patterns to build your own extensions if you do not find the tools you need.
 
-- Flaskエクステンション。
-  たくさんの再利用できる関数によって、エクステンションを作ることでできます。
-  エクステンション用に、Flaskのシグナルやコールバック関数を使っていくつかのフックがあります。
+Subclass.
+---------
 
-.. Subclassing.  The majority of functionality can be changed by creating
-   a new subclass of the :class:`~flask.Flask` class and overriding
-   methods provided for this exact purpose.
+The :class:`~flask.Flask` class has many methods designed for subclassing. You
+can quickly add or customize behavior by subclassing :class:`~flask.Flask` (see
+the linked method docs) and using that subclass wherever you instantiate an
+application class. This works well with :ref:`app-factories`.
 
-- サブクラス。
-  関数群の大部分は :class:`~flask.Flask` クラスのサブクラスを新しく作ったり、メソッドを上書きすることで変更できます。
+Wrap with middleware.
+---------------------
 
-.. Forking.  If nothing else works out you can just take the Flask
-   codebase at a given point and copy/paste it into your application
-   and change it.  Flask is designed with that in mind and makes this
-   incredible easy.  You just have to take the package and copy it
-   into your application's code and rename it (for example to
-   `framework`).  Then you can start modifying the code in there.
+The :ref:`app-dispatch` chapter shows in detail how to apply middleware. You
+can introduce WSGI middleware to wrap your Flask instances and introduce fixes
+and changes at the layer between your Flask application and your HTTP
+server. Werkzeug includes several `middlewares
+<http://werkzeug.pocoo.org/docs/middlewares/>`_.
 
-- フォーク。
-  アプリケーションにコピーペーストして、修正して、Flaskのコードを指定する以外することはありません。
-  Flaskは信じられないくらい簡単に作られていて、そういう考えでデザインされています。
-  パッケージを取得して、アプリケーションのコードにコピーして、名前を変える(例として、`framework`)だけです。
-  それからコードを修正すると始めることができます。
+Fork.
+-----
 
-.. Why consider Forking?
-   ---------------------
-
-フォーク?
---------------
-
-.. The majority of code of Flask is within Werkzeug and Jinja2.  These
-   libraries do the majority of the work.  Flask is just the paste that glues
-   those together.  For every project there is the point where the underlying
-   framework gets in the way (due to assumptions the original developers
-   had).  This is natural because if this would not be the case, the
-   framework would be a very complex system to begin with which causes a
-   steep learning curve and a lot of user frustration.
-
-Flaskのコードの大部分は、WerkzeugとJinja2にあります。このライブラリは処理の大部分を実行しています。
-Flaskはこのライブラリをくっつけて、貼りつけているだけです。
-全てのプロジェクトでフレームワークの(オリジナルの作成者が持っていると仮定して)
-これは普通のことで、これができないならフレームワークはとても複雑なシステムになって学習コストが上がって、たくさんのユーザーが不満に思うでしょう。
+If none of the above options work, fork Flask.  The majority of code of Flask
+is within Werkzeug and Jinja2.  These libraries do the majority of the work.
+Flask is just the paste that glues those together.  For every project there is
+the point where the underlying framework gets in the way (due to assumptions
+the original developers had).  This is natural because if this would not be the
+case, the framework would be a very complex system to begin with which causes a
+steep learning curve and a lot of user frustration.
 
 .. This is not unique to Flask.  Many people use patched and modified
    versions of their framework to counter shortcomings.  This idea is also
@@ -95,8 +84,8 @@ Flaskはこのライブラリをくっつけて、貼りつけているだけで
 さらに上のレベルの変更を統合することはいくつか変更することになるので複雑なプロセスになります。
 そういった理由から、フォークは最後の手段にしなければなりません。
 
-.. Scaling like a Pro
-   ------------------
+.. Scale like a pro.
+   -----------------
 
 プロのようなスケーリング
 ----------------------------
@@ -133,16 +122,16 @@ Flaskでコンテキストローカルのプロキシとしてスケールする
 しかし、大部分のサーバーはスレッドやgreenletsやプロセスを分けて並列処理を実行するかのどれかを使うことになります。
 これはWerkzeugでサポートしているメソッドで全てできます。
 
-.. Dialogue with the Community
+.. Discuss with the community.
    ---------------------------
 
-コミュニティとの対話
-------------------------
+コミュニティとのディスカッション
+-------------------------------------------
 
-.. The Flask developers are very interested to keep everybody happy, so as
-   soon as you find an obstacle in your way, caused by Flask, don't hesitate
-   to contact the developers on the mailinglist or IRC channel.  The best way
-   for the Flask and Flask-extension developers to improve it for larger
+.. The Flask developers keep the framework accessible to users with codebases big
+   and small. If you find an obstacle in your way, caused by Flask, don't hesitate
+   to contact the developers on the mailinglist or IRC channel.  The best way for
+   the Flask and Flask extension developers to improve the tools for larger
    applications is getting feedback from users.
 
 Flaskのデベロッパーは全ての人がハッピーになるようにしようとしています。
