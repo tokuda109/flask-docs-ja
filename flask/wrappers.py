@@ -113,13 +113,15 @@ class Request(RequestBase):
         :class:`~werkzeug.exceptions.BadRequest` which sets the
         ``Content-Type`` to ``application/json`` and provides a JSON-formatted
         error description::
-        
+
             {"description": "The browser (or proxy) sent a request that \
                              this server could not understand."}
 
         .. versionchanged:: 0.9
            Return a :class:`JSONBadRequest` instead of a
            :class:`~werkzeug.exceptions.BadRequest` by default.
+
+        .. versionadded:: 0.8
         """
         raise JSONBadRequest()
 

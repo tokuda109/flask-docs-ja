@@ -28,7 +28,7 @@ from .helpers import _PackageBoundObject, url_for, get_flashed_messages, \
     find_package
 from .wrappers import Request, Response
 from .config import ConfigAttribute, Config
-from .ctx import RequestContext, AppContext
+from .ctx import RequestContext, AppContext, _RequestGlobals
 from .globals import _request_ctx_stack, request
 from .sessions import SecureCookieSessionInterface
 from .module import blueprint_is_module
@@ -72,15 +72,16 @@ class Flask(_PackageBoundObject):
        the view functions, the URL rules, template configuration and much more.
 
     flaskオブジェクトはWSGIアプリケーションとして実装されていて、中心的なオブジェクトとして動作します。
-    モジュール名やアプリケーションのパッケージを渡します。ビュー関数やURLルールを登録したり、
-    テンプレートの設定等をするために作成されます。
+    モジュール名やアプリケーションのパッケージを渡します。
+    一度作成されたら、ビュー関数、URLルール、テンプレートの設定やその他のものを
+    登録するための中心的なレジストリとして動作します。
 
     .. The name of the package is used to resolve resources from inside the
        package or the folder the module is contained in depending on if the
        package parameter resolves to an actual python package (a folder with
        an `__init__.py` file inside) or a standard module (just a `.py` file).
 
-    パッケージ名はパッケージ内やモジュールフォルダ内からリソースの
+    パッケージ名はパッケージ内からリソースを探すために使われ
 
     .. For more information about resource loading, see :func:`open_resource`.
 
@@ -89,71 +90,101 @@ class Flask(_PackageBoundObject):
     .. Usually you create a :class:`Flask` instance in your main module or
        in the `__init__.py` file of your package like this::
 
-    通常はメインモジュールやパッケージの `__init__.py` ファイル内で以下のように、 :class:`Flask` インスタンスを作成します。
+    通常はメインモジュールやパッケージの `__init__.py` ファイル内で以下のように、
+    :class:`Flask` インスタンスを作成します。
 
         from flask import Flask
         app = Flask(__name__)
 
-    .. admonition:: About the First Parameter
+    .. About the First Parameter
+
+    .. admonition:: 一つ目のパラメーターについて
 
         .. The idea of the first parameter is to give Flask an idea what
            belongs to your application.  This name is used to find resources
            on the file system, can be used by extensions to improve debugging
            information and a lot more.
 
-        最初のパラメーターのアイデアは
-        この名前はファイルシステムでリソースを探すために使われます。
+        一つ目のパラメーターのアイデアは、Flaskにアプリケーション
+        この名前は、ファイルシステムのリソースを探すために使われます。
 
-        So it's important what you provide there.  If you are using a single
-        module, `__name__` is always the correct value.  If you however are
-        using a package, it's usually recommended to hardcode the name of
-        your package there.
+        .. So it's important what you provide there.  If you are using a single
+           module, `__name__` is always the correct value.  If you however are
+           using a package, it's usually recommended to hardcode the name of
+           your package there.
 
-        
+        なので、
+        モジュールを一つしか使わないなら、 `__name__` は常に正しい値になります。
+        しかし、パッケージを使っているなら、パッケージ名と常にハードコードすることをお勧めします。
 
-        For example if your application is defined in `yourapplication/app.py`
-        you should create it with one of the two versions below::
+        .. For example if your application is defined in `yourapplication/app.py`
+           you should create it with one of the two versions below::
+
+        例えば、アプリケーションを `yourapplication/app.py` として作っているなら、
+        以下の二つの方法のうちから一つを選んで作成して下さい。 ::
 
             app = Flask('yourapplication')
             app = Flask(__name__.split('.')[0])
 
-        Why is that?  The application will work even with `__name__`, thanks
-        to how resources are looked up.  However it will make debugging more
-        painful.  Certain extensions can make assumptions based on the
-        import name of your application.  For example the Flask-SQLAlchemy
-        extension will look for the code in your application that triggered
-        an SQL query in debug mode.  If the import name is not properly set
-        up, that debugging information is lost.  (For example it would only
-        pick up SQL queries in `yourapplication.app` and not
-        `yourapplication.views.frontend`)
+        .. Why is that?  The application will work even with `__name__`, thanks
+           to how resources are looked up.  However it will make debugging more
+           painful.  Certain extensions can make assumptions based on the
+           import name of your application.  For example the Flask-SQLAlchemy
+           extension will look for the code in your application that triggered
+           an SQL query in debug mode.  If the import name is not properly set
+           up, that debugging information is lost.  (For example it would only
+           pick up SQL queries in `yourapplication.app` and not
+           `yourapplication.views.frontend`)
+
+        なぜそうするのでしょうか?
+        アプリケーションは
 
     .. versionadded:: 0.7
-       The `static_url_path`, `static_folder`, and `template_folder`
-       parameters were added.
+       .. The `static_url_path`, `static_folder`, and `template_folder`
+          parameters were added.
+
+       `static_url_path` 、 `static_folder` 、 `template_folder` のパラメーターを追加しました。
 
     .. versionadded:: 0.8
-       The `instance_path` and `instance_relative_config` parameters were
-       added.
+       .. The `instance_path` and `instance_relative_config` parameters were
+          added.
 
-    :param import_name: the name of the application package
-    :param static_url_path: can be used to specify a different path for the
-                            static files on the web.  Defaults to the name
-                            of the `static_folder` folder.
-    :param static_folder: the folder with static files that should be served
-                          at `static_url_path`.  Defaults to the ``'static'``
-                          folder in the root path of the application.
-    :param template_folder: the folder that contains the templates that should
-                            be used by the application.  Defaults to
-                            ``'templates'`` folder in the root path of the
-                            application.
-    :param instance_path: An alternative instance path for the application.
-                          By default the folder ``'instance'`` next to the
+       `instance_path` 、 `instance_relative_config` のパラメーターを追加しました。
+
+    .. :param import_name: the name of the application package
+    .. :param static_url_path: can be used to specify a different path for the
+                               static files on the web.  Defaults to the name
+                               of the `static_folder` folder.
+    .. :param static_folder: the folder with static files that should be served
+                             at `static_url_path`.  Defaults to the ``'static'``
+                             folder in the root path of the application.
+    .. :param template_folder: the folder that contains the templates that should
+                               be used by the application.  Defaults to
+                               ``'templates'`` folder in the root path of the
+                               application.
+    .. :param instance_path: An alternative instance path for the application.
+                             By default the folder ``'instance'`` next to the
+                             package or module is assumed to be the instance
+                             path.
+    :param instance_path: アプリケーションの別のインスタンスパス。
+                          
                           package or module is assumed to be the instance
                           path.
-    :param instance_relative_config: if set to `True` relative filenames
+    .. :param instance_relative_config: if set to `True` relative filenames
+                                        for loading the config are assumed to
+                                        be relative to the instance path instead
+                                        of the application root.
+    :param instance_relative_config: 
                                      for loading the config are assumed to
                                      be relative to the instance path instead
                                      of the application root.
+    :param import_name: アプリケーションのパッケージの名前
+    :param static_url_path: ウェブ上で静的ファイルを別のパスを指定することができます。
+                            `static_folder` フォルダの名前
+    :param static_folder: `static_url_path` で配信するための静的ファイルがあるフォルダ。
+                          アプリケーションのルートパスの ``'static'`` フォルダがデフォルトです。
+    :param template_folder: アプリケーションで使われるテンプレートが置かれているフォルダ。
+                            アプリケーションのルートパスの ``'templates'`` フォルダがデフォルトです。
     """
 
     #: The class that is used for request objects.  See :class:`~flask.Request`
@@ -163,6 +194,18 @@ class Flask(_PackageBoundObject):
     #: The class that is used for response objects.  See
     #: :class:`~flask.Response` for more information.
     response_class = Response
+
+    #: The class that is used for the :data:`~flask.g` instance.
+    #:
+    #: Example use cases for a custom class:
+    #:
+    #: 1. Store arbitrary attributes on flask.g.
+    #: 2. Add a property for lazy per-request database connectors.
+    #: 3. Return None instead of AttributeError on expected attributes.
+    #: 4. Raise exception if an unexpected attr is set, a "controlled" flask.g.
+    #:
+    #: .. versionadded:: 0.9
+    request_globals_class = _RequestGlobals
 
     #: The debug flag.  Set this to `True` to enable debugging of the
     #: application.  In debug mode the debugger will kick in when an unhandled
@@ -267,7 +310,8 @@ class Flask(_PackageBoundObject):
         'MAX_CONTENT_LENGTH':                   None,
         'SEND_FILE_MAX_AGE_DEFAULT':            12 * 60 * 60, # 12 hours
         'TRAP_BAD_REQUEST_ERRORS':              False,
-        'TRAP_HTTP_EXCEPTIONS':                 False
+        'TRAP_HTTP_EXCEPTIONS':                 False,
+        'PREFERRED_URL_SCHEME':                 'http'
     })
 
     #: The rule object to use for URL rules created.  This is used by
@@ -498,14 +542,11 @@ class Flask(_PackageBoundObject):
 
     @locked_cached_property
     def name(self):
-        """
-        .. The name of the application.  This is usually the import name
-           with the difference that it's guessed from the run file if the
-           import name is main.  This name is used as a display name when
-           Flask needs the name of the application.  It can be set and overriden
-           to change the value.
-
-        アプリケーションの名前です。これは、
+        """The name of the application.  This is usually the import name
+        with the difference that it's guessed from the run file if the
+        import name is main.  This name is used as a display name when
+        Flask needs the name of the application.  It can be set and overriden
+        to change the value.
 
         .. versionadded:: 0.8
         """
@@ -865,25 +906,17 @@ class Flask(_PackageBoundObject):
 
     @setupmethod
     def add_url_rule(self, rule, endpoint=None, view_func=None, **options):
-        """
-        .. Connects a URL rule.  Works exactly like the :meth:`route`
-           decorator.  If a view_func is provided it will be registered with the
-           endpoint.
+        """Connects a URL rule.  Works exactly like the :meth:`route`
+        decorator.  If a view_func is provided it will be registered with the
+        endpoint.
 
-        URLルールを結びつけます。正確には、 :meth:`route` デコレーター
-        のように動作します。
-
-        .. Basically this example::
-
-        基本的な例として ::
+        Basically this example::
 
             @app.route('/')
             def index():
                 pass
 
-        .. Is equivalent to the following::
-
-        以下のようにしても同じです。 ::
+        Is equivalent to the following::
 
             def index():
                 pass
@@ -898,9 +931,7 @@ class Flask(_PackageBoundObject):
         to customize the behavior via subclassing you only need to change
         this method.
 
-        .. For more information refer to :ref:`url-route-registrations`.
-
-        さらに詳しい情報は、 :ref:`url-route-registrations` を参照して下さい。
+        For more information refer to :ref:`url-route-registrations`.
 
         .. versionchanged:: 0.2
            `view_func` parameter added.
@@ -1069,12 +1100,6 @@ class Flask(_PackageBoundObject):
             self.error_handler_spec.setdefault(key, {}).setdefault(None, []) \
                 .append((code_or_exception, f))
 
-    def get_send_file_options(self, filename):
-        # Override: Hooks in SEND_FILE_MAX_AGE_DEFAULT config.
-        options = super(Flask, self).get_send_file_options(filename)
-        options['cache_timeout'] = self.config['SEND_FILE_MAX_AGE_DEFAULT']
-        return options
-
     @setupmethod
     def template_filter(self, name=None):
         """A decorator that is used to register custom template filter.
@@ -1099,11 +1124,13 @@ class Flask(_PackageBoundObject):
         .. Register a custom template filter.  Works exactly like the
            :meth:`template_filter` decorator.
 
-        カスタムテンプレートフィルターを登録します。正確には :meth:`template_filter`
-        デコレーターのように動作します。
+        カスタムテンプレートフィルターを登録できます。
+        正確には、 :meth:`template_filter` デコレーターのように動作します。
 
-        :param name: the optional name of the filter, otherwise the
-                     function name will be used.
+        .. :param name: the optional name of the filter, otherwise the
+                        function name will be used.
+        :param name: フィルターのオプション名です。関数名
+                     
         """
         self.jinja_env.filters[name or f.__name__] = f
 
@@ -1452,29 +1479,33 @@ class Flask(_PackageBoundObject):
            Previously a tuple was interpreted as the arguments for the
            response object.
         """
+        status = headers = None
+        if isinstance(rv, tuple):
+            rv, status, headers = rv + (None,) * (3 - len(rv))
+
         if rv is None:
             raise ValueError('View function did not return a response')
-        if isinstance(rv, self.response_class):
-            return rv
-        if isinstance(rv, basestring):
-            return self.response_class(rv)
-        if isinstance(rv, tuple):
-            if len(rv) > 0 and isinstance(rv[0], self.response_class):
-                original = rv[0]
-                new_response = self.response_class('', *rv[1:])
-                if len(rv) < 3:
-                    # The args for the response class are
-                    # response=None, status=None, headers=None,
-                    # mimetype=None, content_type=None, ...
-                    # so if there's at least 3 elements the rv
-                    # tuple contains header information so the
-                    # headers from rv[0] "win."
-                    new_response.headers = original.headers
-                new_response.response = original.response
-                return new_response
+
+        if not isinstance(rv, self.response_class):
+            # When we create a response object directly, we let the constructor
+            # set the headers and status.  We do this because there can be
+            # some extra logic involved when creating these objects with
+            # specific values (like defualt content type selection).
+            if isinstance(rv, basestring):
+                rv = self.response_class(rv, headers=headers, status=status)
+                headers = status = None
             else:
-                return self.response_class(*rv)
-        return self.response_class.force_type(rv, request.environ)
+                rv = self.response_class.force_type(rv, request.environ)
+
+        if status is not None:
+            if isinstance(status, basestring):
+                rv.status = status
+            else:
+                rv.status_code = status
+        if headers:
+            rv.headers.extend(headers)
+
+        return rv
 
     def create_url_adapter(self, request):
         """Creates a URL adapter for the given request.  The URL adapter
@@ -1482,9 +1513,21 @@ class Flask(_PackageBoundObject):
         so the request is passed explicitly.
 
         .. versionadded:: 0.6
+
+        .. versionchanged:: 0.9
+           This can now also be called without a request object when the
+           UR adapter is created for the application context.
         """
-        return self.url_map.bind_to_environ(request.environ,
-            server_name=self.config['SERVER_NAME'])
+        if request is not None:
+            return self.url_map.bind_to_environ(request.environ,
+                server_name=self.config['SERVER_NAME'])
+        # We need at the very least the server name to be set for this
+        # to work.
+        if self.config['SERVER_NAME'] is not None:
+            return self.url_map.bind(
+                self.config['SERVER_NAME'],
+                script_name=self.config['APPLICATION_ROOT'] or '/',
+                url_scheme=self.config['PREFERRED_URL_SCHEME'])
 
     def inject_url_defaults(self, endpoint, values):
         """Injects the URL defaults for the given endpoint directly into
@@ -1583,7 +1626,6 @@ class Flask(_PackageBoundObject):
         bp = _request_ctx_stack.top.request.blueprint
         if bp is not None and bp in self.teardown_request_funcs:
             funcs = chain(funcs, reversed(self.teardown_request_funcs[bp]))
-
         for func in funcs:
             rv = func(exc)
         request_tearing_down.send(self, exc=exc)
