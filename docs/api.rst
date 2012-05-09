@@ -310,6 +310,8 @@ Useful Functions and Classes
 
 .. autofunction:: make_response
 
+.. autofunction:: after_this_request
+
 .. autofunction:: send_file
 
 .. autofunction:: send_from_directory

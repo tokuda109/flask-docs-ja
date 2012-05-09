@@ -77,6 +77,7 @@ Version 0.9
    be used on creation of the :data:`~flask.g` instance of each request.
 .. Added `required_methods` attribute to view functions to force-add methods
    on registration.
+.. Added :func:`flask.after_this_request`.
 
 - :func:`flask.Request.on_json_loading_failed` は、標準でJSONフォーマットのレスポンスを返します。
 - :func:`flask.url_for` 関数は、生成済みのリンクに対するアンカーを生成することができます。
@@ -126,6 +127,7 @@ Version 0.9
   be used on creation of the :data:`~flask.g` instance of each request.
 - Added `required_methods` attribute to view functions to force-add methods
   on registration.
+- Added :func:`flask.after_this_request`.
 
 Version 0.8.1
 -------------
