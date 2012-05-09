@@ -19,7 +19,7 @@ from itertools import chain
 from functools import update_wrapper
 
 from werkzeug.datastructures import ImmutableDict
-from werkzeug.routing import Map, Rule, RequestRedirect
+from werkzeug.routing import Map, Rule, RequestRedirect, BuildError
 from werkzeug.exceptions import HTTPException, InternalServerError, \
      MethodNotAllowed, BadRequest
 
@@ -96,29 +96,14 @@ class Flask(_PackageBoundObject):
         from flask import Flask
         app = Flask(__name__)
 
-    .. About the First Parameter
-
-    .. admonition:: 一つ目のパラメーターについて
-
-        .. The idea of the first parameter is to give Flask an idea what
-           belongs to your application.  This name is used to find resources
-           on the file system, can be used by extensions to improve debugging
-           information and a lot more.
+    .. admonition:: 最初のパラメーターについて
 
         一つ目のパラメーターのアイデアは、Flaskにアプリケーション
         この名前は、ファイルシステムのリソースを探すために使われます。
 
-        .. So it's important what you provide there.  If you are using a single
-           module, `__name__` is always the correct value.  If you however are
-           using a package, it's usually recommended to hardcode the name of
-           your package there.
-
         なので、
         モジュールを一つしか使わないなら、 `__name__` は常に正しい値になります。
         しかし、パッケージを使っているなら、パッケージ名と常にハードコードすることをお勧めします。
-
-        .. For example if your application is defined in `yourapplication/app.py`
-           you should create it with one of the two versions below::
 
         例えば、アプリケーションを `yourapplication/app.py` として作っているなら、
         以下の二つの方法のうちから一つを選んで作成して下さい。 ::
@@ -126,30 +111,45 @@ class Flask(_PackageBoundObject):
             app = Flask('yourapplication')
             app = Flask(__name__.split('.')[0])
 
-        .. Why is that?  The application will work even with `__name__`, thanks
-           to how resources are looked up.  However it will make debugging more
-           painful.  Certain extensions can make assumptions based on the
-           import name of your application.  For example the Flask-SQLAlchemy
-           extension will look for the code in your application that triggered
-           an SQL query in debug mode.  If the import name is not properly set
-           up, that debugging information is lost.  (For example it would only
-           pick up SQL queries in `yourapplication.app` and not
-           `yourapplication.views.frontend`)
-
         なぜそうするのでしょうか?
         アプリケーションは
 
+    .. About the First Parameter
+
+        The idea of the first parameter is to give Flask an idea what
+        belongs to your application.  This name is used to find resources
+        on the file system, can be used by extensions to improve debugging
+        information and a lot more.
+
+        So it's important what you provide there.  If you are using a single
+        module, `__name__` is always the correct value.  If you however are
+        using a package, it's usually recommended to hardcode the name of
+        your package there.
+
+        For example if your application is defined in `yourapplication/app.py`
+        you should create it with one of the two versions below::
+
+        Why is that?  The application will work even with `__name__`, thanks
+        to how resources are looked up.  However it will make debugging more
+        painful.  Certain extensions can make assumptions based on the
+        import name of your application.  For example the Flask-SQLAlchemy
+        extension will look for the code in your application that triggered
+        an SQL query in debug mode.  If the import name is not properly set
+        up, that debugging information is lost.  (For example it would only
+        pick up SQL queries in `yourapplication.app` and not
+        `yourapplication.views.frontend`)
+
     .. versionadded:: 0.7
+       `static_url_path` 、 `static_folder` 、 `template_folder` のパラメーターを追加しました。
+
        .. The `static_url_path`, `static_folder`, and `template_folder`
           parameters were added.
 
-       `static_url_path` 、 `static_folder` 、 `template_folder` のパラメーターを追加しました。
-
     .. versionadded:: 0.8
+       `instance_path` 、 `instance_relative_config` のパラメーターを追加しました。
+
        .. The `instance_path` and `instance_relative_config` parameters were
           added.
-
-       `instance_path` 、 `instance_relative_config` のパラメーターを追加しました。
 
     .. :param import_name: the name of the application package
     .. :param static_url_path: can be used to specify a different path for the
@@ -166,18 +166,11 @@ class Flask(_PackageBoundObject):
                              By default the folder ``'instance'`` next to the
                              package or module is assumed to be the instance
                              path.
-    :param instance_path: アプリケーションの別のインスタンスパス。
-                          
-                          package or module is assumed to be the instance
-                          path.
     .. :param instance_relative_config: if set to `True` relative filenames
                                         for loading the config are assumed to
                                         be relative to the instance path instead
                                         of the application root.
-    :param instance_relative_config: 
-                                     for loading the config are assumed to
-                                     be relative to the instance path instead
-                                     of the application root.
+
     :param import_name: アプリケーションのパッケージの名前
     :param static_url_path: ウェブ上で静的ファイルを別のパスを指定することができます。
                             `static_folder` フォルダの名前
@@ -185,6 +178,8 @@ class Flask(_PackageBoundObject):
                           アプリケーションのルートパスの ``'static'`` フォルダがデフォルトです。
     :param template_folder: アプリケーションで使われるテンプレートが置かれているフォルダ。
                             アプリケーションのルートパスの ``'templates'`` フォルダがデフォルトです。
+    :param instance_path: アプリケーションの別のインスタンスのパス
+    :param instance_relative_config: `True` にすると
     """
 
     #: The class that is used for request objects.  See :class:`~flask.Request`
@@ -388,16 +383,14 @@ class Flask(_PackageBoundObject):
         #: decorator.
         self.error_handler_spec = {None: self._error_handlers}
 
-        #: If not `None`, this function is called when :meth:`url_for` raises
-        #: :exc:`~werkzeug.routing.BuildError`, with the call signature::
-        #:
-        #:     self.build_error_handler(error, endpoint, **values)
-        #:
-        #: Here, `error` is the instance of `BuildError`, and `endpoint` and
-        #: `**values` are the arguments passed into :meth:`url_for`.
+        #: A list of functions that are called when :meth:`url_for` raises a
+        #: :exc:`~werkzeug.routing.BuildError`.  Each function registered here
+        #: is called with `error`, `endpoint` and `values`.  If a function
+        #: returns `None` or raises a `BuildError` the next function is
+        #: tried.
         #:
         #: .. versionadded:: 0.9
-        self.build_error_handler = None
+        self.url_build_error_handlers = []
 
         #: A dictionary with lists of functions that should be called at the
         #: beginning of the request.  The key of the dictionary is the name of
@@ -964,6 +957,10 @@ class Flask(_PackageBoundObject):
         # a tuple of only `GET` as default.
         if methods is None:
             methods = getattr(view_func, 'methods', None) or ('GET',)
+        methods = set(methods)
+
+        # Methods that should always be added
+        required_methods = set(getattr(view_func, 'required_methods', ()))
 
         # starting with Flask 0.8 the view_func object can disable and
         # force-enable the automatic options handling.
@@ -972,10 +969,13 @@ class Flask(_PackageBoundObject):
 
         if provide_automatic_options is None:
             if 'OPTIONS' not in methods:
-                methods = tuple(methods) + ('OPTIONS',)
                 provide_automatic_options = True
+                required_methods.add('OPTIONS')
             else:
                 provide_automatic_options = False
+
+        # Add the required methods now.
+        methods |= required_methods
 
         # due to a werkzeug bug we need to make sure that the defaults are
         # None if they are an empty dictionary.  This should not be necessary
@@ -1129,8 +1129,8 @@ class Flask(_PackageBoundObject):
 
         .. :param name: the optional name of the filter, otherwise the
                         function name will be used.
+
         :param name: フィルターのオプション名です。関数名
-                     
         """
         self.jinja_env.filters[name or f.__name__] = f
 
@@ -1543,19 +1543,24 @@ class Flask(_PackageBoundObject):
         for func in funcs:
             func(endpoint, values)
 
-    def handle_build_error(self, error, endpoint, **values):
+    def handle_url_build_error(self, error, endpoint, values):
         """Handle :class:`~werkzeug.routing.BuildError` on :meth:`url_for`.
-
-        Calls :attr:`build_error_handler` if it is not `None`.
         """
-        if self.build_error_handler is None:
-            exc_type, exc_value, tb = sys.exc_info()
-            if exc_value is error:
-                # exception is current, raise in context of original traceback.
-                raise exc_type, exc_value, tb
-            else:
-                raise error
-        return self.build_error_handler(error, endpoint, **values)
+        exc_type, exc_value, tb = sys.exc_info()
+        for handler in self.url_build_error_handlers:
+            try:
+                rv = handler(error, endpoint, values)
+                if rv is not None:
+                    return rv
+            except BuildError, error:
+                pass
+
+        # At this point we want to reraise the exception.  If the error is
+        # still the same one we can reraise it with the original traceback,
+        # otherwise we raise it from here.
+        if error is exc_value:
+            raise exc_type, exc_value, tb
+        raise error
 
     def preprocess_request(self):
         """Called before the actual request dispatching and will
