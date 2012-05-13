@@ -1,17 +1,28 @@
 .. _quickstart:
 
-Quickstart
-==========
+クイックスタート
+==================
 
-Eager to get started?  This page gives a good introduction to Flask.  It
-assumes you already have Flask installed.  If you do not, head over to the
-:ref:`installation` section.
+.. Quickstart
+   ==========
 
+.. Eager to get started?  This page gives a good introduction to Flask.  It
+   assumes you already have Flask installed.  If you do not, head over to the
+   :ref:`installation` section.
 
-A Minimal Application
----------------------
+そろそろ始めたいですか?
+このページはFlaskの紹介をします。Flaskが既にインストールしているものと仮定します。
+まだインストールしていない場合は、 :ref:`installation` の章に進んで下さい。
 
-A minimal Flask application looks something like this::
+.. A Minimal Application
+   ---------------------
+
+ミニマルなアプリケーション
+-----------------------------
+
+.. A minimal Flask application looks something like this::
+
+ミニマルなFlaskアプリケーションは以下のようになります。 ::
 
     from flask import Flask
     app = Flask(__name__)
@@ -23,82 +34,130 @@ A minimal Flask application looks something like this::
     if __name__ == '__main__':
         app.run()
 
-Just save it as `hello.py` (or something similar) and run it with your Python
-interpreter.  Make sure to not call your application `flask.py` because this
-would conflict with Flask itself.
+.. Just save it as `hello.py` (or something similar) and run it with your Python
+   interpreter.  Make sure to not call your application `flask.py` because this
+   would conflict with Flask itself.
+
+`hello.py` として(もしくは同じようにして)保存して、Pythonのインタープリターで実行して下さい。
+Flask自身と競合するので、アプリケーションを `flask.py` として実行しないで下さい。
 
 ::
 
     $ python hello.py
      * Running on http://127.0.0.1:5000/
 
-Now head over to `http://127.0.0.1:5000/ <http://127.0.0.1:5000/>`_, and you
-should see your hello world greeting.
+.. Now head over to `http://127.0.0.1:5000/ <http://127.0.0.1:5000/>`_, and you
+   should see your hello world greeting.
 
-So what did that code do?
+`http://127.0.0.1:5000/ <http://127.0.0.1:5000/>`_ を確認すると、”Hello World!”を見ることができます。
 
-1. First we imported the :class:`~flask.Flask` class.  An instance of this
+.. So what did that code do?
+
+では、このコードはどんな処理を行ったのでしょうか?
+
+.. First we imported the :class:`~flask.Flask` class.  An instance of this
    class will be our WSGI application.  The first argument is the name of
    the application's module.  If you are using a single module (as in this
    example), you should use `__name__` because depending on if it's started as
    application or imported as module the name will be different (``'__main__'``
    versus the actual import name).  For more information, have a look at the
    :class:`~flask.Flask` documentation.
-2. Next we create an instance of this class.  We pass it the name of the module
+.. Next we create an instance of this class.  We pass it the name of the module
    or package.  This is needed so that Flask knows where to look for templates,
    static files, and so on.
-3. We then use the :meth:`~flask.Flask.route` decorator to tell Flask what URL
+.. We then use the :meth:`~flask.Flask.route` decorator to tell Flask what URL
    should trigger our function.
-4. The function is given a name which is also used to generate URLs for that
+.. The function is given a name which is also used to generate URLs for that
    particular function, and returns the message we want to display in the
    user's browser.
-5. Finally we use the :meth:`~flask.Flask.run` function to run the local server
+.. Finally we use the :meth:`~flask.Flask.run` function to run the local server
    with our application.  The ``if __name__ == '__main__':`` makes sure the
    server only runs if the script is executed directly from the Python
    interpreter and not used as imported module.
 
-To stop the server, hit control-C.
+1. まず、 :class:`~flask.Flask` クラスをインポートしました。このクラスのインスタンスはWSGIアプリケーションです。
+   最初の引数はアプリケーションのモジュール名です。モジュールが一つの場合(この例のように)は、
+   なので、 `__name__` として下さい。
+   より詳しく知りたい方は、 :class:`~flask.Flask` ドキュメントを見てください。
+2. 次に、インスタンスを作成します。モジュール名やパッケージを渡します。
+   これはFlaskがテンプレートファイルや静的ファイルなどを探すべき場所を知るために必要です。
+3. URLがどの関数に対してのトリガーとなるかをFlaskに教えるために、
+   :meth:`~flask.Flask.route` デコレーターを使います。
+4. その関数は
+5. 最後に、アプリケーションをローカルサーバーで起動するための :meth:`~flask.Flask.run` 関数を使います。
+   ``if __name__ == '__main__':`` は、スクリプトがPyrhonインタープリターから直接実行された時だけ起動します。
+   モジュールとしてインポートされた時には何も起こりません。
+
+.. To stop the server, hit control-C.
+
+サーバを停止するには、control-Cを押してください。
 
 .. _public-server:
 
-.. admonition:: Externally Visible Server
+.. admonition:: 外部から見ることができるサーバー
 
-   If you run the server you will notice that the server is only accessible
-   from your own computer, not from any other in the network.  This is the
-   default because in debugging mode a user of the application can execute
-   arbitrary Python code on your computer.
+   .. If you run the server you will notice that the server is only accessible
+      from your own computer, not from any other in the network.  This is the
+      default because in debugging mode a user of the application can execute
+      arbitrary Python code on your computer.
 
-   If you have `debug` disabled or trust the users on your network, you can
-   make the server publicly available simply by changing the call of the
-   :meth:`~flask.Flask.run` method to look like this::
+   サーバーを起動したら、そのサーバーは、ネットワークの他のところからは有効ではなく、
+   あなたのコンピューターからのみアクセスできることに気づくと思います。
+   これはデバッグモードでアプリケーションのユーザーは、
+   任意のPythonコードをあなたのコンピューターで実行できてしまうので、
+   デフォルトで設定されています。
+
+   .. If you have `debug` disabled or trust the users on your network, you can
+      make the server publicly available simply by changing the call of the
+      :meth:`~flask.Flask.run` method to look like this::
+
+   `debug` を無効にしているか、ネットワーク上のユーザーを信頼するなら、
+   :meth:`~flask.Flask.run` メソッドの呼び出しを以下のように呼び出すように変更することで、
+   簡単にサーバーを公開することができます。 ::
 
        app.run(host='0.0.0.0')
 
-   This tells your operating system to listen on all public IPs.
+   .. This tells your operating system to listen on all public IPs.
 
+   これはオペレーティングシステムがパブリックIPを参照することを指定します。
 
 .. _debug-mode:
 
-Debug Mode
-----------
+デバッグモード
+----------------
 
-The :meth:`~flask.Flask.run` method is nice to start a local
-development server, but you would have to restart it manually after each
-change to your code.  That is not very nice and Flask can do better.  If
-you enable debug support the server will reload itself on code changes,
-and it will also provide you with a helpful debugger if things go wrong.
+.. Debug Mode
+   ----------
 
-There are two ways to enable debugging.  Either set that flag on the
-application object::
+.. The :meth:`~flask.Flask.run` method is nice to start a local
+   development server, but you would have to restart it manually after each
+   change to your code.  That is not very nice and Flask can do better.  If
+   you enable debug support the server will reload itself on code changes,
+   and it will also provide you with a helpful debugger if things go wrong.
+
+:meth:`~flask.Flask.run` メソッドはローカルの開発サーバーを立ち上げるのに適していますが、
+コードを修正した時に手動で再起動する必要があります。それは良いことではなくて、Flaskには良い方法があります。
+デバッグ機能を有効にすると、サーバーはコードを変更した時にリロードして、
+悪いことが起こったときに便利なデバッガーを提供したりします。
+
+.. There are two ways to enable debugging.  Either set that flag on the
+   application object::
+
+デバッグモードを有効にするには2つの方法があります。
+どちらもアプリケーションオブジェクトにフラグを立てるだけです。 ::
 
     app.debug = True
     app.run()
 
-Or pass it as a parameter to run::
+.. Or pass it as a parameter to run::
+
+もしくは、runにパラメーターとして渡します。 ::
 
     app.run(debug=True)
 
-Both methods have the exact same effect.
+.. Both methods have the exact same effect.
+
+どちらのやり方も実際には同じです。
 
 .. admonition:: Attention
 
@@ -107,27 +166,41 @@ Both methods have the exact same effect.
    allows the execution of arbitrary code. This makes it a major security risk
    and therefore it **must never be used on production machines**.
 
-Screenshot of the debugger in action:
+.. Screenshot of the debugger in action:
+
+起動中のデバッガーのスクリーンショット :
 
 .. image:: _static/debugger.png
    :align: center
    :class: screenshot
    :alt: screenshot of debugger in action
 
-Have another debugger in mind? See :ref:`working-with-debuggers`.
+.. Have another debugger in mind? See :ref:`working-with-debuggers`.
 
+他のデバッガーを使いたい場合は、 :ref:`working-with-debuggers` を見て下さい。
 
-Routing
--------
+.. Routing
+   -------
 
-Modern web applications have beautiful URLs.  This helps people remember
-the URLs, which is especially handy for applications that are used from
-mobile devices with slower network connections.  If the user can directly
-go to the desired page without having to hit the index page it is more
-likely they will like the page and come back next time.
+ルーティング
+--------------
 
-As you have seen above, the :meth:`~flask.Flask.route` decorator is used to
-bind a function to a URL.  Here are some basic examples::
+.. Modern web applications have beautiful URLs.  This helps people remember
+   the URLs, which is especially handy for applications that are used from
+   mobile devices with slower network connections.  If the user can directly
+   go to the desired page without having to hit the index page it is more
+   likely they will like the page and come back next time.
+
+最近のウェブアプリケーションはURLが整理されています。
+これは携帯端末の低速なネットワークでアクセスされるアプリケーションでURLを覚えやすくなります。
+ユーザーがインデックスページに行かずに望むページに直接行くことができるなら、
+好きなページに次戻ってくるのが簡単になります。
+
+.. As you have seen above, the :meth:`~flask.Flask.route` decorator is used to
+   bind a function to a URL.  Here are some basic examples::
+
+上で見たように、 :meth:`~flask.Flask.route` デコレーターは関数をURLにバインドするために使われます。
+以下に幾つかの例を示します。 ::
 
     @app.route('/')
     def index():
@@ -137,11 +210,17 @@ bind a function to a URL.  Here are some basic examples::
     def hello():
         return 'Hello World'
 
-But there is more to it!  You can make certain parts of the URL dynamic and
-attach multiple rules to a function.
+.. But there is more to it!  You can make certain parts of the URL dynamic and
+   attach multiple rules to a function.
 
-Variable Rules
-``````````````
+しかし、もっといいこともあります!
+複数のルールを関数に追加してURLの一部を動的に作成することができます。
+
+.. Variable Rules
+   ``````````````
+
+変数ルール
+`````````````````
 
 To add variable parts to a URL you can mark these special sections as
 ``<variable_name>``.  Such a part is then passed as keyword argument to your
@@ -158,21 +237,37 @@ function.  Optionally a converter can be specified by specifying a rule with
         # show the post with the given id, the id is an integer
         return 'Post %d' % post_id
 
-The following converters exist:
+.. The following converters exist:
+
+以下のようなコンバーターもあります。 :
+
+.. =========== ===========================================
+   `int`       accepts integers
+   `float`     like `int` but for floating point values
+   `path`      like the default but also accepts slashes
+   =========== ===========================================
 
 =========== ===========================================
-`int`       accepts integers
-`float`     like `int` but for floating point values
-`path`      like the default but also accepts slashes
+`int`       整数を受け取ります
+`float`     `int` と同じですが、浮動小数点を受け取ります
+`path`      デフォルトのようですが、スラッシュも受け取ります
 =========== ===========================================
 
-.. admonition:: Unique URLs / Redirection Behavior
+.. Unique URLs / Redirection Behavior
 
-   Flask's URL rules are based on Werkzeug's routing module.  The idea
-   behind that module is to ensure beautiful and unique URLs based on
-   precedents laid down by Apache and earlier HTTP servers.
+.. admonition:: ユニークなURL / リダイレクトの振る舞い
 
-   Take these two rules::
+   .. Flask's URL rules are based on Werkzeug's routing module.  The idea
+      behind that module is to ensure beautiful and unique URLs based on
+      precedents laid down by Apache and earlier HTTP servers.
+
+   FlaskのURLのルールはWerkzeugのルーティングモジュールをベースとしています。
+   そのモジュールの背後にある理念は、Apacheやそれ以前に作られたサーバーの振る舞いを元に、
+   見やすくてユニークなURLだということがわかります。
+
+   .. Take these two rules::
+
+   以下では、二つの例を取ります。 ::
 
         @app.route('/projects/')
         def projects():
@@ -182,26 +277,40 @@ The following converters exist:
         def about():
             return 'The about page'
 
-   Though they look rather similar, they differ in their use of the trailing
-   slash in the URL *definition*.  In the first case, the canonical URL for the
-   `projects` endpoint has a trailing slash.  In that sense, it is similar to
-   a folder on a file system.  Accessing it without a trailing slash will cause
-   Flask to redirect to the canonical URL with the trailing slash.
+   .. Though they look rather similar, they differ in their use of the trailing
+      slash in the URL *definition*.  In the first case, the canonical URL for the
+      `projects` endpoint has a trailing slash.  In that sense, it is similar to
+      a folder on a file system.  Accessing it without a trailing slash will cause
+      Flask to redirect to the canonical URL with the trailing slash.
 
-   In the second case, however, the URL is defined without a trailing slash,
-   rather like the pathname of a file on UNIX-like systems. Accessing the URL
-   with a trailing slash will produce a 404 "Not Found" error.
+   似たように見えますが、URLの *定義部分* の末尾にスラッシュが入っているという違いがあります。
+   最初のケースでは、 `projects` というエンドポイントの末尾にスラッシュが入っている標準的なURLです。
+   フォルダの表記に似ています。末尾のスラッシュなしにアクセスすると、Flaskは末尾にスラッシュがある標準的なURLにリダイレクトします。
 
-   This behavior allows relative URLs to continue working if users access the
-   page when they forget a trailing slash, consistent with how Apache
-   and other servers work.  Also, the URLs will stay unique, which helps search
-   engines avoid indexing the same page twice.
+   .. In the second case, however, the URL is defined without a trailing slash,
+      rather like the pathname of a file on UNIX-like systems. Accessing the URL
+      with a trailing slash will produce a 404 "Not Found" error.
 
+   しかし、二番目のケースではURLはスラッシュなしで定義されているので、ファイルにアクセスするのと同じ振る舞いをし、
+   末尾にスラッシュを付けてURLにアクセスすると404エラーになります。
+
+   .. This behavior allows relative URLs to continue working if users access the
+      page when they forget a trailing slash, consistent with how Apache
+      and other servers work.  Also, the URLs will stay unique, which helps search
+      engines avoid indexing the same page twice.
+
+   これはなぜでしょうか?
+   これはユーザーが末尾にスラッシュを付け忘れてページにアクセスしても、処理を続けるために関連するURLとして認められています。
+   この振る舞いは、Apacheや他のサーバーが動作する方法が同じです。
+   また、URLは検索エンジンは同じページを二回インデックスしないようにユニークであり続けます。
 
 .. _url-building:
 
-URL Building
+URLの生成
 ````````````
+
+.. URL Building
+   ````````````
 
 If it can match URLs, can Flask also generate them?  Of course it can.  To
 build a URL to a specific function you can use the :func:`~flask.url_for`
@@ -250,13 +359,21 @@ templates?  There are three good reasons for this:
    that properly for you.
 
 
-HTTP Methods
-````````````
+.. HTTP Methods
+   ````````````
 
-HTTP (the protocol web applications are speaking) knows different methods for
-accessing URLs.  By default, a route only answers to `GET` requests, but that
-can be changed by providing the `methods` argument to the
-:meth:`~flask.Flask.route` decorator.  Here are some examples::
+HTTPメソッド
+```````````````
+
+.. HTTP (the protocol web applications are speaking) knows different methods for
+   accessing URLs.  By default, a route only answers to `GET` requests, but that
+   can be changed by providing the `methods` argument to the
+   :meth:`~flask.Flask.route` decorator.  Here are some examples::
+
+HTTP (Webアプリケーションに使われているプロトコル) はURLにアクセスする別の方法もあります。
+デフォルトでは `GET` リクエストとして応答するようにルーティングされますが、
+:meth:`~flask.Flask.route` デコレーターに `methods` の引数を指定することで変更することができます。
+以下に例を示します。 ::
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
@@ -272,75 +389,122 @@ protocol) demands, so you can completely ignore that part of the HTTP
 specification.  Likewise, as of Flask 0.6, `OPTIONS` is implemented for you
 automatically as well.
 
-You have no idea what an HTTP method is?  Worry not, here is a quick
-introduction to HTTP methods and why they matter:
+.. You have no idea what an HTTP method is?  Worry not, here is a quick
+   introduction to HTTP methods and why they matter:
 
-The HTTP method (also often called "the verb") tells the server what the
-clients wants to *do* with the requested page.  The following methods are
-very common:
+HTTPメソッドとは何のことか分かりませんか? 心配することはありません。
+ここでは、HTTPメソッドとその重要性に関する簡単な紹介をします。 :
+
+.. The HTTP method (also often called "the verb") tells the server what the
+   clients wants to *do* with the requested page.  The following methods are
+   very common:
+
+HTTPメソッド (しばしば "the verb" とも呼ばれます) は、サーバーにクライアントが要求したページで *何をしたいか* をサーバーに伝えます。
+以下のようなメソッドが一般的です。 :
 
 `GET`
-    The browser tells the server to just *get* the information stored on
-    that page and send it.  This is probably the most common method.
+    .. The browser tells the server to just *get* the information stored on
+       that page and send it.  This is probably the most common method.
+
+    ブラウザはサーバーにページにある情報を *get* して、それを送ってくださいということを伝えます。
+    これはおそらく最も一般的なメソッドです。
 
 `HEAD`
-    The browser tells the server to get the information, but it is only
-    interested in the *headers*, not the content of the page.  An
-    application is supposed to handle that as if a `GET` request was
-    received but to not deliver the actual content.  In Flask you don't
-    have to deal with that at all, the underlying Werkzeug library handles
-    that for you.
+    .. The browser tells the server to get the information, but it is only
+       interested in the *headers*, not the content of the page.  An
+       application is supposed to handle that as if a `GET` request was
+       received but to not deliver the actual content.  In Flask you don't
+       have to deal with that at all, the underlying Werkzeug library handles
+       that for you.
+
+    ブラウザは情報をgetすることをサーバーに伝えますが、ページのコンテンツではなく、
+    *headers* の情報だけが重要だということを伝えます。
+    アプリケーションは `GET` リクエストを受け取ったかのように処理されますが、実際のコンテンツはやり取りされません。
+    水面下でWerkzeugライブラリが処理してくれるので、Flaskではそれに対して気にする必要は全くありません。
 
 `POST`
-    The browser tells the server that it wants to *post* some new
-    information to that URL and that the server must ensure the data is
-    stored and only stored once.  This is how HTML forms usually
-    transmit data to the server.
+    .. The browser tells the server that it wants to *post* some new
+       information to that URL and that the server must ensure the data is
+       stored and only stored once.  This is how HTML forms usually
+       transmit data to the server.
+
+    ブラウザは新しい情報をURLに *post* したいということを伝えます。
+    そして、それはサーバーがデータが保存されることと一度だけ保存されることを保証しなければいけないからです。
+    これは、HTMLのフォームがサーバーとデータを通信する通常の方法です。
 
 `PUT`
-    Similar to `POST` but the server might trigger the store procedure
-    multiple times by overwriting the old values more than once.  Now you
-    might be asking why this is useful, but there are some good reasons
-    to do it this way.  Consider that the connection is lost during
-    transmission: in this situation a system between the browser and the
-    server might receive the request safely a second time without breaking
-    things.  With `POST` that would not be possible because it must only
-    be triggered once.
+    .. Similar to `POST` but the server might trigger the store procedure
+       multiple times by overwriting the old values more than once.  Now you
+       might be asking why this is useful, but there are some good reasons
+       to do it this way.  Consider that the connection is lost during
+       transmission: in this situation a system between the browser and the
+       server might receive the request safely a second time without breaking
+       things.  With `POST` that would not be possible because it must only
+       be triggered once.
+
+    `POST` に似ていますが、サーバーは一回以上古い値を上書きすることによって、保管する手続きが複数回処理されるかもしれません。
+    なぜこれが便利なのか聞きたいかもしれませんが、これを使う理由がいくつかあります。
+    通信中に接続が切れてしまうケースを考えてみると、ブラウザとサーバーの間のシステムは中断することなく二番目のリクエストを安全に受け取らなければいけません。
+    `POST` だと一回しか処理されないので不可能です。
 
 `DELETE`
-    Remove the information at the given location.
+    .. Remove the information at the given location.
+
+    指定された場所の情報を削除します。
 
 `OPTIONS`
-    Provides a quick way for a client to figure out which methods are
-    supported by this URL.  Starting with Flask 0.6, this is implemented
-    for you automatically.
+    .. Provides a quick way for a client to figure out which methods are
+       supported by this URL.  Starting with Flask 0.6, this is implemented
+       for you automatically.
 
-Now the interesting part is that in HTML4 and XHTML1, the only methods a
-form can submit to the server are `GET` and `POST`.  But with JavaScript
-and future HTML standards you can use the other methods as well.  Furthermore
-HTTP has become quite popular lately and browsers are no longer the only
-clients that are using HTTP. For instance, many revision control system
-use it.
+    このURLでサポートされているメソッドを解決するために、クライアントに対して簡単な方法を提供します。
+    Flask 0.6で追加され、自動的に実装されます。
+
+.. Now the interesting part is that in HTML4 and XHTML1, the only methods a
+   form can submit to the server are `GET` and `POST`.  But with JavaScript
+   and future HTML standards you can use the other methods as well.  Furthermore
+   HTTP has become quite popular lately and browsers are no longer the only
+   clients that are using HTTP. For instance, many revision control system
+   use it.
+
+HTML4とXHTML1で面白いのは、フォームがサーバーに送信できるメソッドは `GET` と `POST` だけということです。
+しかし、JavaScriptや将来のHTML基準では他のメソッドも同様に使うことができます。
+さらに言うと、HTTPは近年非常にポピュラーなものになって、ブラウザーはHTTPを使用しているというだけのクライアントではありません。
+例として、たくさんのリビジョン管理システムで使われています。
 
 .. _HTTP RFC: http://www.ietf.org/rfc/rfc2068.txt
 
-Static Files
-------------
+.. Static Files
+   ------------
 
-Dynamic web applications also need static files.  That's usually where
-the CSS and JavaScript files are coming from.  Ideally your web server is
-configured to serve them for you, but during development Flask can do that
-as well.  Just create a folder called `static` in your package or next to
-your module and it will be available at `/static` on the application.
+静的ファイル
+---------------
 
-To generate URLs for static files, use the special ``'static'`` endpoint name::
+.. Dynamic web applications also need static files.  That's usually where
+   the CSS and JavaScript files are coming from.  Ideally your web server is
+   configured to serve them for you, but during development Flask can do that
+   as well.  Just create a folder called `static` in your package or next to
+   your module and it will be available at `/static` on the application.
+
+動的なウェブアプリケーションは静的ファイルも必要です。それは通常、CSSやJavaScriptのファイルが呼び出されるところです。
+ウェブサーバーはそれらのファイルを配信するように設定されていることが理想ですが、開発中のFlaskも同様のことができます。
+パッケージ内かモジュールの近くに `static` というフォルダを作成するだけで、アプリケーションの `/static` で利用可能になります。
+
+.. To generate URLs for static files, use the special ``'static'`` endpoint name::
+
+URLの一部分に複数のURLを生成するには、 ``'static'`` URL名を使用します。 ::
 
     url_for('static', filename='style.css')
 
-The file has to be stored on the filesystem as ``static/style.css``.
+.. The file has to be stored on the filesystem as ``static/style.css``.
 
-Rendering Templates
--------------------
+そのファイルは、 ``static/style.css`` としてファイルシステムに配置しないといけません。
+
+.. Rendering Templates
+   -------------------
+
+テンプレートのレンダリング
+-----------------------------
 
 Generating HTML from within Python is not fun, and actually pretty
 cumbersome because you have to do the HTML escaping on your own to keep
@@ -431,8 +595,11 @@ u'Marked up \xbb HTML'
    information.
 
 
-Accessing Request Data
-----------------------
+.. Accessing Request Data
+   ----------------------
+
+リクエストデータへのアクセス
+--------------------------------
 
 For web applications it's crucial to react to the data a client sent to
 the server.  In Flask this information is provided by the global
@@ -443,8 +610,11 @@ manages to still be threadsafe.  The answer is context locals:
 
 .. _context-locals:
 
-Context Locals
-``````````````
+コンテキストローカル
+`````````````````````
+
+.. Context Locals
+   ``````````````
 
 .. admonition:: Insider Information
 
@@ -489,8 +659,11 @@ The other possibility is passing a whole WSGI environment to the
     with app.request_context(environ):
         assert request.method == 'POST'
 
-The Request Object
-``````````````````
+.. The Request Object
+   ``````````````````
+
+リクエストオブジェクト
+`````````````````````````
 
 The request object is documented in the API section and we will not cover
 it here in detail (see :class:`~flask.request`). Here is a broad overview of
@@ -536,8 +709,11 @@ For a full list of methods and attributes of the request object, head over
 to the :class:`~flask.request` documentation.
 
 
-File Uploads
-````````````
+.. File Uploads
+   ````````````
+
+ファイルアップロード
+````````````````````````
 
 You can handle uploaded files with Flask easily.  Just make sure not to
 forget to set the ``enctype="multipart/form-data"`` attribute on your HTML
@@ -581,8 +757,11 @@ Werkzeug provides for you::
 
 For some better examples, checkout the :ref:`uploading-files` pattern.
 
-Cookies
-```````
+.. Cookies
+   ```````
+
+クッキー
+``````````
 
 To access cookies you can use the :attr:`~flask.Request.cookies`
 attribute.  To set cookies you can use the
@@ -623,12 +802,19 @@ object does not exist yet.  This is possible by utilizing the
 
 For this also see :ref:`about-responses`.
 
-Redirects and Errors
---------------------
+.. Redirects and Errors
+   --------------------
 
-To redirect a user to somewhere else you can use the
-:func:`~flask.redirect` function. To abort a request early with an error
-code use the :func:`~flask.abort` function.  Here an example how this works::
+リダイレクトとエラー
+-----------------------
+
+.. To redirect a user to somewhere else you can use the
+   :func:`~flask.redirect` function. To abort a request early with an error
+   code use the :func:`~flask.abort` function.  Here an example how this works::
+
+ユーザーを別の場所にリダイレクトするために、 :func:`~flask.redirect` 関数を使うことができます。
+エラーコードによってリクエストを早期に中断するために、 :func:`~flask.abort` 関数を使うことができます。
+どのように動くのか以下に例を示します。 ::
 
     from flask import abort, redirect, url_for
 
@@ -641,13 +827,21 @@ code use the :func:`~flask.abort` function.  Here an example how this works::
         abort(401)
         this_is_never_executed()
 
-This is a rather pointless example because a user will be redirected from
-the index to a page they cannot access (401 means access denied) but it
-shows how that works.
+.. This is a rather pointless example because a user will be redirected from
+   the index to a page they cannot access (401 means access denied) but it
+   shows how that works.
 
-By default a black and white error page is shown for each error code.  If
-you want to customize the error page, you can use the
-:meth:`~flask.Flask.errorhandler` decorator::
+これはかなり無意味な例です。
+なぜなら、ユーザーがインデックスページからアクセスできないページに
+リダイレクトされるからです(401はアクセス拒否を意味します)。
+しかし、どのように動いているのかを見せることはできます。
+
+.. By default a black and white error page is shown for each error code.  If
+   you want to customize the error page, you can use the
+   :meth:`~flask.Flask.errorhandler` decorator::
+
+デフォルトでは白黒のエラーページは、それぞれのエラーコードを示しています。
+エラーページをカスタマイズする場合は、 :meth:`~flask.Flask.errorhandler` デコレーターを使うことができます。 ::
 
     from flask import render_template
 
@@ -655,14 +849,21 @@ you want to customize the error page, you can use the
     def page_not_found(error):
         return render_template('page_not_found.html'), 404
 
-Note the ``404`` after the :func:`~flask.render_template` call.  This
-tells Flask that the status code of that page should be 404 which means
-not found.  By default 200 is assumed which translates to: all went well.
+.. Note the ``404`` after the :func:`~flask.render_template` call.  This
+   tells Flask that the status code of that page should be 404 which means
+   not found.  By default 200 is assumed which translates to: all went well.
+
+:func:`~flask.render_template` を呼び出した後の ``404`` に着目してください。
+これはFlaskにそのページのステータスコードがnot foundを意味する404となるべきであることを伝えています。
+デフォルトは200で、通信が全て上手くいったことを表します。
 
 .. _about-responses:
 
-About Responses
----------------
+レスポンスについて
+-------------------
+
+.. About Responses
+   ---------------
 
 The return value from a view function is automatically converted into a
 response object for you.  If the return value is a string it's converted
@@ -707,8 +908,11 @@ return it:
 
 .. _sessions:
 
-Sessions
---------
+セッション
+-------------
+
+.. Sessions
+   --------
 
 In addition to the request object there is also a second object called
 :class:`~flask.session` which allows you to store information specific to a
@@ -717,8 +921,11 @@ for you and signs the cookies cryptographically.  What this means is that
 the user could look at the contents of your cookie but not modify it,
 unless they know the secret key used for signing.
 
-In order to use sessions you have to set a secret key.  Here is how
-sessions work::
+.. In order to use sessions you have to set a secret key.  Here is how
+   sessions work::
+
+セッションを使うために、シークレットキーを設定しなければいけません。
+以下にセッションをどのように処理するのか例を示します。 ::
 
     from flask import Flask, session, redirect, url_for, escape, request
 
@@ -751,8 +958,11 @@ sessions work::
     # set the secret key.  keep this really secret:
     app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
-The :func:`~flask.escape` mentioned here does escaping for you if you are
-not using the template engine (as in this example).
+.. The :func:`~flask.escape` mentioned here does escaping for you if you are
+   not using the template engine (as in this example).
+
+ここで使われている :func:`~flask.escape` は、
+テンプレートエンジンを使わない(この例のように)場合にエスケープしてくれます。
 
 .. admonition:: How to generate good secret keys
 
@@ -774,65 +984,104 @@ not getting a clear error message, check the size of the cookie in your page
 responses compared to the size supported by web browsers.
 
 
-Message Flashing
-----------------
+.. Message Flashing
+   ----------------
 
-Good applications and user interfaces are all about feedback.  If the user
-does not get enough feedback they will probably end up hating the
-application.  Flask provides a really simple way to give feedback to a
-user with the flashing system.  The flashing system basically makes it
-possible to record a message at the end of a request and access it on the next
-(and only the next) request.  This is usually combined with a layout
-template to expose the message.
+フラッシュメッセージ
+----------------------
 
-To flash a message use the :func:`~flask.flash` method, to get hold of the
-messages you can use :func:`~flask.get_flashed_messages` which is also
-available in the templates.  Check out the :ref:`message-flashing-pattern`
-for a full example.
+.. Good applications and user interfaces are all about feedback.  If the user
+   does not get enough feedback they will probably end up hating the
+   application.  Flask provides a really simple way to give feedback to a
+   user with the flashing system.  The flashing system basically makes it
+   possible to record a message at the end of a request and access it on the next
+   (and only the next) request.  This is usually combined with a layout
+   template to expose the message.
 
-Logging
--------
+良いアプリケーションやユーザーインターフェイスには、フィードバックがつきものです。
+ユーザーが十分なフィードバックを得ることが出来なければ、そのアプリケーションをおそらく嫌いになるでしょう。
+Flaskはフラッシュシステムでユーザーがフィードバックを得ることができるような簡単方法を備えています。
+フラッシュシステムは基本的には、あるリクエストの終わりにメッセージを記録することができて、
+次のリクエストに(次のリクエストの時だけ)、記録したメッセージにアクセスすることができます。
+これは通常はその動作を行うレイアウトテンプレートに統合されています。
+
+.. To flash a message use the :func:`~flask.flash` method, to get hold of the
+   messages you can use :func:`~flask.get_flashed_messages` which is also
+   available in the templates.  Check out the :ref:`message-flashing-pattern`
+   for a full example.
+
+:func:`~flask.flash` メソッドを使ってメッセージを伝えるために、
+テンプレートで有効化されている :func:`~flask.get_flashed_messages` を使ってメッセージを保持することができます。
+完全な例は、 :ref:`message-flashing-pattern` をチェックして下さい。
+
+.. Logging
+   -------
+
+ログ機能
+----------
 
 .. versionadded:: 0.3
 
-Sometimes you might be in a situation where you deal with data that
-should be correct, but actually is not.  For example you may have some client-side
-code that sends an HTTP request to the server but it's obviously
-malformed.  This might be caused by a user tampering with the data, or the
-client code failing.  Most of the time it's okay to reply with ``400 Bad
-Request`` in that situation, but sometimes that won't do and the code has
-to continue working.
+.. Sometimes you might be in a situation where you deal with data that
+   should be correct, but actually is not.  For example you may have some client-side
+   code that sends an HTTP request to the server but it's obviously
+   malformed.  This might be caused by a user tampering with the data, or the
+   client code failing.  Most of the time it's okay to reply with ``400 Bad
+   Request`` in that situation, but sometimes that won't do and the code has
+   to continue working.
 
-You may still want to log that something fishy happened.  This is where
-loggers come in handy.  As of Flask 0.3 a logger is preconfigured for you
-to use.
+扱っているデータが正しいと思っていたら、実はそうでなかったという状況もあり得ます。
+例えばHTTPリクエストをサーバーに送信するクライアントサイドのコードがあったとします。そして、それは明らかに不正なものだったとします。
+それはユーザーのデータの焼き戻し、あるいは そのクライアントコードの失敗の要因となります。
+こういった場合大抵 ``400 Bad Request`` を返しておけばよいのですが、そうでない場合もあり、コードが動き続けなければならないことがあります。
 
-Here are some example log calls::
+.. You may still want to log that something fishy happened.  This is where
+   loggers come in handy.  As of Flask 0.3 a logger is preconfigured for you
+   to use.
+
+怪しいことが何か起こったということをログに残したいかもしれません。これにはロガーは重宝します。
+Flask 0.3では既にロガーを使うための設定がされています。
+
+.. Here are some example log calls::
+
+ログを実行するためのいくつかの例は以下のとおりです。 ::
 
     app.logger.debug('A value for debugging')
     app.logger.warning('A warning occurred (%d apples)', 42)
     app.logger.error('An error occurred')
 
-The attached :attr:`~flask.Flask.logger` is a standard logging
-:class:`~logging.Logger`, so head over to the official `logging
-documentation <http://docs.python.org/library/logging.html>`_ for more
-information.
+.. The attached :attr:`~flask.Flask.logger` is a standard logging
+   :class:`~logging.Logger`, so head over to the official `logging
+   documentation <http://docs.python.org/library/logging.html>`_ for more
+   information.
 
-Hooking in WSGI Middlewares
----------------------------
+備え付けの :attr:`~flask.Flask.logger` は、標準のロギング :class:`~logging.Logger` です。
+より詳細な情報は、公式の `logging documentation <http://docs.python.org/library/logging.html>`_ を参照して下さい。
 
-If you want to add a WSGI middleware to your application you can wrap the
-internal WSGI application.  For example if you want to use one of the
-middlewares from the Werkzeug package to work around bugs in lighttpd, you
-can do it like this::
+.. Hooking in WSGI Middlewares
+   ---------------------------
+
+WSGIミドルウェアのフック
+------------------------------
+
+.. If you want to add a WSGI middleware to your application you can wrap the
+   internal WSGI application.  For example if you want to use one of the
+   middlewares from the Werkzeug package to work around bugs in lighttpd, you
+   can do it like this::
+
+アプリケーションにWSGIミドルウェアを追加する場合は、内部のWSGIアプリケーションをラップすることができます。
+例として、lighttpdのバグを回避するためにWerkzeugパッケージのミドルウェアを使うなら、以下のようにして下さい。 ::
 
     from werkzeug.contrib.fixers import LighttpdCGIRootFix
     app.wsgi_app = LighttpdCGIRootFix(app.wsgi_app)
 
 .. _quickstart_deployment:
 
-Deploying to a Web Server
--------------------------
+ウェブサーバーにデプロイする
+-------------------------------------
+
+.. Deploying to a Web Server
+   -------------------------
 
 Ready to deploy your new Flask app?  To wrap up the quickstart, you can
 immediately deploy to a hosted platform, all of which offer a free plan for

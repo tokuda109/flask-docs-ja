@@ -8,7 +8,7 @@
    questions about the purpose and goals of the project, and when you
    should or should not be using it.
 
-まず、Flaskをはじめる前に読んでください。
+Flaskを使いはじめる前にこの章を読んでください。
 このドキュメントは、プロジェクトの目的とゴールについて、あなたが何をすべきで何をすべきでないかの答えとなるでしょう。
 
 .. What does "micro" mean?
@@ -37,15 +37,15 @@ Flaskは、どのようなデータベースを使うかというような、選
 何回も意思決定をしなければならないようにさせないこと意味しています。
 Flaskはテンプレートエンジンを選択したことによって、あるデータストアや他の部分で制限されてしまうことがないようにしています。
 
-By default, Flask does not include a database abstraction layer, form
-validation or anything else where different libraries already exist that can
-handle that. Instead, Flask supports extensions to add such functionality to
-your application as if it was implemented in Flask itself. Numerous extensions
-provide database integration, form validation, upload handling, various open
-authentication technologies, and more. Flask may be "micro", but it's ready for
-production use on a variety of needs.
+.. By default, Flask does not include a database abstraction layer, form
+   validation or anything else where different libraries already exist that can
+   handle that. Instead, Flask supports extensions to add such functionality to
+   your application as if it was implemented in Flask itself. Numerous extensions
+   provide database integration, form validation, upload handling, various open
+   authentication technologies, and more. Flask may be "micro", but it's ready for
+   production use on a variety of needs.
 
-
+デフォルトで、Flaskはデータベースのレイヤーやバリデーションやがありません。
 
 .. Configuration and Conventions
    -----------------------------
@@ -53,36 +53,49 @@ production use on a variety of needs.
 設定より規約
 -------------------
 
-Flask has many configuration values, with sensible defaults, and a few
-conventions when getting started.  By convention templates and static files are
-stored in subdirectories within the application's Python source tree, with the
-names `templates` and `static` respectively. While this can be changed you
-usually don't have to, especially when getting started.
+.. Flask has many configuration values, with sensible defaults, and a few
+   conventions when getting started.  By convention templates and static files are
+   stored in subdirectories within the application's Python source tree, with the
+   names `templates` and `static` respectively. While this can be changed you
+   usually don't have to, especially when getting started.
 
-Flaskは、設定より規約をベースに作られています。これにより、ほとんどの設定が事前にされています。
-例えば、規約によってテンプレートと静的ファイルはアプリケーションのPythonソースのツリー内の
-サブディレクトリに置かれます。これは変更ができるので、必ずそうしなければいけないわけではありません。
-準備をして起動するためにかかる時間を少なくしたいので
+Flaskには設定値がたくさんあり、
+規約によって、テンプレートや静的ファイルは、それぞれ `templates` や `static` という名前で、
+アプリケーションのPythonのソースツリー内のサブディレクトリ内に保管されます。
+これは、最初に実行するときは変更することは特にありませんが、変更することができます。
 
 Growing with Flask
 ------------------
 
-Once you have Flask up and running, you'll find a variety of extensions
-available in the community to integrate your project for production. The Flask
-core team reviews extensions and ensures approved extensions do not break with
-future releases.
+.. Once you have Flask up and running, you'll find a variety of extensions
+   available in the community to integrate your project for production. The Flask
+   core team reviews extensions and ensures approved extensions do not break with
+   future releases.
 
-As your codebase grows, you are free to make the design decisions appropriate
-for your project.  Flask will continue to provide a very simple glue layer to
-the best that Python has to offer.  You can implement advanced patterns in
-SQLAlchemy or another database tool, introduce non-relational data persistence
-as appropriate, and take advantage of framework-agnostic tools built for WSGI,
-the Python web interface.
+一度Flaskを起動したら、コミュニティにある様々なエクステンションを探す
+Flaskのコアチームは
 
-Flask includes many hooks to customize its behavior. Should you need more
-customization, the Flask class is built for subclassing. If you are interested
-in that, check out the :ref:`becomingbig` chapter.  If you are curious about
-the Flask design principles, head over to the section about :ref:`design`.
+.. As your codebase grows, you are free to make the design decisions appropriate
+   for your project.  Flask will continue to provide a very simple glue layer to
+   the best that Python has to offer.  You can implement advanced patterns in
+   SQLAlchemy or another database tool, introduce non-relational data persistence
+   as appropriate, and take advantage of framework-agnostic tools built for WSGI,
+   the Python web interface.
 
-Continue to :ref:`installation`, the :ref:`quickstart`, or the
-:ref:`advanced_foreword`.
+コードの量が多くなってきた時、
+Flask
+
+.. Flask includes many hooks to customize its behavior. Should you need more
+   customization, the Flask class is built for subclassing. If you are interested
+   in that, check out the :ref:`becomingbig` chapter.  If you are curious about
+   the Flask design principles, head over to the section about :ref:`design`.
+
+Flaskには、Flask自体の振る舞いをカスタマイズするためのフックがたくさんあります。
+さらにカスタマイズする必要があるなら、Flaskクラスのサブクラスを作って下さい。
+興味があるなら :ref:`becomingbig` の章を確認して下さい。
+Flaskのデザイン規約を不思議に思うなら、 :ref:`design` の章を確認して下さい。
+
+.. Continue to :ref:`installation`, the :ref:`quickstart`, or the
+   :ref:`advanced_foreword`.
+
+続いては、 :ref:`installation` 、 :ref:`quickstart` 、 :ref:`advanced_foreword` の章です。

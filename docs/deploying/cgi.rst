@@ -1,12 +1,17 @@
 CGI
 ===
 
-If all other deployment methods do not work, CGI will work for sure.
-CGI is supported by all major servers but usually has a sub-optimal
-performance.
+.. If all other deployment methods do not work, CGI will work for sure.
+   CGI is supported by all major servers but usually has a sub-optimal
+   performance.
+
+他のデプロイメソッドが全て動かないなら、CGIはきっと動くでしょう。
+CGIは全ての主要なサーバーでサポートされているが、通常はパフォーマンスがよくありません。
 
 This is also the way you can use a Flask application on Google's `App
 Engine`_, where execution happens in a CGI-like environment.
+
+これはCGIみたいな環境のGoogleの `App Engine`_ 上でFlaskアプリケーションを使う場合の方法です。
 
 .. admonition:: Watch Out
 

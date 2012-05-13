@@ -1,74 +1,125 @@
-Security Considerations
-=======================
+.. Security Considerations
+   =======================
 
-Web applications usually face all kinds of security problems and it's very
-hard to get everything right.  Flask tries to solve a few of these things
-for you, but there are a couple more you have to take care of yourself.
+セキュリティへの考慮
+==========================
+
+.. Web applications usually face all kinds of security problems and it's very
+   hard to get everything right.  Flask tries to solve a few of these things
+   for you, but there are a couple more you have to take care of yourself.
+
+ウェブアプリケーションは通常あらゆるセキュリティ上の問題に直面していて、その全てに正しく対処することは
+とても難しいことです。Flaskはこのうちのいくつかを解決しようとしていますが、いくつかは自身で注意しなければ
+いけないことがあります。
 
 .. _xss:
 
-Cross-Site Scripting (XSS)
---------------------------
+クロスサイトスクリプティング (XSS)
+--------------------------------------
 
-Cross site scripting is the concept of injecting arbitrary HTML (and with
-it JavaScript) into the context of a website.  To remedy this, developers
-have to properly escape text so that it cannot include arbitrary HTML
-tags.  For more information on that have a look at the Wikipedia article
-on `Cross-Site Scripting
-<http://en.wikipedia.org/wiki/Cross-site_scripting>`_.
+.. Cross-Site Scripting (XSS)
+   --------------------------
 
-Flask configures Jinja2 to automatically escape all values unless
-explicitly told otherwise.  This should rule out all XSS problems caused
-in templates, but there are still other places where you have to be
-careful:
+.. Cross site scripting is the concept of injecting arbitrary HTML (and with
+   it JavaScript) into the context of a website.  To remedy this, developers
+   have to properly escape text so that it cannot include arbitrary HTML
+   tags.  For more information on that have a look at the Wikipedia article
+   on `Cross-Site Scripting
+   <http://en.wikipedia.org/wiki/Cross-site_scripting>`_.
 
--   generating HTML without the help of Jinja2
--   calling :class:`~flask.Markup` on data submitted by users
--   sending out HTML from uploaded files, never do that, use the
-    `Content-Disposition: attachment` header to prevent that problem.
--   sending out textfiles from uploaded files.  Some browsers are using
-    content-type guessing based on the first few bytes so users could
-    trick a browser to execute HTML.
+クロスサイトスクリプティングはウェブサイトのコンテキストに任意のHTML(やJavaScript)を埋め込む
+手法です。これに対する対策は、開発者は任意のHTMLを含まないように文字列を適切にエスケープしなければいけません。
+さらに詳しくは、Wikipediaの `Cross-Site Scripting <http://en.wikipedia.org/wiki/Cross-site_scripting>`_ の
+記事を見てください。
 
-Another thing that is very important are unquoted attributes.  While
-Jinja2 can protect you from XSS issues by escaping HTML, there is one
-thing it cannot protect you from: XSS by attribute injection.  To counter
-this possible attack vector, be sure to always quote your attributes with
-either double or single quotes when using Jinja expressions in them:
+.. Flask configures Jinja2 to automatically escape all values unless
+   explicitly told otherwise.  This should rule out all XSS problems caused
+   in templates, but there are still other places where you have to be
+   careful:
+
+Flaskは明示的に指定しない限り、Jinja2がすべての値を自動的にエスケープするように設定しています。
+これはテンプレートにおいて、XSSの原因となるものをすべて除外しますが、他にも注意しなければいけない
+部分があります。 :
+
+.. generating HTML without the help of Jinja2
+.. calling :class:`~flask.Markup` on data submitted by users
+.. sending out HTML from uploaded files, never do that, use the
+   `Content-Disposition: attachment` header to prevent that problem.
+.. sending out textfiles from uploaded files.  Some browsers are using
+   content-type guessing based on the first few bytes so users could
+   trick a browser to execute HTML.
+
+- Jinja2を使わずにHTMLを生成する
+- ユーザーによって投稿されたデータに :class:`~flask.Markup` を呼び出す
+- アップロードされたファイルから
+- アップロードされたファイルからテキストファイルを送信する。あるブラウザは最初の数バイトから
+  コンテンツタイプを
+
+.. Another thing that is very important are unquoted attributes.  While
+   Jinja2 can protect you from XSS issues by escaping HTML, there is one
+   thing it cannot protect you from: XSS by attribute injection.  To counter
+   this possible attack vector, be sure to always quote your attributes with
+   either double or single quotes when using Jinja expressions in them:
+
+もう一つのとても大事なことは、アトリビュートを引用符で囲むことです。
+Jinja2はHTMLをエスケープすることでXSSの問題から守ってくれますが、
+アトリビュートによるXSSインジェクションからは守ることができません。
+この攻撃から守るために、Jinjaの式でそれを使うときは、
+常にアトリビュートを二重引用符か単一引用符で囲むようにして下さい。
 
 .. sourcecode:: html+jinja
 
    <a href="{{ href }}">the text</a>
 
-Why is this necessary?  Because if you would not be doing that, an
-attacker could easily inject custom JavaScript handlers.  For example an
-attacker could inject this piece of HTML+JavaScript:
+.. Why is this necessary?  Because if you would not be doing that, an
+   attacker could easily inject custom JavaScript handlers.  For example an
+   attacker could inject this piece of HTML+JavaScript:
+
+これはなぜ必要ですか?
+もしそれをしない場合、アタッカーは独自のJavaScript処理を注入するのが簡単になるからです。
+例えば、アタッカーは以下のようなHTMLとJavaScriptのパーツを埋め込むことができます。
 
 .. sourcecode:: html
 
    onmouseover=alert(document.cookie)
 
-When the user would then move with the mouse over the link, the cookie
-would be presented to the user in an alert window.  But instead of showing
-the cookie to the user, a good attacker might also execute any other
-JavaScript code.  In combination with CSS injections the attacker might
-even make the element fill out the entire page so that the user would
-just have to have the mouse anywhere on the page to trigger the attack.
+.. When the user would then move with the mouse over the link, the cookie
+   would be presented to the user in an alert window.  But instead of showing
+   the cookie to the user, a good attacker might also execute any other
+   JavaScript code.  In combination with CSS injections the attacker might
+   even make the element fill out the entire page so that the user would
+   just have to have the mouse anywhere on the page to trigger the attack.
 
-Cross-Site Request Forgery (CSRF)
----------------------------------
+ユーザーがそのリンクにマウスオーバーしたときに、クッキーはアラートウィンドウで表示されることになります。
+しかし、ユーザーにクッキーを表示する代わりに、すごいアタッカーは他の任意のJavaScriptコードを実行させるかも
+しれません。CSSインジェクションとの組み合わせで
 
-Another big problem is CSRF.  This is a very complex topic and I won't
-outline it here in detail just mention what it is and how to theoretically
-prevent it.
+.. Cross-Site Request Forgery (CSRF)
+   ---------------------------------
 
-If your authentication information is stored in cookies, you have implicit
-state management.  The state of "being logged in" is controlled by a
-cookie, and that cookie is sent with each request to a page.
-Unfortunately that includes requests triggered by 3rd party sites.  If you
-don't keep that in mind, some people might be able to trick your
-application's users with social engineering to do stupid things without
-them knowing.
+クロスサイトリクエストフォージェリー (CSRF)
+-----------------------------------------------
+
+.. Another big problem is CSRF.  This is a very complex topic and I won't
+   outline it here in detail just mention what it is and how to theoretically
+   prevent it.
+
+別の大きな問題はCSRFです。これはとても複雑なトピックで、ここでは概要だけにして、
+それが何なのかということと、それを理論的に避けるため方法のみ説明します。
+
+.. If your authentication information is stored in cookies, you have implicit
+   state management.  The state of "being logged in" is controlled by a
+   cookie, and that cookie is sent with each request to a page.
+   Unfortunately that includes requests triggered by 3rd party sites.  If you
+   don't keep that in mind, some people might be able to trick your
+   application's users with social engineering to do stupid things without
+   them knowing.
+
+認証情報をクッキーに保管している場合、
+"ログインしている"という状態はクッキーによってコントロールされています。
+そして、そのクッキーはページにリクエスト毎に送られます。
+不幸なことにサードパーティのサイトによって
+もしそれに対して注意していない場合、
 
 Say you have a specific URL that, when you sent `POST` requests to will
 delete a user's profile (say `http://example.com/user/delete`).  If an
@@ -92,21 +143,32 @@ the form validation framework, which does not exist in Flask.
 
 .. _json-security:
 
-JSON Security
--------------
+JSONのセキュリティ
+---------------------
 
-.. admonition:: ECMAScript 5 Changes
+.. JSON Security
+   -------------
+
+.. ECMAScript 5 Changes
 
    Starting with ECMAScript 5 the behavior of literals changed.  Now they
    are not constructed with the constructor of ``Array`` and others, but
    with the builtin constructor of ``Array`` which closes this particular
    attack vector.
 
+.. admonition:: ECMAScript 5 の変更点
+
+   ECMAScript 5 からリテラルの振る舞いが変わりました。
+   現在、 ``配列`` や他のもののコンストラクターを作ることができないが、
+   組み込みの
+
 JSON itself is a high-level serialization format, so there is barely
 anything that could cause security problems, right?  You can't declare
 recursive structures that could cause problems and the only thing that
 could possibly break are very large responses that can cause some kind of
 denial of service at the receiver's side.
+
+JSONはシリアライズ
 
 However there is a catch.  Due to how browsers work the CSRF issue comes
 up with JSON unfortunately.  Fortunately there is also a weird part of the

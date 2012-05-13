@@ -1,26 +1,37 @@
 .. _advanced_foreword:
 
-Foreword for Experienced Programmers
-====================================
+経験豊富なプログラマのための前書き
+=======================================
 
-Thread-Locals in Flask
-----------------------
+.. Foreword for Experienced Programmers
+   ====================================
 
-One of the design decisions in Flask was that simple tasks should be simple;
-they should not take a lot of code and yet they should not limit you. Because
-of that, Flask has few design choices that some people might find surprising or
-unorthodox. For example, Flask uses thread-local objects internally so that you
-don’t have to pass objects around from function to function within a request in
-order to stay threadsafe. This approach is convenient, but requires a valid
-request context for dependency injection or when attempting to reuse code which
-uses a value pegged to the request.  The Flask project is honest about
-thread-locals, does not hide them, and calls out in the code and documentation
-where they are used.
+.. Thread-Locals in Flask
+   ----------------------
+
+Flaskのスレッドローカル
+------------------------------
+
+.. One of the design decisions in Flask was that simple tasks should be simple;
+   they should not take a lot of code and yet they should not limit you. Because
+   of that, Flask has few design choices that some people might find surprising or
+   unorthodox. For example, Flask uses thread-local objects internally so that you
+   don’t have to pass objects around from function to function within a request in
+   order to stay threadsafe. This approach is convenient, but requires a valid
+   request context for dependency injection or when attempting to reuse code which
+   uses a value pegged to the request.  The Flask project is honest about
+   thread-locals, does not hide them, and calls out in the code and documentation
+   where they are used.
+
+Flaskにおけるデザイン上の決まりごとの一つは簡単な処理はシンプルにすべきです。
+
 
 Develop for the Web with Caution
 --------------------------------
 
-Always keep security in mind when building web applications.
+.. Always keep security in mind when building web applications.
+
+Webアプリケーションを構築する際に常に念頭に置いてセキュリティを保持します。
 
 If you write a web application, you are probably allowing users to register
 and leave their data on your server.  The users are entrusting you with data.
@@ -65,4 +76,6 @@ development.  If you plan on upgrading to Python 3 in the near future we
 strongly recommend that you read `How to write forwards compatible
 Python code <http://lucumr.pocoo.org/2011/1/22/forwards-compatible-python/>`_.
 
-Continue to :ref:`installation` or the :ref:`quickstart`.
+.. Continue to :ref:`installation` or the :ref:`quickstart`.
+
+続いては、 :ref:`installation` 、 :ref:`quickstart` です。
