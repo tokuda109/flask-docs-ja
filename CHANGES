@@ -127,7 +127,8 @@ Version 0.9
   be used on creation of the :data:`~flask.g` instance of each request.
 - Added `required_methods` attribute to view functions to force-add methods
   on registration.
-- Added :func:`flask.after_this_request`.
+- ビュー関数に `required_methods` アトリビュートを追加しました。
+- :func:`flask.after_this_request` を追加しました。
 
 Version 0.8.1
 -------------
@@ -227,7 +228,7 @@ Version 0.8
 - Added finer control over the session cookie parameters.
 - HEAD requests to a method view now automatically dispatch to the `get`
   method if no handler was implemented.
-- Implemented the virtual :mod:`flask.ext` package to import extensions from.
+- エクステンションをインポートするために :mod:`flask.ext` パッケージを実装しました。
 - The context preservation on exceptions is now an integral component of
   Flask itself and no longer of the test client.  This cleaned up some
   internal logic and lowers the odds of runaway request contexts in unittests.
