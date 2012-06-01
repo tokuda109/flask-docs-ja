@@ -133,13 +133,17 @@ def jsonify(*args, **kwargs):
     """
     if __debug__:
         _assert_have_json()
+
+    padded = kwargs.get('padded', False)
     if 'padded' in kwargs:
+        del kwargs['padded']
+
+    if padded:
         if isinstance(kwargs['padded'], str):
             callback = request.args.get(kwargs['padded']) or 'jsonp'
         else:
             callback = request.args.get('callback') or \
                        request.args.get('jsonp') or 'jsonp'
-        del kwargs['padded']
         json_str = json.dumps(dict(*args, **kwargs), indent=None)
         content = str(callback) + "(" + json_str + ")"
         return current_app.response_class(content, mimetype='application/javascript')
