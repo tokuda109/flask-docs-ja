@@ -1,19 +1,30 @@
 .. _request-context:
 
-The Request Context
-===================
+リクエストコンテキスト
+======================
+
+.. The Request Context
+   ===================
 
 This document describes the behavior in Flask 0.7 which is mostly in line
 with the old behavior but has some small, subtle differences.
 
-It is recommended that you read the :ref:`app-context` chapter first.
+.. It is recommended that you read the :ref:`app-context` chapter first.
 
-Diving into Context Locals
---------------------------
+まず、 :ref:`app-context` の章を読むことを推奨しています。
 
-Say you have a utility function that returns the URL the user should be
-redirected to.  Imagine it would always redirect to the URL's ``next``
-parameter or the HTTP referrer or the index page::
+コンテキストローカルを試してみよう
+-----------------------------------------
+
+.. Diving into Context Locals
+   --------------------------
+
+.. Say you have a utility function that returns the URL the user should be
+   redirected to.  Imagine it would always redirect to the URL's ``next``
+   parameter or the HTTP referrer or the index page::
+
+ユーザーがリダイレクトされるべきURLを返すユーティリティー関数があります。
+その関数は常にURLの ``next`` パラメーター、HTTPリファラー、インデックスページにリダイレクトされることを想像してみてください。 ::
 
     from flask import request, url_for
 
@@ -22,48 +33,76 @@ parameter or the HTTP referrer or the index page::
                request.referrer or \
                url_for('index')
 
-As you can see, it accesses the request object.  If you try to run this
-from a plain Python shell, this is the exception you will see:
+.. As you can see, it accesses the request object.  If you try to run this
+   from a plain Python shell, this is the exception you will see:
+
+見て分かるとおり、リクエストオブジェクトにアクセスすることができます。
+Pythonの対話シェルからこれを実行しようとすると、以下のように例外を発生します。 :
 
 >>> redirect_url()
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 AttributeError: 'NoneType' object has no attribute 'request'
 
-That makes a lot of sense because we currently do not have a request we
-could access.  So we have to make a request and bind it to the current
-context.  The :attr:`~flask.Flask.test_request_context` method can create
-us a :class:`~flask.ctx.RequestContext`:
+.. That makes a lot of sense because we currently do not have a request we
+   could access.  So we have to make a request and bind it to the current
+   context.  The :attr:`~flask.Flask.test_request_context` method can create
+   us a :class:`~flask.ctx.RequestContext`:
+
+現在、アクセスできるリクエストがないのでこれは理にかなっていまず。
+リクエストを生成して、コンテキストにバインドする必要があります。
+:attr:`~flask.Flask.test_request_context` メソッドは、
+:class:`~flask.ctx.RequestContext` を作成することができます。 :
 
 >>> ctx = app.test_request_context('/?next=http://example.com/')
 
-This context can be used in two ways.  Either with the `with` statement
-or by calling the :meth:`~flask.ctx.RequestContext.push` and
-:meth:`~flask.ctx.RequestContext.pop` methods:
+.. This context can be used in two ways.  Either with the `with` statement
+   or by calling the :meth:`~flask.ctx.RequestContext.push` and
+   :meth:`~flask.ctx.RequestContext.pop` methods:
+
+このコンテキストは2つの使い方ができます。
+`with` 文か、 :meth:`~flask.ctx.RequestContext.push` と
+:meth:`~flask.ctx.RequestContext.pop` メソッドを呼び出すことで使えます。 :
 
 >>> ctx.push()
 
-From that point onwards you can work with the request object:
+.. From that point onwards you can work with the request object:
+
+その時点からは、リクエストオブジェクトを扱うことができます。 :
 
 >>> redirect_url()
 u'http://example.com/'
 
-Until you call `pop`:
+.. Until you call `pop`:
+
+`pop` を呼び出すまで :
 
 >>> ctx.pop()
 
-Because the request context is internally maintained as a stack you can
-push and pop multiple times.  This is very handy to implement things like
-internal redirects.
+.. Because the request context is internally maintained as a stack you can
+   push and pop multiple times.  This is very handy to implement things like
+   internal redirects.
 
-For more information of how to utilize the request context from the
-interactive Python shell, head over to the :ref:`shell` chapter.
+リクエストコンテキストは内部的にスタックとして維持されるので、何回もpushやpopができます。
+これは、内部​​リダイレクトのようなものを実装するために非常に便利です。
 
-How the Context Works
----------------------
+.. For more information of how to utilize the request context from the
+   interactive Python shell, head over to the :ref:`shell` chapter.
 
-If you look into how the Flask WSGI application internally works, you will
-find a piece of code that looks very much like this::
+Pythonの対話シェルからのリクエストコンテキストを利用する方法の詳細については、
+:ref:`shell` の章を参照して下さい。
+
+.. How the Context Works
+   ---------------------
+
+コンテキストのしくみ
+------------------------
+
+.. If you look into how the Flask WSGI application internally works, you will
+   find a piece of code that looks very much like this::
+
+FlaskのWSGIアプリケーションがどのように内部処理が行われているか調べると、
+以下のようなコードがよく見つかると思います。 ::
 
     def wsgi_app(self, environ):
         with self.request_context(environ):
@@ -93,8 +132,11 @@ there is no application context for that application so far.
 
 .. _callbacks-and-errors:
 
-Callbacks and Errors
---------------------
+コールバックとエラー
+-----------------------
+
+.. Callbacks and Errors
+   --------------------
 
 What happens if an error occurs in Flask during request processing?  This
 particular behavior changed in 0.7 because we wanted to make it easier to
@@ -177,8 +219,11 @@ your teardown-request handlers in a way that they will never fail.
 
 .. _notes-on-proxies:
 
-Notes On Proxies
-----------------
+プロキシの注意
+-------------------
+
+.. Notes On Proxies
+   ----------------
 
 Some of the objects provided by Flask are proxies to other objects.  The
 reason behind this is that these proxies are shared between threads and
