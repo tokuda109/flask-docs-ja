@@ -1,53 +1,92 @@
 .. _application-errors:
 
-Logging Application Errors
-==========================
+アプリケーションのエラー処理
+==============================
+
+.. Logging Application Errors
+   ==========================
 
 .. versionadded:: 0.3
 
-Applications fail, servers fail.  Sooner or later you will see an exception
-in production.  Even if your code is 100% correct, you will still see
-exceptions from time to time.  Why?  Because everything else involved will
-fail.  Here some situations where perfectly fine code can lead to server
-errors:
+.. Applications fail, servers fail.  Sooner or later you will see an exception
+   in production.  Even if your code is 100% correct, you will still see
+   exceptions from time to time.  Why?  Because everything else involved will
+   fail.  Here some situations where perfectly fine code can lead to server
+   errors:
 
--   the client terminated the request early and the application was still
-    reading from the incoming data.
--   the database server was overloaded and could not handle the query.
--   a filesystem is full
--   a harddrive crashed
--   a backend server overloaded
--   a programming error in a library you are using
--   network connection of the server to another system failed.
+アプリケーションやサーバーにはエラーが起きます。早かれ遅かれ本番環境でエラー見ることになるでしょう。
+たとえ、コードが100%正しくても、エラーを見ることになります。なぜでしょう？
+なぜならすべてのことに失敗が入り込んでくるからです。
+ここでは、本当によく書かれているコードがサーバーエラーを起こすいくつかの状況示します。 :
 
-And that's just a small sample of issues you could be facing.  So how do we
-deal with that sort of problem?  By default if your application runs in
-production mode, Flask will display a very simple page for you and log the
-exception to the :attr:`~flask.Flask.logger`.
+.. the client terminated the request early and the application was still
+   reading from the incoming data.
+.. the database server was overloaded and could not handle the query.
+.. a filesystem is full
+.. a harddrive crashed
+.. a backend server overloaded
+.. a programming error in a library you are using
+.. network connection of the server to another system failed.
 
-But there is more you can do, and we will cover some better setups to deal
-with errors.
+- クライアントが早くリクエストを終了し、アプリケーションがまだ読み込みを行なっている。
+- データベースサーバーが過負荷になって、クエリを処理できなくなっている。
+- ファイルシステムが一杯になっている。
+- ハードドライブがクラッシュしている。
+- バックエンドサーバーが過負荷になっている。
+- 使っているライブラリのエラー。
+- 他のサーバーへのネットワーク接続の失敗。
 
-Error Mails
------------
+.. And that's just a small sample of issues you could be facing.  So how do we
+   deal with that sort of problem?  By default if your application runs in
+   production mode, Flask will display a very simple page for you and log the
+   exception to the :attr:`~flask.Flask.logger`.
 
-If the application runs in production mode (which it will do on your
-server) you won't see any log messages by default.  Why is that?  Flask
-tries to be a zero-configuration framework.  Where should it drop the logs
-for you if there is no configuration?  Guessing is not a good idea because
-chances are, the place it guessed is not the place where the user has
-permission to create a logfile.  Also, for most small applications nobody
-will look at the logs anyways.
+そして、これらは直面するかもしれない小さな問題の例です。
+そのような問題をどのように対処すればいいのでしょうか?
+標準では、アプリケーションがプロダクションモードで起動されている場合に、Flaskはとてもシンプルなページを表示して、
+:attr:`~flask.Flask.logger` に対して例外のログを残します。
 
-In fact, I promise you right now that if you configure a logfile for the
-application errors you will never look at it except for debugging an issue
-when a user reported it for you.  What you want instead is a mail the
-second the exception happened.  Then you get an alert and you can do
-something about it.
+.. But there is more you can do, and we will cover some better setups to deal
+   with errors.
 
-Flask uses the Python builtin logging system, and it can actually send
-you mails for errors which is probably what you want.  Here is how you can
-configure the Flask logger to send you mails for exceptions::
+しかし、他にもできることがあります。そして、エラーを扱うためのより良いセットアップをカバーするでしょう。
+
+.. Error Mails
+   -----------
+
+エラーメール
+--------------
+
+.. If the application runs in production mode (which it will do on your
+   server) you won't see any log messages by default.  Why is that?  Flask
+   tries to be a zero-configuration framework.  Where should it drop the logs
+   for you if there is no configuration?  Guessing is not a good idea because
+   chances are, the place it guessed is not the place where the user has
+   permission to create a logfile.  Also, for most small applications nobody
+   will look at the logs anyways.
+
+アプリケーションが(あなたのサーバー上で)プロダクションモードで実行されているなら、デフォルトでログメッセージを見ることはないでしょう。
+それはなぜでしょう?Flaskは設定がないフレームワークになるようにしているからです。
+何も設定していない場合、どこにログを残すべきですか?
+可能性があるので推測は良いアイデアではない。推測された場所はユーザーがログファイルを作成する権限持っている場所ではありません。
+また、ほとんどの小規模のアプリケーションのために誰もログをとにかく見ている人はいないでしょう。
+
+.. In fact, I promise you right now that if you configure a logfile for the
+   application errors you will never look at it except for debugging an issue
+   when a user reported it for you.  What you want instead is a mail the
+   second the exception happened.  Then you get an alert and you can do
+   something about it.
+
+実際には、アプリケーションのエラーに対してログファイルの設定をしている場合、
+ユーザーが問題のデバッグの例外を見ることはないでしょう。
+その時に警告を発して、それに対して何かすることできます。
+
+.. Flask uses the Python builtin logging system, and it can actually send
+   you mails for errors which is probably what you want.  Here is how you can
+   configure the Flask logger to send you mails for exceptions::
+
+FlaskはPythonの組み込みのロギングシステムを使っていて、欲しいエラー情報を実際にメールで送ってくれます。
+ここでは、例外のメールを送るためのFlaskのロガーの設定の仕方を示します。 ::
 
     ADMINS = ['yourname@example.com']
     if not app.debug:
@@ -59,49 +98,81 @@ configure the Flask logger to send you mails for exceptions::
         mail_handler.setLevel(logging.ERROR)
         app.logger.addHandler(mail_handler)
 
-So what just happened?  We created a new
-:class:`~logging.handlers.SMTPHandler` that will send mails with the mail
-server listening on ``127.0.0.1`` to all the `ADMINS` from the address
-*server-error@example.com* with the subject "YourApplication Failed".  If
-your mail server requires credentials, these can also be provided.  For
-that check out the documentation for the
-:class:`~logging.handlers.SMTPHandler`.
+.. So what just happened?  We created a new
+   :class:`~logging.handlers.SMTPHandler` that will send mails with the mail
+   server listening on ``127.0.0.1`` to all the `ADMINS` from the address
+   *server-error@example.com* with the subject "YourApplication Failed".  If
+   your mail server requires credentials, these can also be provided.  For
+   that check out the documentation for the
+   :class:`~logging.handlers.SMTPHandler`.
 
-We also tell the handler to only send errors and more critical messages.
-Because we certainly don't want to get a mail for warnings or other
-useless logs that might happen during request handling.
+何が起こったのでしょうか?
+新しい :class:`~logging.handlers.SMTPHandler` 作成します。これは、 "YourApplication Failed" という
+タイトルで *server-error@example.com* から全ての `ADMINS` にメールを送ります。
+メールサーバーは認証が必要な場合、これも実装することができます。
+:class:`~logging.handlers.SMTPHandler` のドキュメントをチェックして下さい。
 
-Before you run that in production, please also look at :ref:`logformat` to
-put more information into that error mail.  That will save you from a lot
-of frustration.
+.. We also tell the handler to only send errors and more critical messages.
+   Because we certainly don't want to get a mail for warnings or other
+   useless logs that might happen during request handling.
+
+エラーやよりクリティカルなメッセージだけメールを送る処理を指示します。
+なぜなら、リクエストを処理している間に発生するだろう警告や、他のログを取るほどでもないもののメールを受けとりたくないからです。
+
+.. Before you run that in production, please also look at :ref:`logformat` to
+   put more information into that error mail.  That will save you from a lot
+   of frustration.
+
+本番環境で実行する前に、エラーメールに情報を書き込むための :ref:`logformat` も見てください。
+たくさんのフラストレーションから救ってくれるでしょう。
 
 
-Logging to a File
------------------
+.. Logging to a File
+   -----------------
 
-Even if you get mails, you probably also want to log warnings.  It's a
-good idea to keep as much information around that might be required to
-debug a problem.  Please note that Flask itself will not issue any
-warnings in the core system, so it's your responsibility to warn in the
-code if something seems odd.
+ファイルにログを書き込む
+-------------------------
 
-There are a couple of handlers provided by the logging system out of the
-box but not all of them are useful for basic error logging.  The most
-interesting are probably the following:
+.. Even if you get mails, you probably also want to log warnings.  It's a
+   good idea to keep as much information around that might be required to
+   debug a problem.  Please note that Flask itself will not issue any
+   warnings in the core system, so it's your responsibility to warn in the
+   code if something seems odd.
 
--   :class:`~logging.FileHandler` - logs messages to a file on the
-    filesystem.
--   :class:`~logging.handlers.RotatingFileHandler` - logs messages to a file
-    on the filesystem and will rotate after a certain number of messages.
--   :class:`~logging.handlers.NTEventLogHandler` - will log to the system
-    event log of a Windows system.  If you are deploying on a Windows box,
-    this is what you want to use.
--   :class:`~logging.handlers.SysLogHandler` - sends logs to a UNIX
-    syslog.
+たとえメールを取得した場合でも、警告も記録したいかもしれません。
+問題をデバッグするために必要とされるかもしれないたくさんの情報をキープしておくことは良いアイデアだと思います。
+Flask自体はコアシステムに任意の警告を出さないので、奇妙かもしれませんが、コード内で警告を出す義務があります。
 
-Once you picked your log handler, do like you did with the SMTP handler
-above, just make sure to use a lower setting (I would recommend
-`WARNING`)::
+.. There are a couple of handlers provided by the logging system out of the
+   box but not all of them are useful for basic error logging.  The most
+   interesting are probably the following:
+
+ロギングシステムで提供されているハンドラーは複数あります。
+しかし、それらの全てが基本的なエラーログに対して使いやすい訳ではない。
+最も興味深いのは、おそらく以下のものだと思います。 :
+
+.. :class:`~logging.FileHandler` - logs messages to a file on the
+   filesystem.
+.. :class:`~logging.handlers.RotatingFileHandler` - logs messages to a file
+   on the filesystem and will rotate after a certain number of messages.
+.. :class:`~logging.handlers.NTEventLogHandler` - will log to the system
+   event log of a Windows system.  If you are deploying on a Windows box,
+   this is what you want to use.
+.. :class:`~logging.handlers.SysLogHandler` - sends logs to a UNIX
+   syslog.
+
+- :class:`~logging.FileHandler` - ファイルシステムのファイルにメッセージを記録する。
+- :class:`~logging.handlers.RotatingFileHandler` - ファイルシステムのファイルにメッセージを記録して、
+  メッセージの数がある数に達すると循環される。
+- :class:`~logging.handlers.NTEventLogHandler` - Windowsシステムのシステムのイベントログを記録します。
+  Windowsに依存している場合には、これは使いたいものでしょう。
+- :class:`~logging.handlers.SysLogHandler` - UNIXのsyslogにログを送ります。
+
+.. Once you picked your log handler, do like you did with the SMTP handler
+   above, just make sure to use a lower setting (I would recommend
+   `WARNING`)::
+
+ログハンドラーを選択すると、上記のSMTPハンドラーでしたように、より低い設定を使っているか確認するだけです(`WARNING` をお勧めします)。 ::
 
     if not app.debug:
         import logging
@@ -112,23 +183,39 @@ above, just make sure to use a lower setting (I would recommend
 
 .. _logformat:
 
-Controlling the Log Format
---------------------------
+ログのフォーマットの管理
+-----------------------------
 
-By default a handler will only write the message string into a file or
-send you that message as mail.  A log record stores more information,
-and it makes a lot of sense to configure your logger to also contain that
-information so that you have a better idea of why that error happened, and
-more importantly, where it did.
+.. Controlling the Log Format
+   --------------------------
 
-A formatter can be instantiated with a format string.  Note that
-tracebacks are appended to the log entry automatically.  You don't have to
-do that in the log formatter format string.
+.. By default a handler will only write the message string into a file or
+   send you that message as mail.  A log record stores more information,
+   and it makes a lot of sense to configure your logger to also contain that
+   information so that you have a better idea of why that error happened, and
+   more importantly, where it did.
 
-Here some example setups:
+デフォルトで、ハンドラーはファイルにメッセージの文字列を書きこむかメールでメッセージを送るでしょう。
+ログはさらなる情報を記録して、エラーがなぜ起こったかということや、より詳細な情報や、どこで起こったかということの確かな情報を
+得ることができるようにロガーに設定することはいいことです。
 
-Email
-`````
+.. A formatter can be instantiated with a format string.  Note that
+   tracebacks are appended to the log entry automatically.  You don't have to
+   do that in the log formatter format string.
+
+フォーマッターはフォーマット文字列で初期化します。
+トレースバック自動的にログを取ることを促します。
+フォーマッターのフォーマット文字列に何もすることはありません。
+
+.. Here some example setups:
+
+ここでは、幾つかのセットアップ事例を紹介します。 :
+
+.. Email
+   `````
+
+Eメール
+`````````
 
 ::
 
@@ -145,8 +232,11 @@ Email
     %(message)s
     '''))
 
-File logging
-````````````
+.. File logging
+   ````````````
+
+ファイルロギング
+`````````````````````
 
 ::
 
@@ -157,12 +247,18 @@ File logging
     ))
 
 
-Complex Log Formatting
-``````````````````````
+.. Complex Log Formatting
+   ``````````````````````
 
-Here is a list of useful formatting variables for the format string.  Note
-that this list is not complete, consult the official documentation of the
-:mod:`logging` package for a full list.
+複雑なログのフォーマット
+````````````````````````````
+
+.. Here is a list of useful formatting variables for the format string.  Note
+   that this list is not complete, consult the official documentation of the
+   :mod:`logging` package for a full list.
+
+ここでは、フォーマット文字列のための便利な値をフォーマットのリストです。
+このリストは完璧ではないので注意して下さい。全てのリストを見るには、 :mod:`logging` パッケージの公式ドキュメントを調べて下さい。
 
 .. tabularcolumns:: |p{3cm}|p{12cm}|
 
@@ -196,8 +292,11 @@ that this list is not complete, consult the official documentation of the
 | ``%(message)s``  | The logged message, computed as ``msg % args``     |
 +------------------+----------------------------------------------------+
 
-If you want to further customize the formatting, you can subclass the
-formatter.  The formatter has three interesting methods:
+.. If you want to further customize the formatting, you can subclass the
+   formatter.  The formatter has three interesting methods:
+
+フォーマットをさらにカスタマイズしたい場合は、フォーマットのサブクラスを作ることができます。
+フォーマットのクラスは三つのメソッドがあります。:
 
 :meth:`~logging.Formatter.format`:
     handles the actual formatting.  It is passed a
@@ -211,23 +310,37 @@ formatter.  The formatter has three interesting methods:
     tuple and has to return a string.  The default is usually fine, you
     don't have to override it.
 
-For more information, head over to the official documentation.
+.. For more information, head over to the official documentation.
+
+詳細については公式のドキュメントを見てください。
 
 
-Other Libraries
----------------
+.. Other Libraries
+   ---------------
 
-So far we only configured the logger your application created itself.
-Other libraries might log themselves as well.  For example, SQLAlchemy uses
-logging heavily in its core.  While there is a method to configure all
-loggers at once in the :mod:`logging` package, I would not recommend using
-it.  There might be a situation in which you want to have multiple
-separate applications running side by side in the same Python interpreter
-and then it becomes impossible to have different logging setups for those.
+他のライブラリ
+------------------
 
-Instead, I would recommend figuring out which loggers you are interested
-in, getting the loggers with the :func:`~logging.getLogger` function and
-iterating over them to attach handlers::
+.. So far we only configured the logger your application created itself.
+   Other libraries might log themselves as well.  For example, SQLAlchemy uses
+   logging heavily in its core.  While there is a method to configure all
+   loggers at once in the :mod:`logging` package, I would not recommend using
+   it.  There might be a situation in which you want to have multiple
+   separate applications running side by side in the same Python interpreter
+   and then it becomes impossible to have different logging setups for those.
+
+ここまでは、アプリケーションで作成したロガーのみ設定してきました。
+他のライブラリも同じようなログを残すことができます。例えば、SQLAlchemyは内部でよくログを取ります。
+:mod:`logging` パッケージを一度全てのロガーに設定するためのメソッドがあります。
+複数の分割したアプリケーションでそれぞれ同じPythonインタープリターで起動したい場合もあるかもしれません。
+以下のように異なるロギングをセットアップすることは不可能です。
+
+.. Instead, I would recommend figuring out which loggers you are interested
+   in, getting the loggers with the :func:`~logging.getLogger` function and
+   iterating over them to attach handlers::
+
+代わりに、 :func:`~logging.getLogger` 関数でロガーを作成して、ハンドラーにそれぞれ追加して、
+使いたいロガーを使うことをお勧めします。 ::
 
     from logging import getLogger
     loggers = [app.logger, getLogger('sqlalchemy'),
@@ -237,8 +350,11 @@ iterating over them to attach handlers::
         logger.addHandler(file_handler)
 
 
-Debugging Application Errors
-============================
+.. Debugging Application Errors
+   ============================
+
+アプリケーションエラーのデバッグ
+========================================
 
 For production applications, configure your application with logging and
 notifications as described in :ref:`application-errors`.  This section provides
