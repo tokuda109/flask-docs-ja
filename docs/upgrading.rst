@@ -1,21 +1,38 @@
-Upgrading to Newer Releases
-===========================
+.. Upgrading to Newer Releases
+   ===========================
 
-Flask itself is changing like any software is changing over time.  Most of
-the changes are the nice kind, the kind where you don't have to change
-anything in your code to profit from a new release.
+新しいリリースにアップグレードする
+=======================================
 
-However every once in a while there are changes that do require some
-changes in your code or there are changes that make it possible for you to
-improve your own code quality by taking advantage of new features in
-Flask.
+.. Flask itself is changing like any software is changing over time.  Most of
+   the changes are the nice kind, the kind where you don't have to change
+   anything in your code to profit from a new release.
 
-This section of the documentation enumerates all the changes in Flask from
-release to release and how you can change your code to have a painless
-updating experience.
+Flaskは、他のソフトウェアと同じように時間が経つにつれて仕様が変更されていきます。
+ほとんどの変更は良くなるように修正され、
+新しいリリースからいいものをコードに取り入れるために何かを修正する必要はありません。
 
-If you want to use the `easy_install` command to upgrade your Flask
-installation, make sure to pass it the ``-U`` parameter::
+.. However every once in a while there are changes that do require some
+   changes in your code or there are changes that make it possible for you to
+   improve your own code quality by taking advantage of new features in
+   Flask.
+
+しかし、時々変更しなければならないこともあります。
+Flaskの新しい機能のいいものを取り入れることによって、
+コードが綺麗になって、そうするためにコードを改良することがあります。
+
+.. This section of the documentation enumerates all the changes in Flask from
+   release to release and how you can change your code to have a painless
+   updating experience.
+
+ドキュメントのこの章では、リリースごとのFlaskの全ての変更と、
+アップデートは苦痛なので、どのようにコードを修正するすればいいかも列挙します。
+
+.. If you want to use the `easy_install` command to upgrade your Flask
+   installation, make sure to pass it the ``-U`` parameter::
+
+Flaskをアップグレードするためのコマンドに `easy_install` を使う場合は、
+パラメータに ``-U`` をつけると上手くいくでしょう。 ::
 
     $ easy_install -U Flask
 
@@ -27,6 +44,10 @@ return a tuple it no longer defines the arguments for the response object
 you're creating, it's now always a tuple in the form ``(response, status,
 headers)`` where at least one item has to be provided.  If you depend on
 the old behavior, you can add it easily by subclassing Flask::
+
+関数から返ってくるタプルの振る舞いをシンプルにしました。
+タプルを返す場合、作成したレスポンスオブジェクトに引数を定義する必要はなく、
+
 
     class TraditionalFlask(Flask):
         def make_response(self, rv):
@@ -44,24 +65,37 @@ requests.
 Version 0.8
 -----------
 
-Flask introduced a new session interface system.  We also noticed that
-there was a naming collision between `flask.session` the module that
-implements sessions and :data:`flask.session` which is the global session
-object.  With that introduction we moved the implementation details for
-the session system into a new module called :mod:`flask.sessions`.  If you
-used the previously undocumented session support we urge you to upgrade.
+.. Flask introduced a new session interface system.  We also noticed that
+   there was a naming collision between `flask.session` the module that
+   implements sessions and :data:`flask.session` which is the global session
+   object.  With that introduction we moved the implementation details for
+   the session system into a new module called :mod:`flask.sessions`.  If you
+   used the previously undocumented session support we urge you to upgrade.
 
-If invalid JSON data was submitted Flask will now raise a
-:exc:`~werkzeug.exceptions.BadRequest` exception instead of letting the
-default :exc:`ValueError` bubble up.  This has the advantage that you no
-longer have to handle that error to avoid an internal server error showing
-up for the user.  If you were catching this down explicitly in the past
-as `ValueError` you will need to change this.
+Flaskの新しいセッションのインターフェースが追加されました。
+セッションを処理している `flask.session` モジュールとグローバルの
+セッションオブジェクト :data:`flask.session` で名前のバッティングがあることも気づいています。
+:mod:`flask.sessions` という新しいモジュールにセッションシステムのコア部分の実装を移動させました。
+もし古いドキュメント化されていないセッションを使っている場合は、アップグレードすることをお勧めします。
 
-Due to a bug in the test client Flask 0.7 did not trigger teardown
-handlers when the test client was used in a with statement.  This was
-since fixed but might require some changes in your testsuites if you
-relied on this behavior.
+.. If invalid JSON data was submitted Flask will now raise a
+   :exc:`~werkzeug.exceptions.BadRequest` exception instead of letting the
+   default :exc:`ValueError` bubble up.  This has the advantage that you no
+   longer have to handle that error to avoid an internal server error showing
+   up for the user.  If you were catching this down explicitly in the past
+   as `ValueError` you will need to change this.
+
+不正なJSONデータが送信されたら、Flaskは標準の :exc:`ValueError` の代わりに、
+:exc:`~werkzeug.exceptions.BadRequest` の例外を発生させます。
+これは、ユーザーにサーバーエラーを見られるのを避けるためのエラー処理を行うのに効果的です。
+明示的に `ValueError` を例外として処理したい場合は、変更しなければならないでしょう。
+
+.. Due to a bug in the test client Flask 0.7 did not trigger teardown
+   handlers when the test client was used in a with statement.  This was
+   since fixed but might require some changes in your testsuites if you
+   relied on this behavior.
+
+テストクライアントのバグのために、Flask 0.7 ではテストクライアントがwith文を使えなかったためにteardownハンドラーが正しく動きませんでした。このバグは直しましたが、使うためにはテストスーツにいくつか修正をしなければなりません。
 
 Version 0.7
 -----------
@@ -186,8 +220,11 @@ handling::
 
     # and here it's gone
 
-Manual Error Handler Attaching
-``````````````````````````````
+.. Manual Error Handler Attaching
+   ``````````````````````````````
+
+手動でエラーハンドラーを割り当てる
+`````````````````````````````````````
 
 While it is still possible to attach error handlers to
 :attr:`Flask.error_handlers` it's discouraged to do so and in fact
@@ -256,91 +293,150 @@ blueprint specific error handlers and a lot more.
 Version 0.6
 -----------
 
-Flask 0.6 comes with a backwards incompatible change which affects the
-order of after-request handlers.  Previously they were called in the order
-of the registration, now they are called in reverse order.  This change
-was made so that Flask behaves more like people expected it to work and
-how other systems handle request pre- and postprocessing.  If you
-depend on the order of execution of post-request functions, be sure to
-change the order.
+.. Flask 0.6 comes with a backwards incompatible change which affects the
+   order of after-request handlers.  Previously they were called in the order
+   of the registration, now they are called in reverse order.  This change
+   was made so that Flask behaves more like people expected it to work and
+   how other systems handle request pre- and postprocessing.  If you
+   depend on the order of execution of post-request functions, be sure to
+   change the order.
 
-Another change that breaks backwards compatibility is that context
-processors will no longer override values passed directly to the template
-rendering function.  If for example `request` is as variable passed
-directly to the template, the default context processor will not override
-it with the current request object.  This makes it easier to extend
-context processors later to inject additional variables without breaking
-existing template not expecting them.
+Flask 0.6は、after-requestハンドラーの順番に影響がある後方互換性のない変更をしました。
+以前までは、登録された順番で呼び出されていたのですが、現在は順番を逆にして後呼び出されます。
+他のシステムがリクエストの前後のプロセスをどのように処理して、
+Flaskがそのように動作することをさらに期待されていたのでこの変更は行われました。
+post-request関数の実行される順番に依存しているなら、順番を変更して下さい。
+
+.. Another change that breaks backwards compatibility is that context
+   processors will no longer override values passed directly to the template
+   rendering function.  If for example `request` is as variable passed
+   directly to the template, the default context processor will not override
+   it with the current request object.  This makes it easier to extend
+   context processors later to inject additional variables without breaking
+   existing template not expecting them.
+
+他の後方互換性がない変更は、コンテキストプロセッサで、関数をテンプレートに直接書いてレンダリングした時に、値が上書きされません。
+例として、 `request` はテンプレートに直接書いている場合、標準のコンテキストプロセッサはリクエストオブジェクトを上書きしません。
 
 Version 0.5
 -----------
 
-Flask 0.5 is the first release that comes as a Python package instead of a
-single module.  There were a couple of internal refactoring so if you
-depend on undocumented internal details you probably have to adapt the
-imports.
+.. Flask 0.5 is the first release that comes as a Python package instead of a
+   single module.  There were a couple of internal refactoring so if you
+   depend on undocumented internal details you probably have to adapt the
+   imports.
 
-The following changes may be relevant to your application:
+Flask 0.5は、一つのモジュールとしてではなく、Pythonパッケージとしての最初のリリースです。
+いくつかの内部処理の修正があり、内部処理のドキュメント化されていない部分を使っている場合、
+いくつかのインポートする部分でおそらく修正する必要があります。
 
--   autoescaping no longer happens for all templates.  Instead it is
-    configured to only happen on files ending with ``.html``, ``.htm``,
-    ``.xml`` and ``.xhtml``.  If you have templates with different
-    extensions you should override the
-    :meth:`~flask.Flask.select_jinja_autoescape` method.
--   Flask no longer supports zipped applications in this release.  This
-    functionality might come back in future releases if there is demand
-    for this feature.  Removing support for this makes the Flask internal
-    code easier to understand and fixes a couple of small issues that make
-    debugging harder than necessary.
--   The `create_jinja_loader` function is gone.  If you want to customize
-    the Jinja loader now, use the
-    :meth:`~flask.Flask.create_jinja_environment` method instead.
+.. The following changes may be relevant to your application:
+
+以下の変更は関係しているかもしれません。:
+
+.. autoescaping no longer happens for all templates.  Instead it is
+   configured to only happen on files ending with ``.html``, ``.htm``,
+   ``.xml`` and ``.xhtml``.  If you have templates with different
+   extensions you should override the
+   :meth:`~flask.Flask.select_jinja_autoescape` method.
+.. Flask no longer supports zipped applications in this release.  This
+   functionality might come back in future releases if there is demand
+   for this feature.  Removing support for this makes the Flask internal
+   code easier to understand and fixes a couple of small issues that make
+   debugging harder than necessary.
+.. The `create_jinja_loader` function is gone.  If you want to customize
+   the Jinja loader now, use the
+   :meth:`~flask.Flask.create_jinja_environment` method instead.
+
+- 自動エスケープは、全てのテンプレートで動作しません。
+  その代わり、ファイル名の最後が ``.html`` 、 ``.htm`` 、 ``.xml`` 、 ``.xhtml`` のファイルでしか設定されていません。
+  別の拡張子のテンプレートがあるなら、 :meth:`~flask.Flask.select_jinja_autoescape` メソッドを上書きして下さい。
+- このリリースで、FlaskはZIP形式のアプリケーションのサポートしません。
+  この機能は、要求があるなら将来のリリースで復活するかもしれません。
+  この機能の削除は、Flaskの内部コードを把握するのを容易にし、必要以上にデバッグを難しくするという小さな問題をフィックスしました。
+- `create_jinja_loader` 機能を削除しました。
+  Jinjaローダーをカスタマイズしたいなら、代わりに、 :meth:`~flask.Flask.create_jinja_environment` メソッドを使って下さい。
 
 Version 0.4
 -----------
 
-For application developers there are no changes that require changes in
-your code.  In case you are developing on a Flask extension however, and
-that extension has a unittest-mode you might want to link the activation
-of that mode to the new ``TESTING`` flag.
+.. For application developers there are no changes that require changes in
+   your code.  In case you are developing on a Flask extension however, and
+   that extension has a unittest-mode you might want to link the activation
+   of that mode to the new ``TESTING`` flag.
+
+アプリケーションの開発者がコードを変更をする必要はありません。
+しかし、Flaskの拡張機能を開発していて、拡張機能にユニットテストモードがある場合、
+そのモードを有効にするリンクを、新しい ``TESTING`` フラグに変更しないといけないかもしれません。
 
 Version 0.3
 -----------
 
-Flask 0.3 introduces configuration support and logging as well as
-categories for flashing messages.  All these are features that are 100%
-backwards compatible but you might want to take advantage of them.
+.. Flask 0.3 introduces configuration support and logging as well as
+   categories for flashing messages.  All these are features that are 100%
+   backwards compatible but you might want to take advantage of them.
 
-Configuration Support
-`````````````````````
+Flask 0.3 では設定機能、ログ機能、フラッシュメッセージのカテゴリをサポートしました。
+これらの機能は後方互換性が100%ありますが、それらの機能を活用することをお勧めします。
 
-The configuration support makes it easier to write any kind of application
-that requires some sort of configuration.  (Which most likely is the case
-for any application out there).
+.. Configuration Support
+   `````````````````````
 
-If you previously had code like this::
+設定機能のサポート
+````````````````````````
+
+.. The configuration support makes it easier to write any kind of application
+   that requires some sort of configuration.  (Which most likely is the case
+   for any application out there).
+
+設定機能は、ある種の設定をいくつか並べ替えをするだけで、あらゆる種類のアプリケーションを、より簡単に書くことができます。
+
+.. If you previously had code like this::
+
+すでにコードを以下のように書いている場合 ::
 
     app.debug = DEBUG
     app.secret_key = SECRET_KEY
 
-You no longer have to do that, instead you can just load a configuration
-into the config object.  How this works is outlined in :ref:`config`.
+.. You no longer have to do that, instead you can just load a configuration
+   into the config object.  How this works is outlined in :ref:`config`.
 
-Logging Integration
-```````````````````
+そのようにする必要はありません。代わりにコンフィグオブジェクトに設定を読み込むだけです。
+これがどのように動くかという概要は、 :ref:`config` を確認して下さい。
 
-Flask now configures a logger for you with some basic and useful defaults.
-If you run your application in production and want to profit from
-automatic error logging, you might be interested in attaching a proper log
-handler.  Also you can start logging warnings and errors into the logger
-when appropriately.  For more information on that, read
-:ref:`application-errors`.
+.. Logging Integration
+   ```````````````````
 
-Categories for Flash Messages
-`````````````````````````````
+ログ機能の統合
+``````````````````````
 
-Flash messages can now have categories attached.  This makes it possible
-to render errors, warnings or regular messages differently for example.
-This is an opt-in feature because it requires some rethinking in the code.
+.. Flask now configures a logger for you with some basic and useful defaults.
+   If you run your application in production and want to profit from
+   automatic error logging, you might be interested in attaching a proper log
+   handler.  Also you can start logging warnings and errors into the logger
+   when appropriately.  For more information on that, read
+   :ref:`application-errors`.
 
-Read all about that in the :ref:`message-flashing-pattern` pattern.
+Flaskはデフォルトで使いやすい基本的なロガーが設定されています。
+もし本番環境でアプリケーションを動かしていて、エラーログを自動的に集計したい場合、
+適切にログ処理が行われるを付けるのに興味があるかもしれません。
+適切な時にロガーの警告やエラーをログに残したいかもしれません。
+詳細は :ref:`application-errors` を読んで下さい。
+
+.. Categories for Flash Messages
+   `````````````````````````````
+
+フラッシュメッセージのカテゴリ
+````````````````````````````````
+
+.. Flash messages can now have categories attached.  This makes it possible
+   to render errors, warnings or regular messages differently for example.
+   This is an opt-in feature because it requires some rethinking in the code.
+
+フラッシュメッセージにはカテゴリを指定することができます。
+例として、エラー、警告、標準メッセージなど、異なる文章を表示することが可能です。
+これは別のやり方でもできるから任意の機能です。
+
+.. Read all about that in the :ref:`message-flashing-pattern` pattern.
+
+詳細は :ref:`message-flashing-pattern` を読んで下さい。
