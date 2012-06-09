@@ -1,5 +1,8 @@
-HTML/XHTML FAQ
-==============
+.. HTML/XHTML FAQ
+   ==============
+
+HTMLとXHTMLのよくある質問
+===============================
 
 .. The Flask documentation and example applications are using HTML5.  You
    may notice that in many situations, when end tags are optional they are
@@ -7,9 +10,9 @@ HTML/XHTML FAQ
    is much confusion about HTML and XHTML among developers, this document tries
    to answer some of the major questions.
 
-FlaskのドキュメントとサンプルのアプリケーションはHTML5を使っています。
+FlaskのドキュメントとサンプルのアプリケーションはHTML5が使われています。
 HTMLをよりきれいに、そしてロードするために速くなるように、多くの状況で、終了タグが省略可能である場合、それらが使用されないことがあります。
-なぜなら、開発者の間でHTMLとXHTMLについてかなりの混乱があるので、このドキュメントでは、代表的な質問にいくつか答えます。
+開発者の間でHTMLとXHTMLについてかなりの混乱があるので、このドキュメントでは、代表的な質問にいくつか答えます。
 
 .. History of XHTML
    ----------------
@@ -95,15 +98,20 @@ specification under the umbrella of the W3C, known as HTML5.  Currently,
 it appears that XHTML is losing traction, as the XHTML 2 working group has
 been disbanded and HTML5 is being implemented by all major browser vendors.
 
+2007年に、仕様は
+
 .. HTML versus XHTML
    -----------------
 
 HTML対XHTML
 --------------------
 
-The following table gives you a quick overview of features available in
-HTML 4.01, XHTML 1.1 and HTML5. (XHTML 1.0 is not included, as it was
-superseded by XHTML 1.1 and the barely-used XHTML5.)
+.. The following table gives you a quick overview of features available in
+   HTML 4.01, XHTML 1.1 and HTML5. (XHTML 1.0 is not included, as it was
+   superseded by XHTML 1.1 and the barely-used XHTML5.)
+
+以下の表は、HTML 4.01、XHTML 1.1、HTML5で有効な機能を確認することができます。
+(XHTML 1.0は、代わりにXHTML 1.1があって、HTML5でほとんど使われていないので含まれていません。)
 
 .. tabularcolumns:: |p{9cm}|p{2cm}|p{2cm}|p{2cm}|
 
@@ -134,12 +142,18 @@ superseded by XHTML 1.1 and the barely-used XHTML5.)
 | New semantic tags like ``<article>``    | |N|      | |N|      | |Y|      |
 +-----------------------------------------+----------+----------+----------+
 
-.. [1] This is an obscure feature inherited from SGML. It is usually not
-       supported by browsers, for reasons detailed above.
-.. [2] This is for compatibility with server code that generates XHTML for
-       tags such as ``<br>``.  It should not be used in new code.
-.. [3] XHTML 1.0 is the last XHTML standard that allows to be served
-       as `text/html` for backwards compatibility reasons.
+.. This is an obscure feature inherited from SGML. It is usually not
+   supported by browsers, for reasons detailed above.
+.. This is for compatibility with server code that generates XHTML for
+   tags such as ``<br>``.  It should not be used in new code.
+.. XHTML 1.0 is the last XHTML standard that allows to be served
+   as `text/html` for backwards compatibility reasons.
+
+.. [1] これはSGMLから継承されている曖昧な機能です。
+       これは通常、上記の詳細に述べた理由のために、ブラウザによってはサポートされていません。
+.. [2] これは、 ``<br>`` などのタグのためにXHTMLを生成するサーバーコードとの互換性のためです。
+       新しいコードで使うべきではありません。
+.. [3] XHTML 1.0は、後方互換性のために `text/html` として配信することができる最後のXHTML仕様です。
 
 .. |Y| image:: _static/yes.png
        :alt: Yes
@@ -152,27 +166,46 @@ superseded by XHTML 1.1 and the barely-used XHTML5.)
 "strict" が意味するものは?
 ---------------------------
 
-HTML5 has strictly defined parsing rules, but it also specifies exactly
-how a browser should react to parsing errors - unlike XHTML, which simply
-states parsing should abort. Some people are confused by apparently
-invalid syntax that still generates the expected results (for example,
-missing end tags or unquoted attribute values).
+.. HTML5 has strictly defined parsing rules, but it also specifies exactly
+   how a browser should react to parsing errors - unlike XHTML, which simply
+   states parsing should abort. Some people are confused by apparently
+   invalid syntax that still generates the expected results (for example,
+   missing end tags or unquoted attribute values).
 
-Some of these work because of the lenient error handling most browsers use
-when they encounter a markup error, others are actually specified.  The
-following constructs are optional in HTML5 by standard, but have to be
-supported by browsers:
+HTML5は、パースするルールが厳密に定義されていますが、ブラウザーがパースエラーに対処する
+一部の人は、明らかに無効な構文によって混乱しています。
+(例えば、終了タグがなかったり、アトリビュートの値に引用符をつけていなかったりします)
+HTML5は、厳密に解析ルールが定義されていますが、それはまた、ブラウザがパースエラーに対処する必要があります正確にどのように指定します - 
+単に解析は中止すべきと述べXHTMLとは異なり、。
+一部の人々はまだ（たとえば、欠落している終了タグや引用符で囲まれていない属性値）期待される結果を生成し、明らかに無効な構文で混乱しています。
 
--   Wrapping the document in an ``<html>`` tag
--   Wrapping header elements in ``<head>`` or the body elements in
-    ``<body>``
--   Closing the ``<p>``, ``<li>``, ``<dt>``, ``<dd>``, ``<tr>``,
-    ``<td>``, ``<th>``, ``<tbody>``, ``<thead>``, or ``<tfoot>`` tags.
--   Quoting attributes, so long as they contain no whitespace or
-    special characters (like ``<``, ``>``, ``'``, or ``"``).
--   Requiring boolean attributes to have a value.
+.. Some of these work because of the lenient error handling most browsers use
+   when they encounter a markup error, others are actually specified.  The
+   following constructs are optional in HTML5 by standard, but have to be
+   supported by browsers:
 
-This means the following page in HTML5 is perfectly valid:
+これらの作業の一部はマークアップエラーが発生した場合、ほとんどのブラウザが使用する寛大なエラー処理のためには、他のものは実際に指定されています。
+以下の構文は標準でHTML5ではオプションですが、ブラウザでサポートされなければならない :
+
+.. Wrapping the document in an ``<html>`` tag
+.. Wrapping header elements in ``<head>`` or the body elements in
+   ``<body>``
+.. Closing the ``<p>``, ``<li>``, ``<dt>``, ``<dd>``, ``<tr>``,
+   ``<td>``, ``<th>``, ``<tbody>``, ``<thead>``, or ``<tfoot>`` tags.
+.. Quoting attributes, so long as they contain no whitespace or
+   special characters (like ``<``, ``>``, ``'``, or ``"``).
+.. Requiring boolean attributes to have a value.
+
+- ドキュメントは ``<html>`` タグで囲んで下さい。
+- ヘッダー要素を ``<head>`` で、本文要素を ``<body>`` で囲んで下さい。
+- ``<p>`` 、 ``<li>`` 、 ``<dt>`` 、 ``<dd>`` 、 ``<tr>`` 、 ``<td>`` 、
+  ``<th>`` 、 ``<tbody>`` 、 ``<thead>`` 、 ``<tfoot>`` タグは終了タグで閉じて下さい。
+- アトリビュートの引用符
+- 値を持つブーリアンアトリビュートは必須です。
+
+.. This means the following page in HTML5 is perfectly valid:
+
+これは、HTML5で次のページが完全に有効であることを意味しています。 :
 
 .. sourcecode:: html
 
@@ -227,12 +260,12 @@ HTML5はウェブアプリケーションを作る時に、より簡単に書け
   オーディオファイルとビデオファイルを埋め込むことができます。
 - ``<article>`` 、 ``<header>`` 、 ``<nav>`` 、 ``<time>`` のようなセマンティックな要素
   は内容の理解をより簡単にします。
-- ``<canvas>`` タグは強力な描画APIをサポートしています。
-  
+- ``<canvas>`` タグは、データをグラフィカルに表示するために、
+  サーバーで生成された画像を必要としない強力な描画APIをサポートしています。
 - ``<input type="date">`` のような新しいフォームは入力値のバリデーションと
   フォームの入力
-- Web Storage、Web Workers、Web Sockets、ジオロケーション、オフラインアプリケーション
-  のような高度なJavaScriptのAPI。
+- ウェブストレージ、ウェブワーカー、ウェブソケット、ジオロケーション、オフラインアプリケーション
+  のような高度なJavaScriptのAPIがあります。
 
 .. Many other features have been added, as well. A good guide to new features
    in HTML5 is Mark Pilgrim's soon-to-be-published book, `Dive Into HTML5`_.
@@ -254,7 +287,8 @@ HTML5の新しい機能の良いガイドラインは、Mark Pilgrimのまもな
    considering the latest developments in Web browsers.  To summarize the
    reasons given above:
 
-今答えるとしたらHTML5です。ウェブブラウザの最新のXHTMLを使う理由は少ししかありません。
+今答えるとしたらHTML5です。ウェブブラウザの最新動向が考慮されているXHTMLを使う理由はいくつかあります。
+その理由を要約します。 :
 
 .. Internet Explorer (which, sadly, currently leads in market share)
    has poor support for XHTML.
@@ -266,12 +300,12 @@ HTML5の新しい機能の良いガイドラインは、Mark Pilgrimのまもな
 .. It is much easier to write, and more compact.
 
 - Internet Explorer(悲しいことに、現在シェアのトップです)はXHTMLをほとんどサポートしていない。
-- ほとんどのJavaScriptライブラリはXHTMLをサポートしていない。
+- ほとんどのJavaScriptライブラリは、要求される名前空間が複雑になるためXHTMLをサポートしていない。
 - HTML5では、望まれていた ``<audio>`` タグや ``<video>`` タグや
-  セマンティックなタグのような幾つかのあたらしいタグが追加されました。
+  セマンティックなタグのような幾つかのあたらしいタグが追加されています。
 - ほとんどのブラウザベンダーがサポートしています。
-- より簡単に、よりシンプルに書けます。
+- より簡単で、より簡略して書けます。
 
 .. For most applications, it is undoubtedly better to use HTML5 than XHTML.
 
-ほとんどのアプリケーションで、XHTMLよりHTML5を使うほうが明らかにいいです。
+ほとんどのアプリケーションにおいて、XHTMLよりHTML5を使うほうが明らかにいいです。

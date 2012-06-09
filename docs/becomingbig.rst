@@ -1,10 +1,10 @@
 .. _becomingbig:
 
-.. Becoming Big
-   ============
-
 大きくなってきたら
 ======================
+
+.. Becoming Big
+   ============
 
 .. Here are your options when growing your codebase or scaling your application.
 
@@ -16,17 +16,29 @@
 ソースを読む
 ----------------
 
-Flask started in part to demonstrate how to build your own framework on top of
-existing well-used tools Werkzeug (WSGI) and Jinja (templating), and as it
-developed, it became useful to a wide audience.  As you grow your codebase,
-don't just use Flask -- understand it.  Read the source.  Flask's code is
-written to be read; it's documentation published so you can use its internal
-APIs.  Flask sticks to documented APIs in upstream libraries, and documents its
-internal utilities so that you can find the hook points needed for your
-project.
+.. Flask started in part to demonstrate how to build your own framework on top of
+   existing well-used tools Werkzeug (WSGI) and Jinja (templating), and as it
+   developed, it became useful to a wide audience.  As you grow your codebase,
+   don't just use Flask -- understand it.  Read the source.  Flask's code is
+   written to be read; it's documentation published so you can use its internal
+   APIs.  Flask sticks to documented APIs in upstream libraries, and documents its
+   internal utilities so that you can find the hook points needed for your
+   project.
 
-Hook. Extend.
--------------
+Flaskは、既によく使われているWerkzeug(WSGI)と神社(テンプレートエンジン)というツールの上に、
+フレームワークを構築する方法をデモするために何となく始めました。
+そして開発してみて、たくさんの人に役に立つものになりました。
+コードが増えてくるにつれ、
+ソースを読んで下さい。Flaskのコードは読みやすいようにできています。
+ドキュメントが公開されているので内部のAPIを使うことができます。
+上流のライブラリにドキュメント化されているAPIを入れて、内部のユーティリティをドキュメントに
+プロジェクトで必要なフックポイントを見つけることができる
+
+.. Hook. Extend.
+   -------------
+
+フック、拡張
+----------------
 
 The :ref:`api` docs are full of available overrides, hook points, and
 :ref:`signals`. You can provide custom classes for things like the request and
@@ -36,16 +48,27 @@ ways in which your project can be refactored into a collection of utilities and
 Flask extensions.  Explore the many extensions in the community, and look for
 patterns to build your own extensions if you do not find the tools you need.
 
-Subclass.
----------
+.. Subclass.
+   ---------
 
-The :class:`~flask.Flask` class has many methods designed for subclassing. You
-can quickly add or customize behavior by subclassing :class:`~flask.Flask` (see
-the linked method docs) and using that subclass wherever you instantiate an
-application class. This works well with :ref:`app-factories`.
+サブクラス
+---------------
 
-Wrap with middleware.
----------------------
+.. The :class:`~flask.Flask` class has many methods designed for subclassing. You
+   can quickly add or customize behavior by subclassing :class:`~flask.Flask` (see
+   the linked method docs) and using that subclass wherever you instantiate an
+   application class. This works well with :ref:`app-factories`.
+
+:class:`~flask.Flask` クラスには、サブクラスのためのメソッドがたくさんあります。
+手っ取り早く :class:`~flask.Flask` のサブクラスを作成することで振る舞いを追加したり、カスタマイズしたりできます。
+アプリケーションクラスのインスタンス化する
+これは :ref:`app-factories` 
+
+.. Wrap with middleware.
+   ---------------------
+
+ミドルウェアのラップ
+------------------------
 
 The :ref:`app-dispatch` chapter shows in detail how to apply middleware. You
 can introduce WSGI middleware to wrap your Flask instances and introduce fixes
@@ -53,8 +76,11 @@ and changes at the layer between your Flask application and your HTTP
 server. Werkzeug includes several `middlewares
 <http://werkzeug.pocoo.org/docs/middlewares/>`_.
 
-Fork.
------
+.. Fork.
+   -----
+
+フォーク
+------------
 
 If none of the above options work, fork Flask.  The majority of code of Flask
 is within Werkzeug and Jinja2.  These libraries do the majority of the work.

@@ -4,14 +4,21 @@
 Flaskにおけるユニコード
 =======================
 
-Flask like Jinja2 and Werkzeug is totally Unicode based when it comes to
-text.  Not only these libraries, also the majority of web related Python
-libraries that deal with text.  If you don't know Unicode so far, you
-should probably read `The Absolute Minimum Every Software Developer
-Absolutely, Positively Must Know About Unicode and Character Sets
-<http://www.joelonsoftware.com/articles/Unicode.html>`_.  This part of the
-documentation just tries to cover the very basics so that you have a
-pleasant experience with Unicode related things.
+.. Flask like Jinja2 and Werkzeug is totally Unicode based when it comes to
+   text.  Not only these libraries, also the majority of web related Python
+   libraries that deal with text.  If you don't know Unicode so far, you
+   should probably read `The Absolute Minimum Every Software Developer
+   Absolutely, Positively Must Know About Unicode and Character Sets
+   <http://www.joelonsoftware.com/articles/Unicode.html>`_.  This part of the
+   documentation just tries to cover the very basics so that you have a
+   pleasant experience with Unicode related things.
+
+Jinja2とWerkzeugのようにFlaskは文字を処理する時に完全にユニコードをベースにしています。
+これらのライブラリは、文字を扱うウェブ関連のPythonライブラリの大部分だけではなく
+ユニコードをそんなに知らないなら、 `The Absolute Minimum Every Software Developer Absolutely, 
+Positively Must Know About Unicode and Character Sets
+<http://www.joelonsoftware.com/articles/Unicode.html>`_ を読んで下さい。
+ドキュメントのこの章では、ユニコードに関連する事で楽しい経験があるので、基本的なところをカバーしようと思います。
 
 .. Automatic Conversion
    --------------------
@@ -23,7 +30,7 @@ pleasant experience with Unicode related things.
    of course) that give you basic and painless Unicode support:
 
 Flaskはアプリケーションに対していくつかの仮定をしています(もちろん変更することができます)。
-基本的で簡単なユニコードをサポートしています。
+基本的で簡単なユニコードをサポートしています。 :
 
 .. the encoding for text on your website is UTF-8
 .. internally you will always use Unicode exclusively for text except
@@ -32,7 +39,7 @@ Flaskはアプリケーションに対していくつかの仮定をしていま
    that requires bytes to be transmitted.
 
 - ウェブサイトの文字のエンコードはUTF-8です。
-- 内部的に
+- 内部では常にユニコードが使われています。リテラル文字列
 - エンコードとデコードは
 
 .. So what does this mean to you?
@@ -47,7 +54,8 @@ Flaskはアプリケーションに対していくつかの仮定をしていま
    Unicode out you want it to be UTF-8 encoded.  Flask will do the encoding
    and setting of the appropriate headers for you.
 
-HTTPはバイトが基本です。プロトコルだけではなく、システムもサーバー上のファイルの場所(URIやURLと言われている)もそうです。
+HTTPはバイトが基本です。
+プロトコルだけではなく、システムもサーバー上のファイルの場所(URIやURLと言われている)もそうです。
 しかし、HTTPで通信されるHTMLは、様々な文字コードをサポートしていて、どの文字コードかを、HTTPヘッダーで通信されます。
 難しくしないためにFlaskはユニコード以外を送信してきた場合に、自動的にUTF-8にエンコードします。
 Flaskは適切なヘッダーにセットしてエンコードします。
@@ -103,23 +111,35 @@ Python 2.x でユニコードで作業することは何を意味しているの
 エンコードとデコード
 -------------------------
 
-If you are talking with a filesystem or something that is not really based
-on Unicode you will have to ensure that you decode properly when working
-with Unicode interface.  So for example if you want to load a file on the
-filesystem and embed it into a Jinja2 template you will have to decode it
-from the encoding of that file.  Here the old problem that text files do
-not specify their encoding comes into play.  So do yourself a favour and
-limit yourself to UTF-8 for text files as well.
+.. If you are talking with a filesystem or something that is not really based
+   on Unicode you will have to ensure that you decode properly when working
+   with Unicode interface.  So for example if you want to load a file on the
+   filesystem and embed it into a Jinja2 template you will have to decode it
+   from the encoding of that file.  Here the old problem that text files do
+   not specify their encoding comes into play.  So do yourself a favour and
+   limit yourself to UTF-8 for text files as well.
 
-Anyways.  To load such a file with Unicode you can use the built-in
-:meth:`str.decode` method::
+ユニコードをベースにしていないファイルシステムとかで実行している場合、
+ユニコードで作業している時適切にデコードしているか確認する必要があります。
+ファイルシステムにファイルを読み込み
+Jinja2テンプレートに埋め込む
+そのファイルのエンコードからデコードする必要があります。
+エンコーディングを指定していないテキストファイルが古い問題として出てきました。
+テキストファイルをUTF-8に自身で制限して下さい。
+
+.. Anyways.  To load such a file with Unicode you can use the built-in
+   :meth:`str.decode` method::
+
+とにかく、そのようなファイルをユニコードで読み込むためには組み込みの :meth:`str.decode` を使って下さい。 ::
 
     def read_file(filename, charset='utf-8'):
         with open(filename, 'r') as f:
             return f.read().decode(charset)
 
-To go from Unicode into a specific charset such as UTF-8 you can use the
-:meth:`unicode.encode` method::
+.. To go from Unicode into a specific charset such as UTF-8 you can use the
+   :meth:`unicode.encode` method::
+
+ユニコードからUTF-8のような特定の文字コードにするには :meth:`unicode.encode` メソッドを使って下さい。 ::
 
     def write_file(filename, contents, charset='utf-8'):
         with open(filename, 'w') as f:
@@ -135,8 +155,8 @@ To go from Unicode into a specific charset such as UTF-8 you can use the
    not configured to do this you have to change it.  Here some common ways to
    set your editor to store as UTF-8:
 
-ほとんどのエディタは、最近は標準でUTF-8で保存します。
-しかし、エディタがそのように設定されていない場合は変更しないといけません。
+ほとんどのエディタは最近は標準でUTF-8で保存しますが、
+エディタがそのように設定されていない場合は変更しないといけません。
 ここでは、エディタをUTF-8として保存するように設定する一般的な方法を紹介します。
 
 .. Vim: put ``set enc=utf-8`` to your ``.vimrc`` file.

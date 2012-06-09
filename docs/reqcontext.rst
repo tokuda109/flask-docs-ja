@@ -49,7 +49,7 @@ AttributeError: 'NoneType' object has no attribute 'request'
    context.  The :attr:`~flask.Flask.test_request_context` method can create
    us a :class:`~flask.ctx.RequestContext`:
 
-現在、アクセスできるリクエストがないのでこれは理にかなっていまず。
+現在、アクセスできるリクエストがないのでこれは理にかなっています。
 リクエストを生成して、コンテキストにバインドする必要があります。
 :attr:`~flask.Flask.test_request_context` メソッドは、
 :class:`~flask.ctx.RequestContext` を作成することができます。 :
@@ -138,22 +138,42 @@ there is no application context for that application so far.
 .. Callbacks and Errors
    --------------------
 
-What happens if an error occurs in Flask during request processing?  This
-particular behavior changed in 0.7 because we wanted to make it easier to
-understand what is actually happening.  The new behavior is quite simple:
+.. What happens if an error occurs in Flask during request processing?  This
+   particular behavior changed in 0.7 because we wanted to make it easier to
+   understand what is actually happening.  The new behavior is quite simple:
 
-1.  Before each request, :meth:`~flask.Flask.before_request` functions are
-    executed.  If one of these functions return a response, the other
-    functions are no longer called.  In any case however the return value
-    is treated as a replacement for the view's return value.
+リクエストの処理中にFlaskでエラーが発生した場合何が起きるでしょうか?
+実際にどのようなことが起こっているのか簡単に把握できるようにしたかったので、バージョン0.7でこの振る舞いを変更しました。
+新しい振る舞いは非常に簡単です。 :
 
-2.  If the :meth:`~flask.Flask.before_request` functions did not return a
-    response, the regular request handling kicks in and the view function
-    that was matched has the chance to return a response.
+.. Before each request, :meth:`~flask.Flask.before_request` functions are
+   executed.  If one of these functions return a response, the other
+   functions are no longer called.  In any case however the return value
+   is treated as a replacement for the view's return value.
 
-3.  The return value of the view is then converted into an actual response
-    object and handed over to the :meth:`~flask.Flask.after_request`
-    functions which have the chance to replace it or modify it in place.
+.. If the :meth:`~flask.Flask.before_request` functions did not return a
+   response, the regular request handling kicks in and the view function
+   that was matched has the chance to return a response.
+
+.. The return value of the view is then converted into an actual response
+   object and handed over to the :meth:`~flask.Flask.after_request`
+   functions which have the chance to replace it or modify it in place.
+
+.. At the end of the request the :meth:`~flask.Flask.teardown_request`
+   functions are executed.  This always happens, even in case of an
+   unhandled exception down the road or if a before-request handler was
+   not executed yet or at all (for example in test environments sometimes
+   you might want to not execute before-request callbacks).
+
+1.  個々のリクエストが処理される前に、 :meth:`~flask.Flask.before_request` 関数は実行されます。
+    これらの関数の内の一つがレスポンスを返す場合、他の関数は呼ばれません。
+    In any case however the return value is treated as a replacement for the view's return value.
+
+2.  :meth:`~flask.Flask.before_request` 関数がレスポンスを返さなかった場合、
+    通常のリクエスト処理が作動し、一致したビュー関数はレスポンスを返すことができます。
+
+3.  ビューの戻り値は、実際のレスポンスオブジェクトに変換され、
+    置き換えるか変更するかできる :meth:`~flask.Flask.after_request` 関数に渡されます。
 
 4.  At the end of the request the :meth:`~flask.Flask.teardown_request`
     functions are executed.  This always happens, even in case of an
@@ -172,11 +192,16 @@ longer post processed by the after request callbacks and after request
 callbacks are no longer guaranteed to be executed.  This way the internal
 dispatching code looks cleaner and is easier to customize and understand.
 
-The new teardown functions are supposed to be used as a replacement for
-things that absolutely need to happen at the end of request.
+.. The new teardown functions are supposed to be used as a replacement for
+   things that absolutely need to happen at the end of request.
 
-Teardown Callbacks
-------------------
+新しいteardown関数は、リクエストの終了時に必ず発生する処理を置き換えるものとして使われることになっています。
+
+.. Teardown Callbacks
+   ------------------
+
+Teardownコールバック
+-------------------------
 
 The teardown callbacks are special callbacks in that they are executed at
 at different point.  Strictly speaking they are independent of the actual
@@ -198,7 +223,9 @@ context from the command line::
     # are called.  Alternatively the same thing happens if another
     # request was triggered from the test client
 
-It's easy to see the behavior from the command line:
+.. It's easy to see the behavior from the command line:
+
+コマンドラインから動作を確認するのは簡単です。 :
 
 >>> app = Flask(__name__)
 >>> @app.teardown_request
@@ -245,8 +272,11 @@ can use the :meth:`~werkzeug.local.LocalProxy._get_current_object` method::
     app = current_app._get_current_object()
     my_signal.send(app)
 
-Context Preservation on Error
------------------------------
+.. Context Preservation on Error
+   -----------------------------
+
+エラー時のコンテキストの保存
+--------------------------------
 
 If an error occurs or not, at the end of the request the request context
 is popped and all data associated with it is destroyed.  During
