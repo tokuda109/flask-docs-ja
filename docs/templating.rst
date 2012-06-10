@@ -1,40 +1,72 @@
-Templates
-=========
+.. Templates
+   =========
 
-Flask leverages Jinja2 as template engine.  You are obviously free to use
-a different template engine, but you still have to install Jinja2 to run
-Flask itself.  This requirement is necessary to enable rich extensions.
-An extension can depend on Jinja2 being present.
+テンプレート
+==================
 
-This section only gives a very quick introduction into how Jinja2
-is integrated into Flask.  If you want information on the template
-engine's syntax itself, head over to the official `Jinja2 Template
-Documentation <http://jinja.pocoo.org/2/documentation/templates>`_ for
-more information.
+.. Flask leverages Jinja2 as template engine.  You are obviously free to use
+   a different template engine, but you still have to install Jinja2 to run
+   Flask itself.  This requirement is necessary to enable rich extensions.
+   An extension can depend on Jinja2 being present.
 
-Jinja Setup
------------
+FlaskはテンプレートエンジンとしてJinja2を使っています。
+違うテンプレートエンジンを使うことは自由ですが、Flaskを実行するためにJinja2もインストールしなければいけません。
+この仕様は豊富な数の拡張機能を可能とする必要があります。
+拡張機能は既にあるように、Jinja2に依存させることができます。
 
-Unless customized, Jinja2 is configured by Flask as follows:
+.. This section only gives a very quick introduction into how Jinja2
+   is integrated into Flask.  If you want information on the template
+   engine's syntax itself, head over to the official `Jinja2 Template
+   Documentation <http://jinja.pocoo.org/2/documentation/templates>`_ for
+   more information.
 
--   autoescaping is enabled for all templates ending in ``.html``,
-    ``.htm``, ``.xml`` as well as ``.xhtml``
--   a template has the ability to opt in/out autoescaping with the
-    ``{% autoescape %}`` tag.
--   Flask inserts a couple of global functions and helpers into the
-    Jinja2 context, additionally to the values that are present by
-    default.
+この章は、Jinja2をどのようにFlaskに統合しているかを簡単に紹介しています。
+テンプレートエンジンのシンタックスの詳しい情報が必要な場合、
+公式の `Jinja2 Template Documentation <http://jinja.pocoo.org/2/documentation/templates>`_
+を見て下さい。
 
-Standard Context
-----------------
+.. Jinja Setup
+   -----------
 
-The following global variables are available within Jinja2 templates
-by default:
+Jinjaのセットアップ
+-------------------------
+
+.. Unless customized, Jinja2 is configured by Flask as follows:
+
+カスタマイズした場合を除き、Jinja2はFlaskによって以下のように設定されます。 :
+
+.. autoescaping is enabled for all templates ending in ``.html``,
+   ``.htm``, ``.xml`` as well as ``.xhtml``
+.. a template has the ability to opt in/out autoescaping with the
+   ``{% autoescape %}`` tag.
+.. Flask inserts a couple of global functions and helpers into the
+   Jinja2 context, additionally to the values that are present by
+   default.
+
+- 自動エスケープは、ファイル名の最後が、 ``.html`` 、 ``.htm`` 、 ``.xml`` 、
+  ``.xhtml`` などで終わるすべてのテンプレートで有効化されます。
+- テンプレートでは、 ``{% autoescape %}`` タグで自動エスケープをオプトイン/アウト
+  する機能があります。
+- Flaskはグローバル関数やヘルパー関数に、
+  デフォルトで表示される値に追加するためのJinja2のコンテキストを挿入することができます。
+
+.. Standard Context
+   ----------------
+
+標準のコンテキスト
+-------------------
+
+.. The following global variables are available within Jinja2 templates
+   by default:
+
+以下のグローバル変数は、デフォルトでJinja2テンプレート内で有効です。 :
 
 .. data:: config
    :noindex:
 
-   The current configuration object (:data:`flask.config`)
+   .. The current configuration object (:data:`flask.config`)
+
+   現在の設定オブジェクト (:data:`flask.config`)
 
    .. versionadded:: 0.6
 
@@ -83,8 +115,11 @@ by default:
 
       {% from '_helpers.html' import my_macro with context %}
 
-Standard Filters
-----------------
+.. Standard Filters
+   ----------------
+
+標準のフィルター
+-------------------
 
 These filters are available in Jinja2 additionally to the filters provided
 by Jinja2 itself:
@@ -108,8 +143,11 @@ by Jinja2 itself:
 
    That the ``|tojson`` filter escapes forward slashes properly for you.
 
-Controlling Autoescaping
-------------------------
+.. Controlling Autoescaping
+   ------------------------
+
+自動エスケープのコントロール
+---------------------------------
 
 Autoescaping is the concept of automatically escaping special characters
 of you.  Special characters in the sense of HTML (or XML, and thus XHTML)
@@ -149,8 +187,11 @@ using in this block.
 
 .. _registering-filters:
 
-Registering Filters
--------------------
+フィルターの登録
+----------------------
+
+.. Registering Filters
+   -------------------
 
 If you want to register your own filters in Jinja2 you have two ways to do
 that.  You can either put them by hand into the
@@ -176,8 +217,11 @@ you have a Python list in context called `mylist`::
     {% endfor %}
 
 
-Context Processors
-------------------
+.. Context Processors
+   ------------------
+
+コンテキストプロセッサー
+---------------------------
 
 To inject new variables automatically into the context of a template
 context processors exist in Flask.  Context processors run before the
