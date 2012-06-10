@@ -73,27 +73,37 @@ Jinjaのセットアップ
 .. data:: request
    :noindex:
 
-   The current request object (:class:`flask.request`)
+   .. The current request object (:class:`flask.request`)
+
+   現在のリクエストオブジェクト (:class:`flask.request`)
 
 .. data:: session
    :noindex:
 
-   The current session object (:class:`flask.session`)
+   .. The current session object (:class:`flask.session`)
+
+   現在のセッションオブジェクト (:class:`flask.session`)
 
 .. data:: g
    :noindex:
 
-   The request-bound object for global variables (:data:`flask.g`)
+   .. The request-bound object for global variables (:data:`flask.g`)
+
+   グローバルの値に対してリクエストにバインドされているオブジェクト (:data:`flask.g`)
 
 .. function:: url_for
    :noindex:
 
-   The :func:`flask.url_for` function.
+   .. The :func:`flask.url_for` function.
+
+   :func:`flask.url_for` 関数
 
 .. function:: get_flashed_messages
    :noindex:
 
-   The :func:`flask.get_flashed_messages` function.
+   .. The :func:`flask.get_flashed_messages` function.
+
+   :func:`flask.get_flashed_messages` 関数
 
 .. admonition:: The Jinja Context Behavior
 
@@ -121,15 +131,21 @@ Jinjaのセットアップ
 標準のフィルター
 -------------------
 
-These filters are available in Jinja2 additionally to the filters provided
-by Jinja2 itself:
+.. These filters are available in Jinja2 additionally to the filters provided
+   by Jinja2 itself:
+
+これらのフィルターはJinja2で有効になっています。
+さらに、Jinja2自体で用意されているフィルターが利用できます。
 
 .. function:: tojson
    :noindex:
 
-   This function converts the given object into JSON representation.  This
-   is for example very helpful if you try to generate JavaScript on the
-   fly.
+   .. This function converts the given object into JSON representation.  This
+      is for example very helpful if you try to generate JavaScript on the
+      fly.
+
+   この関数は、与えられたオブジェクトをJSONに整形して変換します。
+   実行中にJavaScriptを生成しようとする場合、これはとても便利な例です。
 
    Note that inside `script` tags no escaping must take place, so make
    sure to disable escaping with ``|safe`` if you intend to use it inside
@@ -141,7 +157,9 @@ by Jinja2 itself:
            doSomethingWith({{ user.username|tojson|safe }});
        </script>
 
-   That the ``|tojson`` filter escapes forward slashes properly for you.
+   .. That the ``|tojson`` filter escapes forward slashes properly for you.
+
+   その ``|tojson`` フィルターは適切にスラッシュをエスケープします。
 
 .. Controlling Autoescaping
    ------------------------
