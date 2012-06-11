@@ -79,7 +79,7 @@ Version 0.9
    on registration.
 .. Added :func:`flask.after_this_request`.
 
-- :func:`flask.Request.on_json_loading_failed` は、標準でJSONフォーマットのレスポンスを返します。
+- :func:`flask.Request.on_json_loading_failed` は、デフォルトでJSONフォーマットのレスポンスを返します。
 - :func:`flask.url_for` 関数は、生成済みのリンクに対するアンカーを生成することができます。
 - :func:`flask.url_for` 関数は、与えられたHTTPメソッドに固有のURLのルールを明示的に生成することができます。
 - ロガーは明示的に設定されていない場合は、デバッグログの設定返します。
@@ -92,38 +92,30 @@ Version 0.9
   instances programmatically.  The Flask class will fall back to using import
   on systems with custom module hooks, e.g. Google App Engine, or when the
   import name is inside a zip archive (usually a .egg) prior to Python 2.7.
-  :class:`flask.Flask` クラスは
-  Flaskインスタンスをプログラムで生成できる便利なツール
-  Flaskクラスは
 - Blueprintは、 :meth:`flask.Blueprint.app_template_filter` でアプリケーション
   全体にカスタムテンプレートフィルターを追加するためのデコレーターがあります。
 - FlaskとBlueprintクラスは、 :meth:`flask.Flask.add_template_filter` と
   :meth:`flask.Blueprint.add_app_template_filter` でアプリケーション全体に
   カスタムテンプレートフィルターを追加するためのデコレーターではないメソッドを持っています。
-- The :func:`flask.get_flashed_messages` function now allows rendering flashed
-  message categories in separate blocks, through a ``category_filter``
-  argument.
-- The :meth:`flask.Flask.run` method now accepts `None` for `host` and `port`
-  arguments, using default values when `None`.  This allows for calling run
-  using configuration values, e.g. ``app.run(app.config.get('MYHOST'),
-  app.config.get('MYPORT'))``, with proper behavior whether or not a config
-  file is provided.
-- The :meth:`flask.render_template` method now accepts a either an iterable of
-  template names or a single template name.  Previously, it only accepted a
-  single template name.  On an iterable, the first template found is rendered.
+- :func:`flask.get_flashed_messages` 関数は ``category_filter`` 引数によって
+  フラッシュメッセージにブロックごとにカテゴリレンダリングすることができます。
+- :meth:`flask.Flask.run` メソッドは、
+  `host` や `port` 引数が `None` の時、デフォルトの値を使うので `None` とすることができます。
+  これは設定を使って、例えば、 ``app.run(app.config.get('MYHOST') app.config.get('MYPORT'))``
+  configファイルが無い場合でも適切な振る舞いとなるように、runを呼ぶことができます。
+- :meth:`flask.render_template` メソッドは繰り返し処理が可能なテンプレート名や一つのテンプレート名の両方に対応しました。
+  以前までは、一つのテンプレート名しか対応していませんでした。
+  繰り返し可能になって、最初のテンプレートが見つかるとレンダリングされます。
 - ビュー関数は :class:`flask.Response` のインスタンスで、タプルを返します。
   これは、ビュー関数から ``jsonify(error="error msg"), 400`` を返すことを認めます。
-- :class:`~flask.Flask` and :class:`~flask.Blueprint` now provide a
-  :meth:`~flask.Flask.get_send_file_max_age` hook for subclasses to override
-  behavior of serving static files from Flask when using
-  :meth:`flask.Flask.send_static_file` (used for the default static file
-  handler) and :func:`~flask.helpers.send_file`.  This hook is provided a
-  filename, which for example allows changing cache controls by file extension.
-  The default max-age for `send_file` and static files can be configured
-  through a new ``SEND_FILE_MAX_AGE_DEFAULT`` configuration variable, which is
-  used in the default `get_send_file_max_age` implementation.
-- Fixed an assumption in sessions implementation which could break message
-  flashing on sessions implementations which use external storage.
+- :class:`~flask.Flask` と :class:`~flask.Blueprint` は、 :meth:`flask.Flask.send_static_file`
+  (デフォルトの静的ファイルを配信するハンドラー) と :func:`~flask.helpers.send_file`
+  を使っている時に静的ファイルをFlaskから配信する振る舞いを上書きするためのサブクラスに
+  :meth:`~flask.Flask.get_send_file_max_age` フックを追加しました。
+  このフックは、ファイルの拡張子によってキャッシュをコントロールするファイル名を
+  `send_file` や静的ファイルのデフォルトのmax-ageは、デフォルトの `get_send_file_max_age` の実装で使われている新しい
+  ``SEND_FILE_MAX_AGE_DEFAULT`` の設定値によって設定することができます。
+- セッションの実装に外部のストレージを使っている際のメッセージのフラッシュが破棄される問題を修正しました。
 - 関数からのタプルの戻り値の振る舞いを変更しました。
   レスポンスオブジェクトの引数はありません。
 - 個々のリクエストの :data:`~flask.g` インスタンスの作成時に特定のクラスが使えるように
@@ -353,11 +345,9 @@ Version 0.7
 - Flask no longer internally depends on rules being added through the
   `add_url_rule` function and can now also accept regular werkzeug
   rules added to the url map.
-- Added an `endpoint` method to the flask application object which
-  allows one to register a callback to an arbitrary endpoint with
-  a decorator.
-- Use Last-Modified for static file sending instead of Date which
-  was incorrectly introduced in 0.6.
+- Flaskのアプリケーションオブジェクトに `endpoint` メソッドを追加しました。
+  デコレーターで任意のエンドポイントにコールバックを登録することができます。
+- 0.6で追加された正しくなかった日付に代わって静的ファイルを配信する際にLast-Modifiedを使っています。
 - ローダーの作成する処理を上書きする `create_jinja_loader` を追加しました。
 - `config.from_pyfile` に何もしないフラグを実装しました。
 - Added `teardown_request` decorator, for functions that should run at the end
@@ -365,9 +355,8 @@ Version 0.7
   for `after_request` was changed.  It's now no longer executed when an exception
   is raised.  See :ref:`upgrading-to-new-teardown-handling`
 - :func:`flask.has_request_context` を実装しました。
-- Deprecated `init_jinja_globals`.  Override the
-  :meth:`~flask.Flask.create_jinja_environment` method instead to
-  achieve the same functionality.
+- `init_jinja_globals` を非推奨にしました。
+  同じことをするため :meth:`~flask.Flask.create_jinja_environment` メソッドを上書きして下さい。
 - :func:`flask.safe_join` を追加しました。
 - 自動でJSONのリクエストデータを展開してmimetypeのパラメーターから文字コードを調べます。
 - セッションにメッセージがない場合、 :func:`flask.get_flashed_messages` で、セッションを修正しないようにしました。
