@@ -206,19 +206,18 @@ Version 0.8
   conceptionally only instance depending and outside version control so it's
   the perfect place to put configuration files etc.  For more information
   see :ref:`instance-folders`.
-- Added the ``APPLICATION_ROOT`` configuration variable.
-- Implemented :meth:`~flask.testing.TestClient.session_transaction` to
-  easily modify sessions from the test environment.
-- Refactored test client internally.  The ``APPLICATION_ROOT`` configuration
-  variable as well as ``SERVER_NAME`` are now properly used by the test client
-  as defaults.
+- ``APPLICATION_ROOT`` 設定値を追加しました。
+- テスト環境からセッションを簡単に変更できるように
+  :meth:`~flask.testing.TestClient.session_transaction` を実装しました。
+- 内部のテストクライアントをリファクタリングしました。
+  ``APPLICATION_ROOT`` 設定値は ``SERVER_NAME`` と同様に、デフォルトでテストクライアントで適切に使われます。
 - 拡張可能な(クラスベースの)ビューのデコレーターをより簡単にする :attr:`flask.views.View.decorators` を追加しました。
 - Fixed an issue where the test client if used with the "with" statement did not
   trigger the execution of the teardown handlers.
 - セッションのクッキーパラメーターをさらによく管理できるようにしまいた。
-- HEAD requests to a method view now automatically dispatch to the `get`
-  method if no handler was implemented.
-- エクステンションをインポートするために :mod:`flask.ext` パッケージを実装しました。
+- HEADリクエストはメソッドビューに渡され、ハンドラーが実装されていない場合、
+  `get` メソッドに自動的に処理を振り分けます。
+- 拡張機能をインポートするために :mod:`flask.ext` パッケージを実装しました。
 - The context preservation on exceptions is now an integral component of
   Flask itself and no longer of the test client.  This cleaned up some
   internal logic and lowers the odds of runaway request contexts in unittests.
