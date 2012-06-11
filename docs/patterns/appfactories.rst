@@ -1,15 +1,24 @@
 .. _app-factories:
 
-Application Factories
-=====================
+アプリケーションファクトリー
+==============================
 
-If you are already using packages and blueprints for your application
-(:ref:`blueprints`) there are a couple of really nice ways to further improve
-the experience.  A common pattern is creating the application object when
-the blueprint is imported.  But if you move the creation of this object,
-into a function, you can then create multiple instances of this and later.
+.. Application Factories
+   =====================
 
-So why would you want to do this?
+.. If you are already using packages and blueprints for your application
+   (:ref:`blueprints`) there are a couple of really nice ways to further improve
+   the experience.  A common pattern is creating the application object when
+   the blueprint is imported.  But if you move the creation of this object,
+   into a function, you can then create multiple instances of this and later.
+
+既にパッケージやBlueprints(:ref:`blueprints`)をアプリケーションで使っているなら、さらに良くするためのいい方法がいくつかあります。
+一般的なパターンは、Blueprintsをインポートした時にアプリケーションオブジェクトを作成することです。
+しかし、このオブジェクトの作成を関数に変えたい場合、後でこの複数のインスタンス作成することができます。
+
+.. So why would you want to do this?
+
+なぜこれをしたいのでしょうか?
 
 1.  Testing.  You can have instances of the application with different
     settings to test every case.
@@ -21,8 +30,11 @@ So why would you want to do this?
 
 So how would you then actually implement that?
 
-Basic Factories
----------------
+.. Basic Factories
+   ---------------
+
+基本的なファクトリー
+--------------------------
 
 The idea is to set up the application in a function.  Like this::
 
@@ -51,8 +63,11 @@ get access to the application with the config?  Use
 
 Here we look up the name of a template in the config.
 
-Using Applications
-------------------
+.. Using Applications
+   ------------------
+
+アプリケーションを使う
+-------------------------
 
 So to use such an application you then have to create the application
 first.  Here an example `run.py` file that runs such an application::
@@ -61,7 +76,10 @@ first.  Here an example `run.py` file that runs such an application::
     app = create_app('/path/to/config.cfg')
     app.run()
 
-Factory Improvements
+.. Factory Improvements
+   --------------------
+
+ファクトリーの改良
 --------------------
 
 The factory function from above is not very clever so far, you can improve

@@ -14,13 +14,15 @@ Flaskのパターン
    end of the request, the database connection is closed again.
 
 特定の事をしたい場合は、ほとんどのウェブアプリケーションで見つけることができる可能性が十分にあります。
-例えばリレーショナルデータベースやユーザー認証を使っているアプリケーションは
-その場合、
+リレーショナルデータベースやユーザー認証を使っているアプリケーションはとてもたくさん例があります。
+その場合には、リクエストの開始時にデータベース接続を開始してくれたり、
+現在ログインしているユーザーの情報を取得できたりします。
+リクエストの最後でデータベースの接続を終了してくれます。
 
 .. There are more user contributed snippets and patterns in the `Flask
    Snippet Archives <http://flask.pocoo.org/snippets/>`_.
 
-ユーザー提供してくれたスニペットやパターンが `Flask Snippet Archives <http://flask.pocoo.org/snippets/>`_ にあります。
+ユーザーが提供してくれたスニペットやパターンが `Flask Snippet Archives <http://flask.pocoo.org/snippets/>`_ にあります。
 
 .. toctree::
    :maxdepth: 2

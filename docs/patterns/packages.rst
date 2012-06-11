@@ -1,11 +1,17 @@
 .. _larger-applications:
 
-Larger Applications
-===================
+大きなアプリケーション
+======================
 
-For larger applications it's a good idea to use a package instead of a
-module.  That is quite simple.  Imagine a small application looks like
-this::
+.. Larger Applications
+   ===================
+
+.. For larger applications it's a good idea to use a package instead of a
+   module.  That is quite simple.  Imagine a small application looks like
+   this::
+
+大きなアプリケーションでは、モジュールの代わりにパッケージを使うことはいいことです。
+とても簡単です。以下のような小さなアプリケーションを想像してみてください。 ::
 
     /yourapplication
         /yourapplication.py
@@ -17,15 +23,25 @@ this::
             login.html
             ...
 
-Simple Packages
----------------
+.. Simple Packages
+   ---------------
 
-To convert that into a larger one, just create a new folder
-`yourapplication` inside the existing one and move everything below it.
-Then rename `yourapplication.py` to `__init__.py`.  (Make sure to delete
-all `.pyc` files first, otherwise things would most likely break)
+シンプルなパッケージ
+-----------------------
 
-You should then end up with something like that::
+.. To convert that into a larger one, just create a new folder
+   `yourapplication` inside the existing one and move everything below it.
+   Then rename `yourapplication.py` to `__init__.py`.  (Make sure to delete
+   all `.pyc` files first, otherwise things would most likely break)
+
+大きなパッケージに置き換えるには、 `yourapplication` などの新しいフォルダを作って、
+今あるファイルをそのフォルダ内に移動させるだけです。
+それから、 `yourapplication.py` を `__init__.py` に修正して下さい。
+(最初に全ての `.pyc` ファイルを削除して下さい。それをしない場合動かなくなるかもしれません。)
+
+.. You should then end up with something like that::
+
+以下のようになっているはずです。 ::
 
     /yourapplication
         /yourapplication
@@ -38,18 +54,28 @@ You should then end up with something like that::
                 login.html
                 ...
 
-But how do you run your application now?  The naive ``python
-yourapplication/__init__.py`` will not work.  Let's just say that Python
-does not want modules in packages to be the startup file.  But that is not
-a big problem, just add a new file called `runserver.py` next to the inner
-`yourapplication` folder with the following contents::
+.. But how do you run your application now?  The naive ``python
+   yourapplication/__init__.py`` will not work.  Let's just say that Python
+   does not want modules in packages to be the startup file.  But that is not
+   a big problem, just add a new file called `runserver.py` next to the inner
+   `yourapplication` folder with the following contents::
+
+しかし、どうやってアプリケーションを実行しますか?
+ネイティブの ``python yourapplication/__init__.py`` は動作しません。
+Pythonに起動するファイルであるパッケージにモジュールが必要なことを教えなければいけません。
+しかし、大きな問題ではありません。
+以下のコンテンツで `yourapplication` フォルダ内に `runserver.py` という新しいファイルを追加するだけです。
 
     from yourapplication import app
     app.run(debug=True)
 
-What did we gain from this?  Now we can restructure the application a bit
-into multiple modules.  The only thing you have to remember is the
-following quick checklist:
+.. What did we gain from this?  Now we can restructure the application a bit
+   into multiple modules.  The only thing you have to remember is the
+   following quick checklist:
+
+これはどのような進展があったのでしょうか?
+アプリケーションの構造を複数のモジュールに分割しました。
+以下の簡単なチェックリストを押さえておくだけです。 :
 
 1. the `Flask` application object creation has to be in the
    `__init__.py` file.  That way each module can import it safely and the
@@ -59,14 +85,18 @@ following quick checklist:
    Not the object itself, but the module it is in. Import the view module
    **after the application object is created**.
 
-Here's an example `__init__.py`::
+.. Here's an example `__init__.py`::
+
+`__init__.py` の例です。 ::
 
     from flask import Flask
     app = Flask(__name__)
 
     import yourapplication.views
 
-And this is what `views.py` would look like::
+.. And this is what `views.py` would look like::
+
+そして、 `views.py` は以下のようにします。 ::
 
     from yourapplication import app
 
@@ -74,7 +104,9 @@ And this is what `views.py` would look like::
     def index():
         return 'Hello World!'
 
-You should then end up with something like that::
+.. You should then end up with something like that::
+
+以下のようになっているはずです。 ::
 
     /yourapplication
         /runserver.py
@@ -106,10 +138,17 @@ You should then end up with something like that::
 
 .. _working-with-modules:
 
-Working with Blueprints
------------------------
+Blueprintsを使う
+--------------------------
 
-If you have larger applications it's recommended to divide them into
-smaller groups where each group is implemented with the help of a
-blueprint.  For a gentle introduction into this topic refer to the
-:ref:`blueprints` chapter of the documentation.
+.. Working with Blueprints
+   -----------------------
+
+.. If you have larger applications it's recommended to divide them into
+   smaller groups where each group is implemented with the help of a
+   blueprint.  For a gentle introduction into this topic refer to the
+   :ref:`blueprints` chapter of the documentation.
+
+より大きなアプリケーションの場合、小さなグループに分けて、
+個々のグループ毎にBlueprintsを使って実装することをお勧めします。
+このトピックをゆっくりと導入のためには、ドキュメントの :ref:`blueprints` の章を参照して下さい。
