@@ -1,8 +1,14 @@
-Adding a favicon
-================
+.. Adding a favicon
+   ================
 
-A "favicon" is an icon used by browsers for tabs and bookmarks. This helps
-to distinguish your website and to give it a unique brand.
+faviconの追加
+===================
+
+.. A "favicon" is an icon used by browsers for tabs and bookmarks. This helps
+   to distinguish your website and to give it a unique brand.
+
+"favicon" はタブやブックマークなどでブラウザによって使われるアイコンです。
+これはユニークなブランド性を与え、ウェブサイトを区別するのに役立ちます。
 
 A common question is how to add a favicon to a flask application. First, of
 course, you need an icon. It should be 16 × 16 pixels and in the ICO file

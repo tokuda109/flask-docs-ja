@@ -190,15 +190,13 @@ Version 0.8
   変更できるセッションインターフェースをサポートしました。
 - 空のセッションクッキーが自動で適切に削除されません。
 - ビュー関数が自動的にOPTIONSを実装するかどうかを任意で決めることができます。
-- HTTP exceptions and Bad Request errors can now be trapped so that they
-  show up normally in the traceback.
-- Flask in debug mode is now detecting some common problems and tries to
-  warn you about them.
+- HTTPの例外や不正なリクエストエラーは、トレースバックに表示されるので捕まえることができます。
+- デバッグモードのFlaskは一般的な問題を認識して、警告を出します。
 - Flask in debug mode will now complain with an assertion error if a view
   was attached after the first request was handled.  This gives earlier
   feedback when users forget to import view code ahead of time.
-- Added the ability to register callbacks that are only triggered once at
-  the beginning of the first request. (:meth:`Flask.before_first_request`)
+- 最初のリクエストが開始するときに一度トリガーを実行するコールバックを登録することができるようになりました。
+  (:meth:`Flask.before_first_request`)
 - Malformed JSON data will now trigger a bad request HTTP exception instead
   of a value error which usually would result in a 500 internal server
   error if not handled.  This is a backwards incompatible change.
@@ -214,11 +212,10 @@ Version 0.8
 - Refactored test client internally.  The ``APPLICATION_ROOT`` configuration
   variable as well as ``SERVER_NAME`` are now properly used by the test client
   as defaults.
-- Added :attr:`flask.views.View.decorators` to support simpler decorating of
-  pluggable (class-based) views.
+- 拡張可能な(クラスベースの)ビューのデコレーターをより簡単にする :attr:`flask.views.View.decorators` を追加しました。
 - Fixed an issue where the test client if used with the "with" statement did not
   trigger the execution of the teardown handlers.
-- Added finer control over the session cookie parameters.
+- セッションのクッキーパラメーターをさらによく管理できるようにしまいた。
 - HEAD requests to a method view now automatically dispatch to the `get`
   method if no handler was implemented.
 - エクステンションをインポートするために :mod:`flask.ext` パッケージを実装しました。
@@ -322,12 +319,11 @@ Version 0.7
 .. Implemented generic :ref:`views` (class-based views).
 
 - :meth:`~flask.Flask.make_default_options_response` を追加しました。
-  これは
 - Added :meth:`~flask.Flask.make_default_options_response`
   which can be used by subclasses to alter the default
   behaviour for `OPTIONS` responses.
-- Unbound locals now raise a proper :exc:`RuntimeError` instead
-  of an :exc:`AttributeError`.
+- バインドされていないlocalsは :exc:`AttributeError` の代わりに、
+  適切に :exc:`RuntimeError` を発生させます。
 - Mimetype guessing and etag support based on file objects is now
   deprecated for :func:`flask.send_file` because it was unreliable.
   Pass filenames instead or attach your own etags and provide a
@@ -337,14 +333,15 @@ Version 0.7
   was not reliable and caused issues on Google's App Engine.  Until
   1.0 the old behaviour will continue to work but issue dependency
   warnings.
-- fixed a problem for Flask to run on jython.
+- jythonでFlaskを実行した時に発生する問題を修正しました。
 - added a `PROPAGATE_EXCEPTIONS` configuration variable that can be
   used to flip the setting of exception propagation which previously
   was linked to `DEBUG` alone and is now linked to either `DEBUG` or
   `TESTING`.
-- Flask no longer internally depends on rules being added through the
-  `add_url_rule` function and can now also accept regular werkzeug
-  rules added to the url map.
+  `DEBUG` や `TESTING` のどちらかにリンクしていない
+  `PROPAGATE_EXCEPTIONS` の設定値を追加しました。
+- Flaskは `add_url_rule` 関数によって追加するというルールに内部的には依存しなくなりました。
+  url mapに追加されたwerkzeugの標準のルールを使うことができます。
 - Flaskのアプリケーションオブジェクトに `endpoint` メソッドを追加しました。
   デコレーターで任意のエンドポイントにコールバックを登録することができます。
 - 0.6で追加された正しくなかった日付に代わって静的ファイルを配信する際にLast-Modifiedを使っています。
@@ -354,6 +351,7 @@ Version 0.7
   of a request regardless of whether an exception occurred.  Also the behavior
   for `after_request` was changed.  It's now no longer executed when an exception
   is raised.  See :ref:`upgrading-to-new-teardown-handling`
+
 - :func:`flask.has_request_context` を実装しました。
 - `init_jinja_globals` を非推奨にしました。
   同じことをするため :meth:`~flask.Flask.create_jinja_environment` メソッドを上書きして下さい。
@@ -386,7 +384,7 @@ Version 0.6.1
    if the host server was a windows based operating system and the client
    uses backslashes to escape the directory the files where exposed from.
 
-- デフォルトの `OPTIONS` レスポンスは
+- デフォルトの `OPTIONS` レスポンスは、 `認められている` ヘッダーに全ての不正なメソッドを受け入れないように修正しました。
 - Jinja2のテンプレートロードパスの前に "./" を書くことができます。
 - モジュールにサブドメインを設定した場合に、静的フォルダを無視する問題を修正しました。
 - クライアントが任意のファイルをダウンロードできるセキュリティの問題をフィックスしました。ホストサーバーは
