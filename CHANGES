@@ -92,6 +92,10 @@ Version 0.9
   instances programmatically.  The Flask class will fall back to using import
   on systems with custom module hooks, e.g. Google App Engine, or when the
   import name is inside a zip archive (usually a .egg) prior to Python 2.7.
+  :class:`flask.Flask` クラスはできる限りインポート名を指定せずにインポートしないようにして下さい。
+  (最初のパラメーターは必須です)
+  Flaskのインスタンスはプログラム的に生成する
+  Flaskクラスは、例としてGoogle App Engineやカスタムモジュールフックで
 - Blueprintは、 :meth:`flask.Blueprint.app_template_filter` でアプリケーション
   全体にカスタムテンプレートフィルターを追加するためのデコレーターがあります。
 - FlaskとBlueprintクラスは、 :meth:`flask.Flask.add_template_filter` と
@@ -197,18 +201,12 @@ Version 0.8
   feedback when users forget to import view code ahead of time.
 - 最初のリクエストが開始するときに一度トリガーを実行するコールバックを登録することができるようになりました。
   (:meth:`Flask.before_first_request`)
-- Malformed JSON data will now trigger a bad request HTTP exception instead
-  of a value error which usually would result in a 500 internal server
-  error if not handled.  This is a backwards incompatible change.
-- Applications now not only have a root path where the resources and modules
-  are located but also an instance path which is the designated place to
-  drop files that are modified at runtime (uploads etc.).  Also this is
-  conceptionally only instance depending and outside version control so it's
-  the perfect place to put configuration files etc.  For more information
-  see :ref:`instance-folders`.
+- 不正な形式のJSONデータは、処理されない場合、通常は500 Internal Server Errorという結果のエラーを値の代わりにトリガーとなります。
+  これは後方互換性のない変更です。
+- アプリケーションはリソースやモジュールがあるルートパスを持っていないが、
+  これは概念的
 - ``APPLICATION_ROOT`` 設定値を追加しました。
-- テスト環境からセッションを簡単に変更できるように
-  :meth:`~flask.testing.TestClient.session_transaction` を実装しました。
+- テスト環境からセッションを簡単に変更できるように :meth:`~flask.testing.TestClient.session_transaction` を実装しました。
 - 内部のテストクライアントをリファクタリングしました。
   ``APPLICATION_ROOT`` 設定値は ``SERVER_NAME`` と同様に、デフォルトでテストクライアントで適切に使われます。
 - 拡張可能な(クラスベースの)ビューのデコレーターをより簡単にする :attr:`flask.views.View.decorators` を追加しました。
@@ -218,9 +216,8 @@ Version 0.8
 - HEADリクエストはメソッドビューに渡され、ハンドラーが実装されていない場合、
   `get` メソッドに自動的に処理を振り分けます。
 - 拡張機能をインポートするために :mod:`flask.ext` パッケージを実装しました。
-- The context preservation on exceptions is now an integral component of
-  Flask itself and no longer of the test client.  This cleaned up some
-  internal logic and lowers the odds of runaway request contexts in unittests.
+- 例外時にコンテキストを保持することは、Flask自体やテストクライアントの統合されたコンポーネントです。
+  いくつかの内部ロジックやユニットテストのリクエストコンテキストを実行。
 
 Version 0.7.3
 -------------

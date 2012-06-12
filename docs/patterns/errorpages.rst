@@ -1,18 +1,31 @@
-Custom Error Pages
-==================
+.. Custom Error Pages
+   ==================
 
-Flask comes with a handy :func:`~flask.abort` function that aborts a
-request with an HTTP error code early.  It will also provide a plain black
-and white error page for you with a basic description, but nothing fancy.
+カスタムエラーページ
+========================
 
-Depending on the error code it is less or more likely for the user to
-actually see such an error.
+.. Flask comes with a handy :func:`~flask.abort` function that aborts a
+   request with an HTTP error code early.  It will also provide a plain black
+   and white error page for you with a basic description, but nothing fancy.
 
-Common Error Codes
-------------------
+Flaskは、簡単にHTTPエラーコードでリクエストを中止することができる :func:`~flask.abort`
+関数があります。基本的な概要のみの単純な黒と白のエラーページを表示させることもできます。
 
-The following error codes are some that are often displayed to the user,
-even if the application behaves correctly:
+.. Depending on the error code it is less or more likely for the user to
+   actually see such an error.
+
+エラーコードによって、そのようなエラーをユーザーに実際に表示するには
+
+.. Common Error Codes
+   ------------------
+
+一般的なエラーコード
+--------------------------
+
+.. The following error codes are some that are often displayed to the user,
+   even if the application behaves correctly:
+
+以下のようなエラーコードは、まるでアプリケーションが正しく振舞ったかのようにユーザーに表示されます。
 
 *404 Not Found*
     The good old "chap, you made a mistake typing that URL" message.  So
@@ -42,21 +55,30 @@ even if the application behaves correctly:
     :ref:`application-errors`).
 
 
-Error Handlers
---------------
+.. Error Handlers
+   --------------
 
-An error handler is a function, just like a view function, but it is
-called when an error happens and is passed that error.  The error is most
-likely a :exc:`~werkzeug.exceptions.HTTPException`, but in one case it
-can be a different error: a handler for internal server errors will be
-passed other exception instances as well if they are uncaught.
+エラーハンドラー
+---------------------
+
+.. An error handler is a function, just like a view function, but it is
+   called when an error happens and is passed that error.  The error is most
+   likely a :exc:`~werkzeug.exceptions.HTTPException`, but in one case it
+   can be a different error: a handler for internal server errors will be
+   passed other exception instances as well if they are uncaught.
+
+エラーハンドラーはビュー関数みたいな関数ですが、エラーが発生した時呼ばれて、エラーが渡されます。
+エラーはほとんどが :exc:`~werkzeug.exceptions.HTTPException` ですが、
+内部のサーバーエラーの処理などのケースでは別のエラーになります。
 
 An error handler is registered with the :meth:`~flask.Flask.errorhandler`
 decorator and the error code of the exception.  Keep in mind that Flask
 will *not* set the error code for you, so make sure to also provide the
 HTTP status code when returning a response.
 
-Here an example implementation for a "404 Page Not Found" exception::
+.. Here an example implementation for a "404 Page Not Found" exception::
+
+"404 Page Not Found" の例外の実装の例を示します。 ::
 
     from flask import render_template
 
@@ -64,7 +86,9 @@ Here an example implementation for a "404 Page Not Found" exception::
     def page_not_found(e):
         return render_template('404.html'), 404
 
-An example template might be this:
+.. An example template might be this:
+
+テンプレートの例は以下のようになると思います。 :
 
 .. sourcecode:: html+jinja
 
