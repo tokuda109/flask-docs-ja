@@ -325,11 +325,9 @@ Version 0.7
 - Mimetypeの推測やファイルオブジェクトに基づくETagのサポートは信頼出来ないので、
   :func:`flask.send_file` を廃止しました。
   代わりにファイル名を渡すか、手動で適切なMimetypeを提供したりETagを設定して下さい。
-- Static file handling for modules now requires the name of the
-  static folder to be supplied explicitly.  The previous autodetection
-  was not reliable and caused issues on Google's App Engine.  Until
-  1.0 the old behaviour will continue to work but issue dependency
-  warnings.
+- モジュールの静的ファイルの処理は、配信されるべきファイルを置くフォルダ名を明示的に指定しなければいけません。
+  以前までの自動で行われていましたものが信頼できなかったのと、GoogleのApp Engineで問題が発生したためです。
+  1.0まではこの古い振る舞いが継続して動くようにしますが、問題として警告を出します。
 - jythonでFlaskを実行した時に発生する問題を修正しました。
 - added a `PROPAGATE_EXCEPTIONS` configuration variable that can be
   used to flip the setting of exception propagation which previously
@@ -574,7 +572,7 @@ Version 0.3
 - フラッシュメッセージでカテゴリをサポートしました。
 - アプリケーションに :class:`logging.Handler` を設定できるようになり、
   デバッグモードではない時に、ロガーに例外を処理するようにさせることができます。
-  これによって、例としてサーバーでエラーが発生した時にメールを受け取ることが可能です。
+  例として、これによってサーバーでエラーが発生した時にメールを受け取ることが可能です。
 - コンテキストのバインディングをサポートしました。
   コンソールで実行するためにwith文を使う必要はありません。
 - リクエストコンテキストはwith文の中で有効になって、リクエストコンテキストをpushしたりやpopしたりすることができます。
