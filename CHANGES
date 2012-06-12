@@ -318,15 +318,13 @@ Version 0.7
 .. Implemented generic :ref:`views` (class-based views).
 
 - :meth:`~flask.Flask.make_default_options_response` を追加しました。
-- Added :meth:`~flask.Flask.make_default_options_response`
-  which can be used by subclasses to alter the default
-  behaviour for `OPTIONS` responses.
+- `OPTIONS` レスポンスのデフォルトの振る舞いを変更するためのサブクラスで使われる
+  :meth:`~flask.Flask.make_default_options_response` を追加しました。
 - バインドされていないlocalsは :exc:`AttributeError` の代わりに、
   適切に :exc:`RuntimeError` を発生させます。
-- Mimetype guessing and etag support based on file objects is now
-  deprecated for :func:`flask.send_file` because it was unreliable.
-  Pass filenames instead or attach your own etags and provide a
-  proper mimetype by hand.
+- Mimetypeの推測やファイルオブジェクトに基づくETagのサポートは信頼出来ないので、
+  :func:`flask.send_file` を廃止しました。
+  代わりにファイル名を渡すか、手動で適切なMimetypeを提供したりETagを設定して下さい。
 - Static file handling for modules now requires the name of the
   static folder to be supplied explicitly.  The previous autodetection
   was not reliable and caused issues on Google's App Engine.  Until
@@ -346,11 +344,10 @@ Version 0.7
 - 0.6で追加された正しくなかった日付に代わって静的ファイルを配信する際にLast-Modifiedを使っています。
 - ローダーの作成する処理を上書きする `create_jinja_loader` を追加しました。
 - `config.from_pyfile` に何もしないフラグを実装しました。
-- Added `teardown_request` decorator, for functions that should run at the end
-  of a request regardless of whether an exception occurred.  Also the behavior
-  for `after_request` was changed.  It's now no longer executed when an exception
-  is raised.  See :ref:`upgrading-to-new-teardown-handling`
-
+- `teardown_request` デコレーターを追加しました。
+  この機能は、例外が発生したかどうかにかかわらず、のリクエストの終了時に実行されます
+  `after_request` の振る舞いも変更しました。例外が発生した時には実行されません。
+  :ref:`upgrading-to-new-teardown-handling` を見て下さい。
 - :func:`flask.has_request_context` を実装しました。
 - `init_jinja_globals` を非推奨にしました。
   同じことをするため :meth:`~flask.Flask.create_jinja_environment` メソッドを上書きして下さい。
@@ -358,10 +355,9 @@ Version 0.7
 - 自動でJSONのリクエストデータを展開してmimetypeのパラメーターから文字コードを調べます。
 - セッションにメッセージがない場合、 :func:`flask.get_flashed_messages` で、セッションを修正しないようにしました。
 - `before_request` ハンドラーは、エラー時にリクエストを中止することができます。
-- it is not possible to define user exception handlers.  That way you can
-  provide custom error messages from a central hub for certain errors that
-  might occur during request processing (for instance database connection
-  errors, timeouts from remote resources etc.).
+- 例外を処理するハンドラーを定義することができなくなりました。
+  それをするには、リクエストを処理している間に発生するかもしれない特定のエラーに対する中心的なハブから
+  カスタムエラーメッセージを表示して下さい。(データベース接続のインスタンスのエラー、リモートのりソースからタイムアウト等)
 - Blueprintsはblueprint独自のエラーハンドラーを付けることができます。
 - 汎用 :ref:`views` (クラスベースのビュー)を実装しました。
 
@@ -532,12 +528,13 @@ Version 0.4
 .. the logger switches to `DEBUG` mode now if debug is enabled.
 
 - モジュールからエラーハンドラーをアプリケーションに登録できる機能を追加しました。
-- :meth:`~flask.Flask.after_request` ハンドラーはリクエストが例外やエラーページの表示することで呼び出されます。
+- :meth:`~flask.Flask.after_request` ハンドラーは、
+  リクエストが例外やエラーページの表示することで呼び出されます。
 - テストクライアントは、リクエストコンテキストを保持することができません。
   これは、テスト用にリクエストをpopせずに積んでいくカスタムリクエストのトリガーとして使うことができます。
 - Pythonの標準ライブラリはロガーをキャッシュするので、ユニットテスト用にロガーの名前を設定できるようにしました。
 - ユニットテストをするためのヘルパーを有効化することができる `TESTING` を追加しました。
-- デバッグが有効ならロガーは `DEBUG` モードに切り替わります。
+- デバッグが有効な場合、ロガーは `DEBUG` モードに切り替わります。
 
 Version 0.3.1
 -------------
@@ -552,8 +549,8 @@ Version 0.3.1
    folder for themes, built documentation in zip and pdf file and
    some .pyc files)
 
-- :meth:`flask.Config.from_envvar` でバグをレポートする際のエラーを修正しました。
-- flaskから使われていないコードを削除しました。
+- :meth:`flask.Config.from_envvar` で、エラーをレポートする際のバグを修正しました。
+- Flaskから使われていないコードを削除しました。
 - 開発時に残されたままのファイル(テーマ用の.gitフォルダ、zipのドキュメント、pdfファイルや.pycファイル)を除きました。
 
 Version 0.3
@@ -574,13 +571,13 @@ Version 0.3
    it possible to further push the request context or pop it.
 .. added support for configurations.
 
-- フラッシュメッセージでカテゴリのサポートを追加しました。
+- フラッシュメッセージでカテゴリをサポートしました。
 - アプリケーションに :class:`logging.Handler` を設定できるようになり、
-  デバッグモードではない時にリクエストが例外をロガーに記録するようになりました。
-  これはサーバーでエラーが発生した時にメールを受け取ることができます。
+  デバッグモードではない時に、ロガーに例外を処理するようにさせることができます。
+  これによって、例としてサーバーでエラーが発生した時にメールを受け取ることが可能です。
 - コンテキストのバインディングをサポートしました。
   コンソールで実行するためにwith文を使う必要はありません。
-- リクエストコンテキストがwith文の中で有効になって、リクエストコンテキストをpushやpopすることができます。
+- リクエストコンテキストはwith文の中で有効になって、リクエストコンテキストをpushしたりやpopしたりすることができます。
 - 設定機能を追加しました。
 
 Version 0.2
@@ -606,21 +603,21 @@ Version 0.2
 .. added support for Google Appengine.
 
 - 様々なバグフィックス。
-- JSON機能を統合しました。
+- JSONに関する機能を統合しました。
 - :func:`~flask.get_template_attribute` ヘルパー関数を追加しました。
 - :meth:`~flask.Flask.add_url_rule` はビュー関数も登録できるようになりました。
 - 内部のリクエストを振り分けする処理をリファクタリングしました。
 - デフォルトで127.0.0.1にアクセスする時にchromeで問題があるのをフィックスしました。
 - 外部URLをサポートしました。
 - :func:`~flask.send_file` 関数をサポートしました。
-- モジュールをサポートし、プラガブルなアプリケーションをよりよくサポートするために内部のリクエスト処理を書きなおしました。
-- セッション毎にセッションの有効期限が永続されるようにすることができるようになりました。
-- シークレットキーがない場合にエラーレポートが実行されるようになりました。
-- Google App Engineのサポートを追加しました。
+- モジュールをサポートし、プラガブルなアプリケーションのサポートを改良するために内部のリクエスト処理をリファクタリングしました。
+- セッション毎にセッションの有効期限が永続されるようにするかどうか設定できるようになりました。
+- シークレットキーがない場合のエラーレポートを改良しました。
+- Google App Engineをサポートしました。
 
 Version 0.1
 -----------
 
 .. First public preview release.
 
-最初のパブリックプレビューリリース。
+- 最初のパブリックプレビューリリース。
