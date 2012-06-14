@@ -1,5 +1,9 @@
-Using URL Processors
-====================
+.. Using URL Processors
+   ====================
+
+URLプロセッサーの使い方
+===============================
+
 
 .. versionadded:: 0.7
 
@@ -9,14 +13,25 @@ don't always explicitly want to provide.  For instance you might have a
 bunch of URLs that have the language code in it but you don't want to have
 to handle it in every single function yourself.
 
-URL processors are especially helpful when combined with blueprints.  We
-will handle both application specific URL processors here as well as
-blueprint specifics.
+Flask 0.7でURLプロセッサーの機能を追加しました。
+アイデア
 
-Internationalized Application URLs
-----------------------------------
+.. URL processors are especially helpful when combined with blueprints.  We
+   will handle both application specific URL processors here as well as
+   blueprint specifics.
 
-Consider an application like this::
+URLプロセッサーはBlueprintsを組み合わせるときに特に便利です。
+アプリケーションに固有のURLプロセッサーだけでなく、Blueprintsに固有のURLも同じように処理することができます。
+
+.. Internationalized Application URLs
+   ----------------------------------
+
+アプリケーションの国際化されたURL
+-------------------------------------
+
+.. Consider an application like this::
+
+以下のようなアプリケーションの場合を考えてみましょう。 ::
 
     from flask import Flask, g
 
@@ -32,17 +47,25 @@ Consider an application like this::
         g.lang_code = lang_code
         ...
 
-This is an awful lot of repetition as you have to handle the language code
-setting on the :data:`~flask.g` object yourself in every single function.
-Sure, a decorator could be used to simplify this, but if you want to
-generate URLs from one function to another you would have to still provide
-the language code explicitly which can be annoying.
+.. This is an awful lot of repetition as you have to handle the language code
+   setting on the :data:`~flask.g` object yourself in every single function.
+   Sure, a decorator could be used to simplify this, but if you want to
+   generate URLs from one function to another you would have to still provide
+   the language code explicitly which can be annoying.
 
-For the latter, this is where :func:`~flask.Flask.url_defaults` functions
-come in.  They can automatically inject values into a call for
-:func:`~flask.url_for` automatically.  The code below checks if the
-language code is not yet in the dictionary of URL values and if the
-endpoint wants a value named ``'lang_code'``::
+これは、全ての単一の関数で自分で :data:`~flask.g` オブジェクトの言語コードの設定を処理する必要があるので、繰り返し出てきます。
+確かに、デコレーターはこれを簡潔にすることができますが、一つの関数から別のURLを生成したい場合は、
+明示的に言語コード教える必要があるので、煩わしいです。
+
+.. For the latter, this is where :func:`~flask.Flask.url_defaults` functions
+   come in.  They can automatically inject values into a call for
+   :func:`~flask.url_for` automatically.  The code below checks if the
+   language code is not yet in the dictionary of URL values and if the
+   endpoint wants a value named ``'lang_code'``::
+
+後者の場合、 :func:`~flask.Flask.url_defaults` 関数は。
+それらは、 :func:`~flask.url_for` を自動的に呼び出すことで値を自動的に代入することができます。
+言語コードはまだURLを値に持つ辞書ではなく、以下のコードをチェックして下さい。
 
     @app.url_defaults
     def add_language_code(endpoint, values):
@@ -95,15 +118,22 @@ be forwarded to the view function reducing the code to this::
     def about():
         ...
 
-Internationalized Blueprint URLs
---------------------------------
+.. Internationalized Blueprint URLs
+   --------------------------------
 
-Because blueprints can automatically prefix all URLs with a common string
-it's easy to automatically do that for every function.  Furthermore
-blueprints can have per-blueprint URL processors which removes a whole lot
-of logic from the :meth:`~flask.Flask.url_defaults` function because it no
-longer has to check if the URL is really interested in a ``'lang_code'``
-parameter::
+Blueprintsの国際化されたURL
+-----------------------------------
+
+.. Because blueprints can automatically prefix all URLs with a common string
+   it's easy to automatically do that for every function.  Furthermore
+   blueprints can have per-blueprint URL processors which removes a whole lot
+   of logic from the :meth:`~flask.Flask.url_defaults` function because it no
+   longer has to check if the URL is really interested in a ``'lang_code'``
+   parameter::
+
+Blueprintsは一般的な文字列を全てのURLのプリフィックスに自動的に付けられるので、
+全ての関数を簡単に自動化することができます。
+その上、Blueprintsは ::
 
     from flask import Blueprint, g
 

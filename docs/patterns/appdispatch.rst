@@ -1,7 +1,10 @@
 .. _app-dispatch:
 
-Application Dispatching
-=======================
+アプリケーションのディスパッチ
+==================================
+
+.. Application Dispatching
+   =======================
 
 Application dispatching is the process of combining multiple Flask
 applications on the WSGI level.  You can not only combine Flask
