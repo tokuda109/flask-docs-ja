@@ -8,8 +8,8 @@ CGI
 他のデプロイメソッドが全て動かないなら、CGIはきっと動くでしょう。
 CGIは全ての主要なサーバーでサポートされているが、通常はパフォーマンスがよくありません。
 
-This is also the way you can use a Flask application on Google's `App
-Engine`_, where execution happens in a CGI-like environment.
+.. This is also the way you can use a Flask application on Google's `App
+   Engine`_, where execution happens in a CGI-like environment.
 
 これはCGIみたいな環境のGoogleの `App Engine`_ 上でFlaskアプリケーションを使う場合の方法です。
 
@@ -21,11 +21,17 @@ Engine`_, where execution happens in a CGI-like environment.
    not called because this will always start a local WSGI server which
    we do not want if we deploy that application to CGI / app engine.
 
-Creating a `.cgi` file
-----------------------
+.. Creating a `.cgi` file
+   ----------------------
 
-First you need to create the CGI application file.  Let's call it
-`yourapplication.cgi`::
+`.cgi` ファイルの作成
+-------------------------
+
+.. First you need to create the CGI application file.  Let's call it
+   `yourapplication.cgi`::
+
+最初にCGIアプリケーションのファイルを作成する必要があります。
+仮に、 `yourapplication.cgi` としましょう。 ::
 
     #!/usr/bin/python
     from wsgiref.handlers import CGIHandler
@@ -33,19 +39,30 @@ First you need to create the CGI application file.  Let's call it
 
     CGIHandler().run(app)
 
-Server Setup
-------------
+.. Server Setup
+   ------------
 
-Usually there are two ways to configure the server.  Either just copy the
-`.cgi` into a `cgi-bin` (and use `mod_rewrite` or something similar to
-rewrite the URL) or let the server point to the file directly.
+サーバーの設定
+-----------------
 
-In Apache for example you can put a like like this into the config:
+.. Usually there are two ways to configure the server.  Either just copy the
+   `.cgi` into a `cgi-bin` (and use `mod_rewrite` or something similar to
+   rewrite the URL) or let the server point to the file directly.
+
+サーバーの設定をする方法は通常は2つあります。
+`cgi-bin` に `.cgi` をコピーする( `mod_rewrite` やURLを書き換える似たようなものを使う)だけか、
+サーバーがファイルを直接そのファイルを指すようにするかのどちらかです。
+
+.. In Apache for example you can put a like like this into the config:
+
+Apacheの例では、configに以下のような行を追加するだけです。 :
 
 .. sourcecode:: apache
 
     ScriptAlias /app /path/to/the/application.cgi
 
-For more information consult the documentation of your webserver.
+.. For more information consult the documentation of your webserver.
+
+さらなる情報はウェブサーバーのドキュメントを確認して下さい。
 
 .. _App Engine: http://code.google.com/appengine/
