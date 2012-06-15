@@ -1077,7 +1077,7 @@ WSGIミドルウェアのフック
 
 .. _quickstart_deployment:
 
-ウェブサーバーにデプロイする
+ウェブサーバーへのデプロイ
 -------------------------------------
 
 .. Deploying to a Web Server
@@ -1089,7 +1089,7 @@ WSGIミドルウェアのフック
 
 Flaskアプリケーションをデプロイする準備ができましたか?
 クイックスタートの要約をすると、
-小さなプロジェクトように無料プランで提供されている全てのホスティングすることができるプラットフォームにすぐにデプロイすることができます。
+小さなプロジェクト用に無料プランで提供されている全てのホスティングすることができるプラットフォームにすぐにデプロイすることができます。
 
 - `Deploying Flask on Heroku <http://devcenter.heroku.com/articles/python>`_
 - `Deploying WSGI on dotCloud <http://docs.dotcloud.com/services/python/>`_
@@ -1106,5 +1106,5 @@ Flaskアプリケーションをホスティングすることができる他の
 .. If you manage your own hosts and would like to host yourself, see the chapter
    on :ref:`deployment`.
 
-自身でホスティングサーバーや自分でホスティングしているサーバーを管理しているなら、
+ホスティングサーバーや、自分でホスティングしているサーバーを管理している場合、
 :ref:`deployment` の章を確認して下さい。
