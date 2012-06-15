@@ -5,7 +5,7 @@ mod_wsgi (Apache)
 
 .. If you are using the `Apache`_ webserver, consider using `mod_wsgi`_.
 
-`Apache`_ ウェブサーバーを使っている場合、 `mod_wsgi`_ を使うことを検討して下さい。
+`Apache`_ ウェブサーバーを使っている場合、 `mod_wsgi`_ を使うことを検討してみて下さい。
 
 .. Watch Out
 
@@ -18,7 +18,8 @@ mod_wsgi (Apache)
 .. admonition:: 注意すること
 
    事前に確認して下さい。
-   念のために
+   アプリケーションファイルが、 ``if __name__ == '__main__':`` ブロックや
+   ので、それが呼ばれていないことを確認することができます。
    なぜなら、これは常にローカルのWSGIサーバー
 
 .. _Apache: http://httpd.apache.org/
@@ -33,15 +34,13 @@ mod_wsgi (Apache)
    using a package manager or compile it yourself.  The mod_wsgi
    `installation instructions`_ cover source installations on UNIX systems.
 
-`mod_wsgi` をまだインストールしていないなら、
-パッケージマネージャーを使うか自身でコンパイルしてインストールするかしなければいけません。
-mod_wsgiの `installation instructions`_ で、UNIXシステムにソースからインストールする
-方法が書かれています。
+`mod_wsgi` のインストールがまだなら、パッケージマネージャーを使うか自身でコンパイルしてインストールするかしなければいけません。
+mod_wsgiの `installation instructions`_ で、UNIXシステムにソースからインストールする方法が書かれています。
 
 .. If you are using Ubuntu/Debian you can apt-get it and activate it as
    follows:
 
-Ubuntu/Debianを使っているなら、以下のように、apt-getを使って有効化できます。 :
+Ubuntu/Debianを使っているなら、以下のように、apt-getを使ってインストールすることができます。 :
 
 .. sourcecode:: text
 
@@ -50,7 +49,8 @@ Ubuntu/Debianを使っているなら、以下のように、apt-getを使って
 .. On FreeBSD install `mod_wsgi` by compiling the `www/mod_wsgi` port or by
    using pkg_add:
 
-FreeBSDの場合、pkg_addを使うか `www/mod_wsgi` ポートをコンパイルすることで `mod_wsgi` をインストールできます。 :
+FreeBSDの場合、pkg_addを使うか、
+`www/mod_wsgi` ポートをコンパイルすることで `mod_wsgi` をインストールすることができます。 :
 
 .. sourcecode:: text
 
@@ -59,13 +59,14 @@ FreeBSDの場合、pkg_addを使うか `www/mod_wsgi` ポートをコンパイ�
 .. If you are using pkgsrc you can install `mod_wsgi` by compiling the
    `www/ap2-wsgi` package.
 
-pkgsrcを使っている場合、 `www/ap2-wsgi` パッケージをコンパイルすることで `mod_wsgi` をインストールすることができます。
+pkgsrcを使っている場合、
+`www/ap2-wsgi` パッケージをコンパイルすることで `mod_wsgi` をインストールすることができます。
 
 .. If you encounter segfaulting child processes after the first apache
    reload you can safely ignore them.  Just restart the server.
 
-最初にApacheリロードした後に子プロセスでセグメンテーション違反に遭遇した場合、それらを安全に無視できます。
-サーバーをリスタートするだけです。
+最初のApache再読み込みをした後、子プロセスでセグメンテーション違反に遭遇した場合、間違いなく無視できます。
+サーバーを再起動するだけです。
 
 .. Creating a `.wsgi` file
    -----------------------
@@ -79,28 +80,33 @@ pkgsrcを使っている場合、 `www/ap2-wsgi` パッケージをコンパイ�
    application.
 
 アプリケーションを起動するには `yourapplication.wsgi` ファイルが必要です。
-
-
+このファイルにはコードが含まれていて、 `mod_wsgi` はアプリケーションオブジェクトを取得するために起動して実行されます。
+そのファイルにある `application` というオブジェクトはアプリケーションとして使われます。
 
 .. For most applications the following file should be sufficient::
 
-ほとんどのアプリケーションは、 ::
+ほとんどのアプリケーションは、以下のようなファイルで十分です。 ::
 
     from yourapplication import app as application
 
 .. If you don't have a factory function for application creation but a singleton
    instance you can directly import that one as `application`.
 
-アプリケーションの作成のための関数を
-しかし、シングルトンインスタンス
+アプリケーションの作成のためのファクトリ関数がないがシングルトンインスタンスがある場合、
+`application` として直接インポートすることができます。
 
-Store that file somewhere that you will find it again (e.g.:
-`/var/www/yourapplication`) and make sure that `yourapplication` and all
-the libraries that are in use are on the python load path.  If you don't
-want to install it system wide consider using a `virtual python`_
-instance.  Keep in mind that you will have to actually install your
-application into the virtualenv as well.  Alternatively there is the
-option to just patch the path in the `.wsgi` file before the import::
+.. Store that file somewhere that you will find it again (e.g.:
+   `/var/www/yourapplication`) and make sure that `yourapplication` and all
+   the libraries that are in use are on the python load path.  If you don't
+   want to install it system wide consider using a `virtual python`_
+   instance.  Keep in mind that you will have to actually install your
+   application into the virtualenv as well.  Alternatively there is the
+   option to just patch the path in the `.wsgi` file before the import::
+
+再び探すことができるようにそのファイルをどこかに保管して、 `yourapplication` や全てのライブラリ。
+システム全体にインストールしたくない場合は、 `virtual python`_ のインスタンスを使うことを考えてみてください。
+virtualenvに
+別の方法として、インポートの前に `.wsgi` ファイルにのパスにパッチを当てる方法もあります。 ::
 
     import sys
     sys.path.insert(0, '/path/to/the/application')
@@ -109,7 +115,7 @@ option to just patch the path in the `.wsgi` file before the import::
    ------------------
 
 Apacheの設定
-------------------
+---------------------
 
 The last thing you have to do is to create an Apache configuration file
 for your application.  In this example we are telling `mod_wsgi` to
