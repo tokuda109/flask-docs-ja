@@ -11,7 +11,7 @@
    :ref:`installation` section.
 
 そろそろ始めたいですか?
-このページはFlaskの紹介をします。Flaskが既にインストールしているものと仮定します。
+このページはFlaskの紹介をします。Flaskが既にインストールされているものと仮定します。
 まだインストールしていない場合は、 :ref:`installation` の章に進んで下さい。
 
 .. A Minimal Application
@@ -1083,19 +1083,28 @@ WSGIミドルウェアのフック
 .. Deploying to a Web Server
    -------------------------
 
-Ready to deploy your new Flask app?  To wrap up the quickstart, you can
-immediately deploy to a hosted platform, all of which offer a free plan for
-small projects:
+.. Ready to deploy your new Flask app?  To wrap up the quickstart, you can
+   immediately deploy to a hosted platform, all of which offer a free plan for
+   small projects:
+
+Flaskアプリケーションをデプロイする準備ができましたか?
+クイックスタートの要約をすると、
+小さなプロジェクトように無料プランで提供されている全てのホスティングすることができるプラットフォームにすぐにデプロイすることができます。
 
 - `Deploying Flask on Heroku <http://devcenter.heroku.com/articles/python>`_
 - `Deploying WSGI on dotCloud <http://docs.dotcloud.com/services/python/>`_
   with `Flask-specific notes <http://flask.pocoo.org/snippets/48/>`_
 
-Other places where you can host your Flask app:
+.. Other places where you can host your Flask app:
+
+Flaskアプリケーションをホスティングすることができる他の場所として、 :
 
 - `Deploying Flask on Webfaction <http://flask.pocoo.org/snippets/65/>`_
 - `Deploying Flask on Google App Engine <https://github.com/kamalgill/flask-appengine-template>`_
 - `Sharing your Localhost Server with Localtunnel <http://flask.pocoo.org/snippets/89/>`_
 
-If you manage your own hosts and would like to host yourself, see the chapter
-on :ref:`deployment`.
+.. If you manage your own hosts and would like to host yourself, see the chapter
+   on :ref:`deployment`.
+
+自身でホスティングサーバーや自分でホスティングしているサーバーを管理しているなら、
+:ref:`deployment` の章を確認して下さい。
