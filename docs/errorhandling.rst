@@ -356,53 +356,83 @@ Eメール
 アプリケーションエラーのデバッグ
 ========================================
 
-For production applications, configure your application with logging and
-notifications as described in :ref:`application-errors`.  This section provides
-pointers when debugging deployment configuration and digging deeper with a
-full-featured Python debugger.
+.. For production applications, configure your application with logging and
+   notifications as described in :ref:`application-errors`.  This section provides
+   pointers when debugging deployment configuration and digging deeper with a
+   full-featured Python debugger.
 
+本番環境のアプリケーション用に、 :ref:`application-errors`　に書かれているとおり、
+ロギングと通知をアプリケーションに設定します。
+この章では、デプロイ済みの設定をデバッグして、フル機能のPythonデバッガーで深く掘り下げていく時の手引きとなります。
 
-When in Doubt, Run Manually
----------------------------
+.. When in Doubt, Run Manually
+   ---------------------------
 
-Having problems getting your application configured for production?  If you
-have shell access to your host, verify that you can run your application
-manually from the shell in the deployment environment.  Be sure to run under
-the same user account as the configured deployment to troubleshoot permission
-issues.  You can use Flask's builtin development server with `debug=True` on
-your production host, which is helpful in catching configuration issues, but
-**be sure to do this temporarily in a controlled environment.** Do not run in
-production with `debug=True`.
+疑わしい場合は、手動で実行して下さい
+-----------------------------------
 
+.. Having problems getting your application configured for production?  If you
+   have shell access to your host, verify that you can run your application
+   manually from the shell in the deployment environment.  Be sure to run under
+   the same user account as the configured deployment to troubleshoot permission
+   issues.  You can use Flask's builtin development server with `debug=True` on
+   your production host, which is helpful in catching configuration issues, but
+   **be sure to do this temporarily in a controlled environment.** Do not run in
+   production with `debug=True`.
+
+本番環境用にアプリケーションを設定する際に問題がありましたか?
+ホストにシェルアクセスできる場合、
 
 .. _working-with-debuggers:
 
-Working with Debuggers
-----------------------
+デバッガーと同時に動かす
+-------------------------
 
-To dig deeper, possibly to trace code execution, Flask provides a debugger out
-of the box (see :ref:`debug-mode`).  If you would like to use another Python
-debugger, note that debuggers interfere with each other.  You have to set some
-options in order to use your favorite debugger:
+.. Working with Debuggers
+   ----------------------
 
-* ``debug``        - whether to enable debug mode and catch exceptinos
-* ``use_debugger`` - whether to use the internal Flask debugger
-* ``use_reloader`` - whether to reload and fork the process on exception
+.. To dig deeper, possibly to trace code execution, Flask provides a debugger out
+   of the box (see :ref:`debug-mode`).  If you would like to use another Python
+   debugger, note that debuggers interfere with each other.  You have to set some
+   options in order to use your favorite debugger:
 
-``debug`` must be True (i.e., exceptions must be caught) in order for the other
-two options to have any value.
+より深く掘り下げるためには、コードの実行をトレースすることができ、
+Flaskはデバッガーを提供しています(:ref:`debug-mode` を見て下さい)。
+他のPythonデバッガーを使いたい場合、それぞれのデバッガーのインターフェースに注意して下さい。
+好きなデバッガーを使うための設定をしなければいけません。
 
-If you're using Aptana/Eclipse for debugging you'll need to set both
-``use_debugger`` and ``use_reloader`` to False.
+.. ``debug``        - whether to enable debug mode and catch exceptinos
+.. ``use_debugger`` - whether to use the internal Flask debugger
+.. ``use_reloader`` - whether to reload and fork the process on exception
 
-A possible useful pattern for configuration is to set the following in your
-config.yaml (change the block as appropriate for your application, of course)::
+* ``debug``        - デバッグモードを有効にして例外を捕まえるかどうか
+* ``use_debugger`` - 内部のFlaskデバッガーを使うかどうか
+* ``use_reloader`` - 例外のプロセスをフォークとリロードするかどうか
+
+.. ``debug`` must be True (i.e., exceptions must be caught) in order for the other
+   two options to have any value.
+
+他のオプションは任意の値でも構いませんが、 ``debug`` はTrueにして下さい(例外を捕まえることができるように)。
+
+.. If you're using Aptana/Eclipse for debugging you'll need to set both
+   ``use_debugger`` and ``use_reloader`` to False.
+
+デバッグにAptana/Eclipseを使っている場合、
+``use_debugger`` と ``use_reloader`` をFalseに設定して下さい。
+
+.. A possible useful pattern for configuration is to set the following in your
+   config.yaml (change the block as appropriate for your application, of course)::
+
+コンフィグに設定可能なパターンとして、config.yamlに以下のように設定することができます。
+(もちろん、アプリケーションに応じてブロックを変更することができます) ::
 
    FLASK:
        DEBUG: True
        DEBUG_WITH_APTANA: True
 
-Then in your application's entry-point (main.py), you could have something like::
+.. Then in your application's entry-point (main.py), you could have something like::
+
+それから、アプリケーションのエントリポイント(main.py)には、次のようなものを持つことができます。 ::
 
    if __name__ == "__main__":
        # To allow aptana to receive errors, set use_debugger=False
