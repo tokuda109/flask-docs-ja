@@ -17,7 +17,7 @@
 全ての人がPythonを好きな理由の内の一つがインタラクティブシェルです。
 基本的にリアルタイムにPythonコマンドを実行することができ、すぐに実行結果が返ってきます。
 Flask自体はインタラクティブシェルに付属していません。
-事前に特定の設定をする必要がなく、アプリケーションにインポートするだけで使い始めることができます。
+事前に特定の設定をする必要がないので、アプリケーションにインポートするだけで使い始めることができます。
 
 .. There are however some handy helpers to make playing around in the shell a
    more pleasant experience.  The main issue with interactive console
@@ -37,7 +37,8 @@ Flask自体はインタラクティブシェルに付属していません。
    context.
 
 いくつかのヘルパー関数があります。
-しかし、これらの機能はインタラクティブシェルだけではなく、ユニットテストやダミーのリクエストコンテキストが必要な状況でも使われるということに注意して下さい。
+しかし、これらの機能はインタラクティブシェルだけではなく、
+ユニットテストやダミーのリクエストコンテキストが必要な場合でも使われるということを覚えておいて下さい。
 
 .. Generally it's recommended that you read the :ref:`request-context`
    chapter of the documentation first.
@@ -54,8 +55,9 @@ Flask自体はインタラクティブシェルに付属していません。
    using the :attr:`~flask.Flask.test_request_context` method which creates
    us a :class:`~flask.ctx.RequestContext`:
 
-適切なリクエストコンテキストをシェルから作成する簡単な方法は、
-:class:`~flask.ctx.RequestContext` を作成する :attr:`~flask.Flask.test_request_context` メソッドを使うことです。 :
+シェルから適切なリクエストコンテキストを作成する簡単な方法は、
+:class:`~flask.ctx.RequestContext` を作成することができる
+:attr:`~flask.Flask.test_request_context` メソッドを使うことです。 :
 
 >>> ctx = app.test_request_context()
 
@@ -65,7 +67,8 @@ Flask自体はインタラクティブシェルに付属していません。
    :meth:`~flask.ctx.RequestContext.pop` methods by hand:
 
 このリクエストオブジェクトを作るために、 `with` 文を普通は使うと思いますが、
-:meth:`~flask.ctx.RequestContext.push` と :meth:`~flask.ctx.RequestContext.pop` メソッドをシェルで使うことは簡単です。 :
+:meth:`~flask.ctx.RequestContext.push` と
+:meth:`~flask.ctx.RequestContext.pop` メソッドをシェルで使うことは簡単です。 :
 
 >>> ctx.push()
 
@@ -88,7 +91,7 @@ Flask自体はインタラクティブシェルに付属していません。
    before-request callback or the current user not being stored on the
    :data:`~flask.g` object etc.
 
-リクエストコンテキストを作成しても、まだコードは実行されていません
+リクエストコンテキストを作成しても、リクエストよりも前に普通は実行されるコードはまだ実行されていません。
 これは、before-requestコールバックでデータベースに接続するか、
 現在のユーザーが :data:`~flask.g` オブジェクトなどに保管されていない場合に、
 データベースが利用できなくなったという結果になるかもしれません。
@@ -106,7 +109,8 @@ Flask自体はインタラクティブシェルに付属していません。
 .. Keep in mind that the :meth:`~flask.Flask.preprocess_request` function
    might return a response object, in that case just ignore it.
 
-:meth:`~flask.Flask.preprocess_request` 関数はレスポンスオブジェクトを返すということに注意して下さい。
+:meth:`~flask.Flask.preprocess_request` 関数は、
+レスポンスオブジェクトを返すということを覚えておいて下さい。
 
 .. To shutdown a request, you need to trick a bit before the after request
    functions (triggered by :meth:`~flask.Flask.process_response`) operate on

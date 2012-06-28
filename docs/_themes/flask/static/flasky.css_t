@@ -14,7 +14,7 @@
 /* -- page layout ----------------------------------------------------------- */
 
 body {
-    font-family: 'Georgia',"Hiragino Kaku Gothic Pro","ヒラギノ角ゴ Pro W3",Meiryo,"メイリオ",Osaka,"ＭＳ Ｐ明朝",serif;
+    font-family: "Hiragino Kaku Gothic Pro","ヒラギノ角ゴ Pro W3",Meiryo,"メイリオ",Osaka,"ＭＳ Ｐ明朝",'Georgia',serif;
     font-size: 17px;
     background-color: white;
     color: #000;
