@@ -14,10 +14,10 @@
    interactive shell, because it does not require any specific setup upfront,
    just import your application and start playing around.
 
-全ての人がPythonを好きな理由の内の一つはインタラクティブシェルです。
-基本的にリアルタイムにPythonコマンドを実行することができ、すぐに結果が返ってきます。
-Flask自身はインタラクティブシェルが付属していません。
-事前に任意の設定を必要としないので、アプリケーションをインポートするだけで使い始めることができます。
+全ての人がPythonを好きな理由の内の一つがインタラクティブシェルです。
+基本的にリアルタイムにPythonコマンドを実行することができ、すぐに実行結果が返ってきます。
+Flask自体はインタラクティブシェルに付属していません。
+事前に特定の設定をする必要がなく、アプリケーションにインポートするだけで使い始めることができます。
 
 .. There are however some handy helpers to make playing around in the shell a
    more pleasant experience.  The main issue with interactive console
@@ -29,7 +29,7 @@ Flask自身はインタラクティブシェルが付属していません。
 しかし、シェルをより楽しく使うための便利なヘルパーがいくつかあります。
 インタラクティブコンソールのセッションの主な問題は、 :data:`~flask.g` や :data:`~flask.request` や他にも利用できないものがあり、
 そのようなブラウザが行うようなリクエストを処理できません。
-しかし、テストしたいコードはそれらに依存しているので、何をすることができますか?
+しかし、それらに依存しているコードをテストしたい場合、何をすればいいでしょうか?
 
 .. This is where some helper functions come in handy.  Keep in mind however
    that these functions are not only there for interactive shell usage, but
