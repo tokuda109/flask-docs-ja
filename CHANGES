@@ -78,6 +78,8 @@ Version 0.9
 .. Added `required_methods` attribute to view functions to force-add methods
    on registration.
 .. Added :func:`flask.after_this_request`.
+.. Added :func:`flask.stream_with_context` and the ability to push contexts
+   multiple times without producing unexpected behavior.
 
 - :func:`flask.Request.on_json_loading_failed` は、デフォルトでJSONフォーマットのレスポンスを返します。
 - :func:`flask.url_for` 関数は、生成済みのリンクに対するアンカーを生成することができます。
@@ -126,6 +128,8 @@ Version 0.9
   :attr:`flask.Flask.request_globals_class` を追加しました。
 - ビュー関数に `required_methods` アトリビュートを追加しました。
 - :func:`flask.after_this_request` を追加しました。
+- Added :func:`flask.stream_with_context` and the ability to push contexts
+  multiple times without producing unexpected behavior.
 
 Version 0.8.1
 -------------

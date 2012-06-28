@@ -63,7 +63,7 @@ build your own extensions if you do not find the tools you need.
 :class:`~flask.Flask` クラスには、サブクラスのためのメソッドがたくさんあります。
 手っ取り早く :class:`~flask.Flask` のサブクラスを作成することで振る舞いを追加したり、カスタマイズしたりできます。
 アプリケーションクラスのインスタンス化する
-これは :ref:`app-factories` 
+これは :ref:`app-factories`
 
 .. Wrap with middleware.
    ---------------------
