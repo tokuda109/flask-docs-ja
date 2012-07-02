@@ -11,9 +11,9 @@ Flaskの変更履歴
 Version 0.9
 -----------
 
-.. Relase date to be decided, codename to be chosen.
+.. Released on July 1st 2012, codename Campari.
 
-リリース日とコードネームはまもなく決まります。
+2012年7月1日リリース、コードネームはCamapriです。
 
 .. The :func:`flask.Request.on_json_loading_failed` now returns a JSON formatted
    response by default.
@@ -134,7 +134,7 @@ Version 0.9
 Version 0.8.1
 -------------
 
-.. Bugfix release, release date to be decided
+.. Bugfix release, released on July 1st 2012
 
 バグフィックス、リリース日はまもなく決まります。
 
