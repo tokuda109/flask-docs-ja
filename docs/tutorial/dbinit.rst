@@ -12,15 +12,16 @@
    before starting the server for the first time it's important to create
    that schema.
 
-前に述べたようにFlaskrは、データベースを使うアプリケーションです。
-そして、より正確には、リレーショナルデータベースシステムを使うアプリケーションです。
-このようなシステムは、情報の保存方法を伝えるスキーマが必要です。
-最初にサーバーを立ち上げる前に、そのようなスキーマを作成することは重要なことです。
+前述したように、Flaskrはデータベースを使うアプリケーションで、
+より正確には、リレーショナルデータベースを使うアプリケーションです。
+このようなシステムは、情報をどのように保管するかを指定するスキーマが必要です。
+最初にサーバーを立ち上げる前に、スキーマを作成することは重要なことです。
 
 .. Such a schema can be created by piping the `schema.sql` file into the
    `sqlite3` command as follows::
 
-このようなスキーマは、以下のような `sqlite3` コマンドに `schema.sql` ファイルを続けて書くことで作成できます。
+このようなスキーマは、
+以下のような `sqlite3` コマンドに `schema.sql` ファイルを続けて書くことで作成できます。
 
     sqlite3 /tmp/flaskr.db < schema.sql
 
@@ -30,28 +31,32 @@
    errors.  It's a good idea to add a function that initializes the database
    for you to the application.
 
-これの欠点は、全てのシステムで必ずしもインストールされていない場合に、sqlite3コマンドをインストールする必要があることです。
+これの欠点は、全てのシステムで必ずしもインストールされていない場合に、
+sqlite3コマンドをインストールする必要があることです。
 データベースへのパスを指定しなければいけません。
 アプリケーションにデータベースを初期化する関数を追加することは良い考えです。
 
 .. If you want to do that, you first have to import the
    :func:`contextlib.closing` function from the contextlib package.  If you
    want to use Python 2.5 it's also necessary to enable the `with` statement
-   first (`__future__` imports must be the very first import)::
+   first (`__future__` imports must be the very first import). Accordingly,
+   add the following lines to your existing imports in `flaskr.py`::
 
 そうしたいなら、まずcontextlibパッケージから :func:`contextlib.closing` 関数をインポートする必要があります。
 Python 2.5 を使いたい場合は、最初に `with` 文を有効化して下さい(`__future__` を最初にインポートして下さい)。
+それによって、 `flaskr.py` のインポートしている行のところに以下のようになるように行を追加して下さい。 ::
 
     from __future__ import with_statement
     from contextlib import closing
 
 .. Next we can create a function called `init_db` that initializes the
    database.  For this we can use the `connect_db` function we defined
-   earlier.  Just add that function below the `connect_db` function::
+   earlier.  Just add that function below the `connect_db` function in
+   `flask.py`::
 
 次に、データベースを初期化する `init_db` という関数を作成して下さい。
 これは、定義されている `connect_db` 関数を使います。
-`connect_db` 関数の下に関数を追加するだけです。 ::
+`flask.py` に以下の `connect_db` 関数を追加するだけです。 ::
 
     def init_db():
         with closing(connect_db()) as db:

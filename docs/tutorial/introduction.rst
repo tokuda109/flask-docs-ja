@@ -6,7 +6,7 @@ Flaskrの紹介
 .. Introducing Flaskr
    ==================
 
-.. We will call our blogging application flaskr here, feel free to chose a
+.. We will call our blogging application flaskr here, feel free to choose a
    less web-2.0-ish name ;)  Basically we want it to do the following things:
 
 ブログアプリケーションをここではflaskrと呼びます。Web2.0らしい名前です。
