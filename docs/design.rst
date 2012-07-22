@@ -121,13 +121,13 @@ things (:ref:`app-factories`).
 Flaskは複雑なルートを自動的に順番を並べるように設計されているWerkzeugのルーティングシステムを使っています。
 これは、任意の順番にルートを宣言することでき、期待通りに動作します。
 
-
 Another design decision with the Werkzeug routing system is that routes
-in Werkzeug try to ensure that there is that URLs are unique.  Werkzeug
-will go quite far with that in that it will automatically redirect to a
-canonical URL if a route is ambiguous.
+in Werkzeug try to ensure that URLs are unique.  Werkzeug will go quite far
+with that in that it will automatically redirect to a canonical URL if a route
+is ambiguous.
 
-Werkzeugのルーティングシステムを使う上で別のデザイン上の決まりごとは、
+.. Werkzeugのルーティングシステムを使う上で別のデザイン上の決まりごとは、
+
 
 One Template Engine
 -------------------
