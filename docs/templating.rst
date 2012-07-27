@@ -105,7 +105,7 @@ Jinjaのセットアップ
 
    :func:`flask.get_flashed_messages` 関数
 
-.. admonition:: The Jinja Context Behavior
+.. The Jinja Context Behavior
 
    These variables are added to the context of variables, they are not
    global variables.  The difference is that by default these will not
@@ -120,6 +120,21 @@ Jinjaのセットアップ
    2.   you import the macro "with context".
 
    Importing with context looks like this:
+
+.. admonition:: Jinjaのコンテキストの振る舞い
+
+   これらの変数は変数のコンテキストに追加されるので、グローバル変数ではありません。
+   違いとして、インポートしたテンプレートのコンテキストでこれらの変数デフォルトで参照できないことです。
+   これはパフォーマンスに考慮する際に特に注意しなければいけません。
+
+   What does this mean for you?  If you have a macro you want to import,
+   that needs to access the request object you have two possibilities:
+
+   1.   you explicitly pass the request to the macro as parameter, or
+        the attribute of the request object you are interested in.
+   2.   you import the macro "with context".
+
+   以下のようにしてコンテキストをインポートして下さい。:
 
    .. sourcecode:: jinja
 
@@ -147,9 +162,11 @@ Jinjaのセットアップ
    この関数は、与えられたオブジェクトをJSONに整形して変換します。
    実行中にJavaScriptを生成しようとする場合、これはとても便利な例です。
 
-   Note that inside `script` tags no escaping must take place, so make
-   sure to disable escaping with ``|safe`` if you intend to use it inside
-   `script` tags:
+   .. Note that inside `script` tags no escaping must take place, so make
+      sure to disable escaping with ``|safe`` if you intend to use it inside
+      `script` tags:
+
+   `script` タグ
 
    .. sourcecode:: html+jinja
 
@@ -211,12 +228,18 @@ using in this block.
 .. Registering Filters
    -------------------
 
-If you want to register your own filters in Jinja2 you have two ways to do
-that.  You can either put them by hand into the
-:attr:`~flask.Flask.jinja_env` of the application or use the
-:meth:`~flask.Flask.template_filter` decorator.
+.. If you want to register your own filters in Jinja2 you have two ways to do
+   that.  You can either put them by hand into the
+   :attr:`~flask.Flask.jinja_env` of the application or use the
+   :meth:`~flask.Flask.template_filter` decorator.
 
-The two following examples work the same and both reverse an object::
+Jinja2に独自のフィルターを登録したい場合は、2つの方法があります。
+アプリケーションの :attr:`~flask.Flask.jinja_env` に手動で登録するか、
+:meth:`~flask.Flask.template_filter` デコレーターを使うかのどちらかで可能です。
+
+.. The two following examples work the same and both reverse an object::
+
+以下の2つのサンプルは同じ事をしています。 ::
 
     @app.template_filter('reverse')
     def reverse_filter(s):
@@ -226,10 +249,14 @@ The two following examples work the same and both reverse an object::
         return s[::-1]
     app.jinja_env.filters['reverse'] = reverse_filter
 
-In case of the decorator the argument is optional if you want to use the
-function name as name of the filter.  Once registered, you can use the filter
-in your templates in the same way as Jinja2's builtin filters, for example if
-you have a Python list in context called `mylist`::
+.. In case of the decorator the argument is optional if you want to use the
+   function name as name of the filter.  Once registered, you can use the filter
+   in your templates in the same way as Jinja2's builtin filters, for example if
+   you have a Python list in context called `mylist`::
+
+デコレーターのケースではフィルターの名前として関数名使いたい場合は引数は任意です。
+登録したなら、Jinja2の組み込みのフィルターと同じようにテンプレートでフィルターを使うことができます。
+例として、以下のものは `mylist` というコンテキストにPythonのリストがある場合です。 ::
 
     {% for x in mylist | reverse %}
     {% endfor %}
@@ -267,11 +294,16 @@ functions)::
             return u'{0:.2f}{1}.format(amount, currency)
         return dict(format_price=format_price)
 
-The context processor above makes the `format_price` function available to all
-templates::
+.. The context processor above makes the `format_price` function available to all
+   templates::
+
+上のコンテキストプロセッサーは、 `format_price` 関数を全てのテンプレートで使えるようにしています。 ::
 
     {{ format_price(0.33) }}
 
-You could also build `format_price` as a template filter (see
-:ref:`registering-filters`), but this demonstrates how to pass functions in a
-context processor.
+.. You could also build `format_price` as a template filter (see
+   :ref:`registering-filters`), but this demonstrates how to pass functions in a
+   context processor.
+
+テンプレートフィルター(:ref:`registering-filters` を見て下さい)として `format_price` を生成することもできますが、
+このデモはコンテキストプロセッサーに関数がどのようにして渡されるのかを示すものです。
