@@ -265,7 +265,7 @@ Eメール
 +------------------+----------------------------------------------------+
 | Format           | Description                                        |
 +==================+====================================================+
-| ``%(levelname)s``| Text logging level for the message                 |
+| ``%(levelname)s``| メッセージを残すログレベルのテキスト                 |
 |                  | (``'DEBUG'``, ``'INFO'``, ``'WARNING'``,           |
 |                  | ``'ERROR'``, ``'CRITICAL'``).                      |
 +------------------+----------------------------------------------------+
@@ -292,16 +292,57 @@ Eメール
 | ``%(message)s``  | The logged message, computed as ``msg % args``     |
 +------------------+----------------------------------------------------+
 
+.. +------------------+----------------------------------------------------+
+   | Format           | Description                                        |
+   +==================+====================================================+
+   | ``%(levelname)s``| Text logging level for the message                 |
+   |                  | (``'DEBUG'``, ``'INFO'``, ``'WARNING'``,           |
+   |                  | ``'ERROR'``, ``'CRITICAL'``).                      |
+   +------------------+----------------------------------------------------+
+   | ``%(pathname)s`` | Full pathname of the source file where the         |
+   |                  | logging call was issued (if available).            |
+   +------------------+----------------------------------------------------+
+   | ``%(filename)s`` | Filename portion of pathname.                      |
+   +------------------+----------------------------------------------------+
+   | ``%(module)s``   | Module (name portion of filename).                 |
+   +------------------+----------------------------------------------------+
+   | ``%(funcName)s`` | Name of function containing the logging call.      |
+   +------------------+----------------------------------------------------+
+   | ``%(lineno)d``   | Source line number where the logging call was      |
+   |                  | issued (if available).                             |
+   +------------------+----------------------------------------------------+
+   | ``%(asctime)s``  | Human-readable time when the LogRecord` was        |
+   |                  | created.  By default this is of the form           |
+   |                  | ``"2003-07-08 16:49:45,896"`` (the numbers after   |
+   |                  | the comma are millisecond portion of the time).    |
+   |                  | This can be changed by subclassing the formatter   |
+   |                  | and overriding the                                 |
+   |                  | :meth:`~logging.Formatter.formatTime` method.      |
+   +------------------+----------------------------------------------------+
+   | ``%(message)s``  | The logged message, computed as ``msg % args``     |
+   +------------------+----------------------------------------------------+
+
 .. If you want to further customize the formatting, you can subclass the
    formatter.  The formatter has three interesting methods:
 
 フォーマットをさらにカスタマイズしたい場合は、フォーマットのサブクラスを作ることができます。
 フォーマットのクラスは三つのメソッドがあります。:
 
+.. :meth:`~logging.Formatter.format`:
+       handles the actual formatting.  It is passed a
+       :class:`~logging.LogRecord` object and has to return the formatted
+       string.
+.. :meth:`~logging.Formatter.formatTime`:
+       called for `asctime` formatting.  If you want a different time format
+       you can override this method.
+.. :meth:`~logging.Formatter.formatException`
+       called for exception formatting.  It is passed an :attr:`~sys.exc_info`
+       tuple and has to return a string.  The default is usually fine, you
+       don't have to override it.
+
 :meth:`~logging.Formatter.format`:
-    handles the actual formatting.  It is passed a
-    :class:`~logging.LogRecord` object and has to return the formatted
-    string.
+    実際のフォーマットで処理します。
+    :class:`~logging.LogRecord` オブジェクトに渡してフォーマットにする文字列を返す必要があります。
 :meth:`~logging.Formatter.formatTime`:
     called for `asctime` formatting.  If you want a different time format
     you can override this method.
