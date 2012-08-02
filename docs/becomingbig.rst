@@ -71,11 +71,16 @@ build your own extensions if you do not find the tools you need.
 ミドルウェアのラップ
 ------------------------
 
-The :ref:`app-dispatch` chapter shows in detail how to apply middleware. You
-can introduce WSGI middleware to wrap your Flask instances and introduce fixes
-and changes at the layer between your Flask application and your HTTP
-server. Werkzeug includes several `middlewares
-<http://werkzeug.pocoo.org/docs/middlewares/>`_.
+.. The :ref:`app-dispatch` chapter shows in detail how to apply middleware. You
+   can introduce WSGI middleware to wrap your Flask instances and introduce fixes
+   and changes at the layer between your Flask application and your HTTP
+   server. Werkzeug includes several `middlewares
+   <http://werkzeug.pocoo.org/docs/middlewares/>`_.
+
+:ref:`app-dispatch` の章はミドルウェアの使い方を詳細に紹介しています。
+WSGIミドルウェアでFlaskインスタンスをラップすることや
+FlaskアプリケーションとHTTPサーバーの間のレイヤーの変更を反映させることができます。
+Werkzeugには、 `ミドルウェア <http://werkzeug.pocoo.org/docs/middlewares/>`_ がいくつか入っています。
 
 .. Fork.
    -----
