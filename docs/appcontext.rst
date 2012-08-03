@@ -15,11 +15,10 @@
    first request comes in.  While the application is in this state a few
    assumptions are true:
 
-Flaskの背後にある設計思想の一つは、コードが実行される際に2つの異なる "状態" があるということです。
-アプリケーションが暗黙的に
-アプリケーションが暗黙的に、モジュールレベルでであるアプリケーションのセットアップ状態になります。
-:class:`Flask` オブジェクトがインスタンス化された時に起動し、
-アプリケーションは
+Flaskの背景にある設計思想の一つは、コードが実行される際に2つの異なる "状態" があるということです。
+アプリケーションが暗黙的に、モジュールレベルであるアプリケーションのセットアップ状態になります。
+:class:`Flask` オブジェクトがインスタンス化された時に起動し、最初にリクエストが来た際に明示的に終了します。
+アプリケーションがこの状態である間は、この前提条件は正しいものとされます。
 
 .. the programmer can modify the application object safely.
 .. no request handling happened so far
@@ -28,7 +27,7 @@ Flaskの背後にある設計思想の一つは、コードが実行される際
    the application object you're currently creating or modifying.
 
 - 開発者はアプリケーションのオブジェクトを安全に変更することができます。
-- no request handling happened so far
+- リクエストの処理がない場合は何も起こりません。
 - you have to have a reference to the application object in order to
   modify it, there is no magic proxy that can give you a reference to
   the application object you're currently creating or modifying.
@@ -54,7 +53,7 @@ command line application.
 .. The application context is what powers the :data:`~flask.current_app`
    context local.
 
-アプリケーションコンテキストは、 :data:`~flask.current_app` 
+アプリケーションコンテキストは、 :data:`~flask.current_app` というコンテキストローカルを持っています。
 
 .. Purpose of the Application Context
    ----------------------------------
@@ -66,6 +65,9 @@ The main reason for the application's context existance is that in the
 past a bunch of functionality was attached to the request context in lack
 of a better solution.  Since one of the pillar's of Flask's design is that
 you can have more than one application in the same Python process.
+
+.. アプリケーションのコンテキストがあることの主な理由として、
+   いいソリューションが欠けているものにリクエストコンテキストを
 
 So how does the code find the “right” application?  In the past we
 recommended passing applications around explicitly, but that caused issues
@@ -83,13 +85,20 @@ request around, the application context was introduced.
 アプリケーションコンテキストの作成
 ----------------------------------------
 
-To make an application context there are two ways.  The first one is the
-implicit one: whenever a request context is pushed, an application context
-will be created alongside if this is necessary.  As a result of that, you
-can ignore the existance of the application context unless you need it.
+.. To make an application context there are two ways.  The first one is the
+   implicit one: whenever a request context is pushed, an application context
+   will be created alongside if this is necessary.  As a result of that, you
+   can ignore the existance of the application context unless you need it.
 
-The second way is the explicit way using the
-:meth:`~flask.Flask.app_context` method::
+アプリケーションコンテキストを作成するには二つの方法があります。
+一つ目は明示的な方法で、リクエストコンテキストが追加されるたびに、
+アプリケーションコンテキストが必要なら作成されます。
+その結果として、必要になるまでアプリケーションコンテキストの存在を無視することができます。
+
+.. The second way is the explicit way using the
+   :meth:`~flask.Flask.app_context` method::
+
+二つ目の方法は明示的な方法で、 :meth:`~flask.Flask.app_context` メソッドを使うことです。 ::
 
     from flask import Flask, current_app
 
@@ -98,9 +107,13 @@ The second way is the explicit way using the
         # within this block, current_app points to app.
         print current_app.name
 
-The application context is also used by the :func:`~flask.url_for`
-function in case a ``SERVER_NAME`` was configured.  This allows you to
-generate URLs even in the absence of a request.
+.. The application context is also used by the :func:`~flask.url_for`
+   function in case a ``SERVER_NAME`` was configured.  This allows you to
+   generate URLs even in the absence of a request.
+
+アプリケーションコンテキストは ``SERVER_NAME`` が設定されている場合に、
+:func:`~flask.url_for` 関数によって使われます。
+これによってリクエストがない場合には、URLを生成することができるようになります。
 
 .. Locality of the Context
    -----------------------
@@ -108,11 +121,20 @@ generate URLs even in the absence of a request.
 コンテキストのローカリティー
 ---------------------------------
 
-The application context is created and destroyed as necessary.  It never
-moves between threads and it will not be shared between requests.  As such
-it is the perfect place to store database connection information and other
-things.  The internal stack object is called :data:`flask._app_ctx_stack`.
-Extensions are free to store additional information on the topmost level,
-assuming they pick a sufficiently unique name.
+.. The application context is created and destroyed as necessary.  It never
+   moves between threads and it will not be shared between requests.  As such
+   it is the perfect place to store database connection information and other
+   things.  The internal stack object is called :data:`flask._app_ctx_stack`.
+   Extensions are free to store additional information on the topmost level,
+   assuming they pick a sufficiently unique name.
 
-For more information about that, see :ref:`extension-dev`.
+アプリケーションコンテキストは必要に応じて作成され、破棄されます。
+スレッド間でやり取りされることはなく、リクエスト間で共有されることもありません。
+データベース接続の情報や他の情報を保管するところです。
+内部のスタックオブジェクトは、 :data:`flask._app_ctx_stack` と呼ばれています。
+ユニークな名前で選んでいると仮定して、
+エクステンションは最上位にある追加情報を保管することは自由にできます。
+
+.. For more information about that, see :ref:`extension-dev`.
+
+さらに詳しい情報については :ref:`extension-dev` を見て下さい。
