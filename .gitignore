@@ -1,4 +1,5 @@
 .project
 .pydevproject
 .settings/*
+docs/_build
 Flask.egg-info/*
