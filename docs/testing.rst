@@ -1,9 +1,14 @@
 .. _testing:
 
-Testing Flask Applications
-==========================
+Flaskアプリケーションのテスト
+=====================================
 
-   **Something that is untested is broken.**
+.. Testing Flask Applications
+   ==========================
+
+.. **Something that is untested is broken.**
+
+   **テストしていないものは壊れます。**
 
 The origin of this quote is unknown and while it is not entirely correct, it is also
 not far from the truth.  Untested applications make it hard to
@@ -11,26 +16,39 @@ improve existing code and developers of untested applications tend to
 become pretty paranoid.  If an application has automated tests, you can
 safely make changes and instantly know if anything breaks.
 
-Flask provides a way to test your application by exposing the Werkzeug 
+Flask provides a way to test your application by exposing the Werkzeug
 test :class:`~werkzeug.test.Client` and handling the context locals for you.
 You can then use that with your favourite testing solution.  In this documentation
 we will use the :mod:`unittest` package that comes pre-installed with Python.
 
-The Application
----------------
+.. The Application
+   ---------------
 
-First, we need an application to test; we will use the application from 
-the :ref:`tutorial`.  If you don't have that application yet, get the 
-sources from `the examples`_.
+アプリケーション
+--------------------------
+
+.. First, we need an application to test; we will use the application from
+   the :ref:`tutorial`.  If you don't have that application yet, get the
+   sources from `the examples`_.
+
+最初に、テストのためのアプリケーションが必要です。
+:ref:`tutorial` のアプリケーションを使います。
+まだそのアプリケーションがない場合は、 `the examples`_ からソースを取得して下さい。
 
 .. _the examples:
    http://github.com/mitsuhiko/flask/tree/master/examples/flaskr/
 
-The Testing Skeleton
---------------------
+.. The Testing Skeleton
+   --------------------
 
-In order to test the application, we add a second module 
-(`flaskr_tests.py`) and create a unittest skeleton there::
+テストの際のスケルトン
+----------------------------------------
+
+.. In order to test the application, we add a second module
+   (`flaskr_tests.py`) and create a unittest skeleton there::
+
+アプリケーションをテストするために、
+2つめのモジュール(`flaskr_tests.py`)を追加して、ユニットテストのスケルトンをそこに作成します。
 
     import os
     import flaskr
@@ -54,15 +72,15 @@ In order to test the application, we add a second module
 
 The code in the :meth:`~unittest.TestCase.setUp` method creates a new test
 client and initializes a new database.  This function is called before
-each individual test function is run.  To delete the database after the 
+each individual test function is run.  To delete the database after the
 test, we close the file and remove it from the filesystem in the
 :meth:`~unittest.TestCase.tearDown` method.  Additionally during setup the
 ``TESTING`` config flag is activated.  What it does is disabling the error
 catching during request handling so that you get better error reports when
 performing test requests against the application.
 
-This test client will give us a simple interface to the application.  We can 
-trigger test requests to the application, and the client will also keep track 
+This test client will give us a simple interface to the application.  We can
+trigger test requests to the application, and the client will also keep track
 of cookies for us.
 
 Because SQLite3 is filesystem-based we can easily use the tempfile module
@@ -85,11 +103,14 @@ Even though it did not run any actual tests, we already know that our flaskr
 application is syntactically valid, otherwise the import would have died
 with an exception.
 
-The First Test
---------------
+.. The First Test
+   --------------
 
-Now it's time to start testing the functionality of the application.  
-Let's check that the application shows "No entries here so far" if we 
+最初のテスト
+----------------------------
+
+Now it's time to start testing the functionality of the application.
+Let's check that the application shows "No entries here so far" if we
 access the root of the application (``/``). To do this, we add a new
 test method to our class, like this::
 
@@ -108,13 +129,13 @@ test method to our class, like this::
             rv = self.app.get('/')
             assert 'No entries here so far' in rv.data
 
-Notice that our test functions begin with the word `test`; this allows 
-:mod:`unittest` to automatically identify the method as a test to run. 
+Notice that our test functions begin with the word `test`; this allows
+:mod:`unittest` to automatically identify the method as a test to run.
 
-By using `self.app.get` we can send an HTTP `GET` request to the application with 
-the given path.  The return value will be a :class:`~flask.Flask.response_class` object. 
+By using `self.app.get` we can send an HTTP `GET` request to the application with
+the given path.  The return value will be a :class:`~flask.Flask.response_class` object.
 We can now use the :attr:`~werkzeug.wrappers.BaseResponse.data` attribute to inspect
-the return value (as string) from the application.  In this case, we ensure that 
+the return value (as string) from the application.  In this case, we ensure that
 ``'No entries here so far'`` is part of the output.
 
 Run it again and you should see one passing test::
@@ -126,13 +147,16 @@ Run it again and you should see one passing test::
 
     OK
 
-Logging In and Out
-------------------
+.. Logging In and Out
+   ------------------
+
+ログインとログアウト
+------------------------------------
 
 The majority of the functionality of our application is only available for
 the administrative user, so we need a way to log our test client in and out
-of the application.  To do this, we fire some requests to the login and logout 
-pages with the required form data (username and password).  And because the 
+of the application.  To do this, we fire some requests to the login and logout
+pages with the required form data (username and password).  And because the
 login and logout pages redirect, we tell the client to `follow_redirects`.
 
 Add the following two methods to your `FlaskrTestCase` class::
@@ -159,8 +183,11 @@ invalid credentials.  Add this new test to the class::
        rv = self.login('admin', 'defaultx')
        assert 'Invalid password' in rv.data
 
-Test Adding Messages
---------------------
+.. Test Adding Messages
+   --------------------
+
+メッセージ追加のテスト
+------------------------------------
 
 We should also test that adding messages works.  Add a new test method
 like this::
@@ -196,8 +223,11 @@ suite.
    http://github.com/mitsuhiko/flask/tree/master/examples/minitwit/
 
 
-Other Testing Tricks
---------------------
+.. Other Testing Tricks
+   --------------------
+
+テストの他のやり方
+------------------------------
 
 Besides using the test client as shown above, there is also the
 :meth:`~flask.Flask.test_request_context` method that can be used
