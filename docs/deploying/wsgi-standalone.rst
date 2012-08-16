@@ -140,11 +140,13 @@ Werkzeugはいくつかの一般的なセットアップを解決する機能を
         }
     }
 
-If your httpd is not providing these headers, the most common setup invokes the
-host being set from `X-Forwarded-Host` and the remote address from
-`X-Forwarded-For`::
+.. If your httpd is not providing these headers, the most common setup invokes the
+   host being set from `X-Forwarded-Host` and the remote address from
+   `X-Forwarded-For`::
 
 httpdでこれらのヘッダーが提供されていない場合、
+最も一般的な設定は `X-Forwarded-Host` を設定するか、
+`X-Forwarded-For` のリモートアドレス
 
     from werkzeug.contrib.fixers import ProxyFix
     app.wsgi_app = ProxyFix(app.wsgi_app)
@@ -158,7 +160,8 @@ httpdでこれらのヘッダーが提供されていない場合、
 .. admonition:: 信頼できるヘッダー
 
    non-proxyでセットアップするミドルウェアを使うと
-   それは盲目的に悪意のあるクライアントが偽造されるかもしれない入って来るヘッダを信頼するので、非プロキシ設定でこのようなミドルウェアを使用するようにセキュリティの問題であることに注意してください。
+   それは盲目的に悪意のあるクライアントが偽造されるかもしれない入って来るヘッダを信頼するので、
+   非プロキシ設定でこのようなミドルウェアを使用するようにセキュリティの問題であることに注意してください。
 
 .. If you want to rewrite the headers from another header, you might want to
    use a fixer like this::

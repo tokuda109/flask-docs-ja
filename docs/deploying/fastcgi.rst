@@ -70,6 +70,7 @@ It makes sense to have that in `/var/www/yourapplication` or something
 similar.
 
 `yourapplication.fcgi` ファイルを保存して
+`/var/www/yourapplication` か同じような場所に
 
 .. Make sure to set the executable bit on that file so that the servers
    can execute it:
@@ -193,16 +194,23 @@ root. Also, see the Lighty docs for more information on `FastCGI and Python
 <http://redmine.lighttpd.net/wiki/lighttpd/Docs:ModFastCGI>`_ (note that
 explicitly passing a socket to run() is no longer necessary).
 
+
+
 .. Configuring nginx
    -----------------
 
 nginxの設定をする
 --------------------
 
-Installing FastCGI applications on nginx is a bit different because by
-default no FastCGI parameters are forwarded.
+.. Installing FastCGI applications on nginx is a bit different because by
+   default no FastCGI parameters are forwarded.
 
-A basic flask FastCGI configuration for nginx looks like this::
+nginx上でFastCGIアプリケーションをインストールすることは、
+FastCGIをデフォルトでインストールする場合のパラメーターと少し異なります。
+
+.. A basic flask FastCGI configuration for nginx looks like this::
+
+基本的なFlaskのnginx用のFastCGI設定は以下のようになります。 ::
 
     location = /yourapplication { rewrite ^ /yourapplication/ last; }
     location /yourapplication { try_files $uri @yourapplication; }
@@ -214,9 +222,12 @@ A basic flask FastCGI configuration for nginx looks like this::
         fastcgi_pass unix:/tmp/yourapplication-fcgi.sock;
     }
 
-This configuration binds the application to `/yourapplication`.  If you
-want to have it in the URL root it's a bit simpler because you don't
-have to figure out how to calculate `PATH_INFO` and `SCRIPT_NAME`::
+.. This configuration binds the application to `/yourapplication`.  If you
+   want to have it in the URL root it's a bit simpler because you don't
+   have to figure out how to calculate `PATH_INFO` and `SCRIPT_NAME`::
+
+この設定はアプリケーションを `/yourapplication` にバインドします。
+URLのルートにしたい場合は、 `PATH_INFO` と `SCRIPT_NAME` の
 
     location / { try_files $uri @yourapplication; }
     location @yourapplication {
