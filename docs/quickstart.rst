@@ -10,8 +10,8 @@
    assumes you already have Flask installed.  If you do not, head over to the
    :ref:`installation` section.
 
-そろそろ始めたいですか?
-このページはFlaskの紹介をします。Flaskが既にインストールされているものと仮定します。
+それでははじめましょう。
+このページはFlaskの使い方の紹介をします。既にFlaskがインストールされているものと仮定します。
 まだインストールしていない場合は、 :ref:`installation` の章に進んで下さい。
 
 .. A Minimal Application
@@ -38,8 +38,8 @@
    interpreter.  Make sure to not call your application `flask.py` because this
    would conflict with Flask itself.
 
-`hello.py` として(もしくは同じようにして)保存して、Pythonのインタープリターで実行して下さい。
-Flask自身と競合するので、アプリケーションを `flask.py` として実行しないで下さい。
+`hello.py` として(もしくは同じようにして)保存してからPythonのインタープリターで実行して下さい。
+Flask自身と競合するので、アプリケーションを `flask.py` と保存して実行しないで下さい。
 
 ::
 
@@ -49,7 +49,7 @@ Flask自身と競合するので、アプリケーションを `flask.py` とし
 .. Now head over to `http://127.0.0.1:5000/ <http://127.0.0.1:5000/>`_, and you
    should see your hello world greeting.
 
-`http://127.0.0.1:5000/ <http://127.0.0.1:5000/>`_ を確認すると、”Hello World!”を見ることができます。
+`http://127.0.0.1:5000/ <http://127.0.0.1:5000/>`_ を確認すると、「Hello World!」という文字が見えると思います。
 
 .. So what did that code do?
 
@@ -76,10 +76,11 @@ Flask自身と競合するので、アプリケーションを `flask.py` とし
    interpreter and not used as imported module.
 
 1. まず、 :class:`~flask.Flask` クラスをインポートしました。このクラスのインスタンスはWSGIアプリケーションです。
-   最初の引数はアプリケーションのモジュール名です。モジュールが一つの場合(この例のように)は、
-   なので、 `__name__` として下さい。
+   最初の引数はアプリケーションのモジュール名です。モジュールが一つの場合(このサンプルのような場合)は、
+   アプリケーションか、もしくはモジュール名としてインポートした(``'__main__'`` と)
+   依存しているので、 `__name__` として下さい。
    より詳しく知りたい方は、 :class:`~flask.Flask` ドキュメントを見てください。
-2. 次に、インスタンスを作成します。モジュール名やパッケージを渡します。
+2. 次に、このクラスのインスタンスを作成します。モジュール名やパッケージを渡します。
    これはFlaskがテンプレートファイルや静的ファイルなどを探すべき場所を知るために必要です。
 3. URLがどの関数に対してのトリガーとなるかをFlaskに教えるために、
    :meth:`~flask.Flask.route` デコレーターを使います。
