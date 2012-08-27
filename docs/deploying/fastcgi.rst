@@ -176,7 +176,7 @@ lighttpdの基本的なFastCGIの設定は以下のようになります。 ::
     )
 
     url.rewrite-once = (
-        "^(/static.*)$" => "$1",
+        "^(/static($|/.*))$" => "$1",
         "^(/.*)$" => "/yourapplication.fcgi$1"
 
 .. Remember to enable the FastCGI, alias and rewrite modules. This configuration

@@ -51,7 +51,7 @@ Flask 0.7 ではビュー関数の代わりにDjangoのクラスベースの汎�
             users = User.query.all()
             return render_template('users.html', objects=users)
 
-    app.add_url_rule('/users/', ShowUsers.as_view('show_users'))
+    app.add_url_rule('/users/', view_func=ShowUsers.as_view('show_users'))
 
 .. As you can see what you have to do is to create a subclass of
    :class:`flask.views.View` and implement
@@ -66,7 +66,7 @@ Flask 0.7 ではビュー関数の代わりにDjangoのクラスベースの汎�
 それから、 :meth:`~flask.views.View.as_view` クラスメソッドを使って現在のビュー関数をクラスに修正しなければいけません。
 その関数に渡す文字列は、ビューのエンドポイントの名前です。
 しかし、これだけでは使えないので、コードを少し修正して下さい。 ::
-    
+
     from flask.views import View
 
     class ListView(View):
@@ -257,7 +257,7 @@ URL             Method          説明
 ``/users/``     ``GET``         全ユーザーのリストを与える
 ``/users/``     ``POST``        新しいユーザーを作成する
 ``/users/<id>`` ``GET``         一人のユーザーを表示する
-``/users/<id>`` ``PUT``         一人のユーザーをアップデートする 
+``/users/<id>`` ``PUT``         一人のユーザーをアップデートする
 ``/users/<id>`` ``DELETE``      一人のユーザーを削除する
 =============== =============== ======================================
 
