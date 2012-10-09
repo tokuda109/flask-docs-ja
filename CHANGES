@@ -13,6 +13,29 @@ Version 0.10
 
 Release date to be decided.
 
+- Changed default cookie serialization format from pickle to JSON to
+  limit the impact an attacker can do if the secret key leaks.  See
+  :ref:`upgrading-to-010` for more information.
+- Added ``template_test`` methods in addition to the already existing
+  ``template_filter`` method family.
+- Set the content-length header for x-sendfile.
+- ``tojson`` filter now does not escape script blocks in HTML5 parsers.
+- Flask will now raise an error if you attempt to register a new function
+  on an already used endpoint.
+- Added wrapper module around simplejson and added default serialization
+  of datetime objects.  This allows much easier customization of how
+  JSON is handled by Flask or any Flask extension.
+- Removed deprecated internal ``flask.session`` module alias.  Use
+  ``flask.sessions`` instead to get the session module.  This is not to
+  be confused with ``flask.session`` the session proxy.
+- Templates can now be rendered without request context.  The behavior is
+  slightly different as the ``request``, ``session`` and ``g`` objects
+  will not be available and blueprint's context processors are not
+  called.
+- The config object is now available to the template as a real global and
+  not through a context processor which makes it available even in imported
+  templates by default.
+
 Version 0.9
 -----------
 

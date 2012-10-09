@@ -61,7 +61,7 @@ command line application.
 アプリケーションコンテキストの目的
 ----------------------------------------
 
-The main reason for the application's context existance is that in the
+The main reason for the application's context existence is that in the
 past a bunch of functionality was attached to the request context in lack
 of a better solution.  Since one of the pillar's of Flask's design is that
 you can have more than one application in the same Python process.
@@ -88,7 +88,7 @@ request around, the application context was introduced.
 .. To make an application context there are two ways.  The first one is the
    implicit one: whenever a request context is pushed, an application context
    will be created alongside if this is necessary.  As a result of that, you
-   can ignore the existance of the application context unless you need it.
+   can ignore the existence of the application context unless you need it.
 
 アプリケーションコンテキストを作成するには二つの方法があります。
 一つ目は明示的な方法で、リクエストコンテキストが追加されるたびに、

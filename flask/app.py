@@ -24,8 +24,8 @@ from werkzeug.exceptions import HTTPException, InternalServerError, \
      MethodNotAllowed, BadRequest
 
 from .helpers import _PackageBoundObject, url_for, get_flashed_messages, \
-    locked_cached_property, _tojson_filter, _endpoint_from_view_func, \
-    find_package
+    locked_cached_property, _endpoint_from_view_func, find_package
+from . import json
 from .wrappers import Request, Response
 from .config import ConfigAttribute, Config
 from .ctx import RequestContext, AppContext, _RequestGlobals
@@ -279,6 +279,16 @@ class Flask(_PackageBoundObject):
         '%(message)s\n' +
         '-' * 80
     )
+
+    #: The JSON encoder class to use.  Defaults to :class:`~flask.json.JSONEncoder`.
+    #:
+    #: .. versionadded:: 0.10
+    json_encoder = json.JSONEncoder
+
+    #: The JSON decoder class to use.  Defaults to :class:`~flask.json.JSONDecoder`.
+    #:
+    #: .. versionadded:: 0.10
+    json_decoder = json.JSONDecoder
 
     #: Options that are passed directly to the Jinja2 environment.
     jinja_options = ImmutableDict(
@@ -583,8 +593,8 @@ class Flask(_PackageBoundObject):
         Here some examples::
 
             app.logger.debug('A value for debugging')
-            app.logger.warning('A warning ocurred (%d apples)', 42)
-            app.logger.error('An error occoured')
+            app.logger.warning('A warning occurred (%d apples)', 42)
+            app.logger.error('An error occurred')
 
         .. versionadded:: 0.3
         """
@@ -677,9 +687,10 @@ class Flask(_PackageBoundObject):
         rv = Environment(self, **options)
         rv.globals.update(
             url_for=url_for,
-            get_flashed_messages=get_flashed_messages
+            get_flashed_messages=get_flashed_messages,
+            config=self.config
         )
-        rv.filters['tojson'] = _tojson_filter
+        rv.filters['tojson'] = json.htmlsafe_dumps
         return rv
 
     def create_global_jinja_loader(self):
@@ -726,9 +737,11 @@ class Flask(_PackageBoundObject):
                         to add extra variables.
         """
         funcs = self.template_context_processors[None]
-        bp = _request_ctx_stack.top.request.blueprint
-        if bp is not None and bp in self.template_context_processors:
-            funcs = chain(funcs, self.template_context_processors[bp])
+        reqctx = _request_ctx_stack.top
+        if reqctx is not None:
+            bp = reqctx.request.blueprint
+            if bp is not None and bp in self.template_context_processors:
+                funcs = chain(funcs, self.template_context_processors[bp])
         orig_ctx = context.copy()
         for func in funcs:
             context.update(func())
@@ -888,7 +901,7 @@ class Flask(_PackageBoundObject):
         first_registration = False
         if blueprint.name in self.blueprints:
             assert self.blueprints[blueprint.name] is blueprint, \
-                'A blueprint\'s name collision ocurred between %r and ' \
+                'A blueprint\'s name collision occurred between %r and ' \
                 '%r.  Both share the same name "%s".  Blueprints that ' \
                 'are created on the fly need unique names.' % \
                 (blueprint, self.blueprints[blueprint.name], blueprint.name)
@@ -984,8 +997,13 @@ class Flask(_PackageBoundObject):
 
         rule = self.url_rule_class(rule, methods=methods, **options)
         rule.provide_automatic_options = provide_automatic_options
+
         self.url_map.add(rule)
         if view_func is not None:
+            old_func = self.view_functions.get(endpoint)
+            if old_func is not None and old_func is not view_func:
+                raise AssertionError('View function mapping is overwriting an '
+                                     'existing endpoint function: %s' % endpoint)
             self.view_functions[endpoint] = view_func
 
     def route(self, rule, **options):
@@ -1135,6 +1153,44 @@ class Flask(_PackageBoundObject):
         self.jinja_env.filters[name or f.__name__] = f
 
     @setupmethod
+    def template_test(self, name=None):
+        """A decorator that is used to register custom template test.
+        You can specify a name for the test, otherwise the function
+        name will be used. Example::
+
+          @app.template_test()
+          def is_prime(n):
+              if n == 2:
+                  return True
+              for i in xrange(2, int(math.ceil(math.sqrt(n))) + 1):
+                  if n % i == 0:
+                      return False
+              return True
+
+        .. versionadded:: 0.10
+
+        :param name: the optional name of the test, otherwise the
+                     function name will be used.
+        """
+        def decorator(f):
+            self.add_template_test(f, name=name)
+            return f
+        return decorator
+
+    @setupmethod
+    def add_template_test(self, f, name=None):
+        """Register a custom template test.  Works exactly like the
+        :meth:`template_test` decorator.
+
+        .. versionadded:: 0.10
+
+        :param name: the optional name of the test, otherwise the
+                     function name will be used.
+        """
+        self.jinja_env.tests[name or f.__name__] = f
+
+
+    @setupmethod
     def before_request(self, f):
         """Registers a function to run before each request."""
         self.before_request_funcs.setdefault(None, []).append(f)
@@ -1156,7 +1212,7 @@ class Flask(_PackageBoundObject):
         a new response object or the same (see :meth:`process_response`).
 
         As of Flask 0.7 this function might not be executed at the end of the
-        request in case an unhandled exception ocurred.
+        request in case an unhandled exception occurred.
         """
         self.after_request_funcs.setdefault(None, []).append(f)
         return f
@@ -1180,10 +1236,10 @@ class Flask(_PackageBoundObject):
         stack of active contexts.  This becomes relevant if you are using
         such constructs in tests.
 
-        Generally teardown functions must take every necesary step to avoid
+        Generally teardown functions must take every necessary step to avoid
         that they will fail.  If they do execute code that might fail they
         will have to surround the execution of these code by try/except
-        statements and log ocurring errors.
+        statements and log occurring errors.
 
         When a teardown function was called because of a exception it will
         be passed an error object.
@@ -1313,7 +1369,7 @@ class Flask(_PackageBoundObject):
 
     def handle_exception(self, e):
         """Default exception handling that kicks in when an exception
-        occours that is not caught.  In debug mode the exception will
+        occurs that is not caught.  In debug mode the exception will
         be re-raised immediately, otherwise it is logged and the handler
         for a 500 internal server error is used.  If no such handler
         exists, a default 500 internal server error message is displayed.
@@ -1570,7 +1626,7 @@ class Flask(_PackageBoundObject):
         request handling is stopped.
 
         This also triggers the :meth:`url_value_processor` functions before
-        the actualy :meth:`before_request` functions are called.
+        the actual :meth:`before_request` functions are called.
         """
         bp = _request_ctx_stack.top.request.blueprint
 
@@ -1723,7 +1779,7 @@ class Flask(_PackageBoundObject):
            The behavior of the before and after request callbacks was changed
            under error conditions and a new callback was added that will
            always execute at the end of the request, independent on if an
-           error ocurred or not.  See :ref:`callbacks-and-errors`.
+           error occurred or not.  See :ref:`callbacks-and-errors`.
 
         :param environ: a WSGI environment
         :param start_response: a callable accepting a status code,

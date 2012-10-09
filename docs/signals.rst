@@ -263,7 +263,7 @@ The following signals exist in Flask:
         def close_db_connection(sender, **extra):
             session.close()
 
-        from flask import request_tearing_down
+        from flask import appcontext_tearing_down
         request_tearing_down.connect(close_db_connection, app)
 
    As of Flask 0.9, this will also be passed an `exc` keyword argument

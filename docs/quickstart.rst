@@ -810,13 +810,12 @@ For this also see :ref:`about-responses`.
 リダイレクトとエラー
 -----------------------
 
-.. To redirect a user to somewhere else you can use the
-   :func:`~flask.redirect` function. To abort a request early with an error
-   code use the :func:`~flask.abort` function.  Here an example how this works::
+.. To redirect a user to another endpoint, use the :func:`~flask.redirect`
+   function; to abort a request early with an error code, use the
+   :func:`~flask.abort` function::
 
-ユーザーを別の場所にリダイレクトするために、 :func:`~flask.redirect` 関数を使うことができます。
-エラーコードによってリクエストを早期に中断するために、 :func:`~flask.abort` 関数を使うことができます。
-どのように動くのか以下に例を示します。 ::
+ユーザーを別のエンドポイントにリダイレクトするために、 :func:`~flask.redirect` 関数を使って下さい。
+エラーコードによってリクエストを早期に中断するために、 :func:`~flask.abort` 関数を使って下さい。 ::
 
     from flask import abort, redirect, url_for
 

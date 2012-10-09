@@ -48,3 +48,5 @@ Flaskのパターン
    favicon
    streaming
    deferredcallbacks
+   methodoverrides
+   requestchecksum
