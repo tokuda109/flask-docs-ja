@@ -1,40 +1,39 @@
 .. _deployment:
 
-デプロイの組み合わせ
-=====================
+Deployment Options
+==================
 
-.. Deployment Options
-   ==================
+While lightweight and easy to use, **Flask's built-in server is not suitable
+for production** as it doesn't scale well and by default serves only one
+request at a time.  Some of the options available for properly running Flask in
+production are documented here.
 
-.. Depending on what you have available there are multiple ways to run
-   Flask applications.  You can use the builtin server during development,
-   but you should use a full deployment option for production applications.
-   (Do not use the builtin development server in production.)  Several
-   options are available and documented here.
+If you want to deploy your Flask application to a WSGI server not listed here,
+look up the server documentation about how to use a WSGI app with it.  Just
+remember that your :class:`Flask` application object is the actual WSGI
+application.
 
-利用可能なものに応じて、Flaskアプリケーションを起動する複数の方法があります。
-開発中は備え付けのサーバーを使いますが、
-本番環境のアプリケーションに対してデプロイするものを全て組み合わせて使うべきです(本番環境では備え付けの開発サーバーは使わないで下さい)。
-いくつかの組み合わせが利用可能で、この章で文章化されています。
 
-.. If you have a different WSGI server look up the server documentation
-   about how to use a WSGI app with it.  Just remember that your
-   :class:`Flask` application object is the actual WSGI application.
+Hosted options
+--------------
 
-異なるWSGIサーバーを使用していて、WSGIアプリケーションをWSGIサーバーと共に使う方法について、サーバーのドキュメントを調べて下さい。
-:class:`Flask` アプリケーションオブジェクトは、実際にはWSGIアプリケーションでしかないということを覚えておいて下さい。
+- `Deploying Flask on Heroku <https://devcenter.heroku.com/articles/getting-started-with-python>`_
+- `Deploying Flask on OpenShift <https://developers.openshift.com/en/python-flask.html>`_
+- `Deploying Flask on Webfaction <http://flask.pocoo.org/snippets/65/>`_
+- `Deploying Flask on Google App Engine <https://github.com/kamalgill/flask-appengine-template>`_
+- `Deploying Flask on AWS Elastic Beanstalk <https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create-deploy-python-flask.html>`_
+- `Sharing your Localhost Server with Localtunnel <http://flask.pocoo.org/snippets/89/>`_
+- `Deploying on Azure (IIS) <https://azure.microsoft.com/documentation/articles/web-sites-python-configure/>`_
+- `Deploying on PythonAnywhere <https://help.pythonanywhere.com/pages/Flask/>`_
 
-.. For hosted options to get up and running quickly, see
-   :ref:`quickstart_deployment` in the Quickstart.
-
-起ち上げて、手っ取り早く起動するための組み合わせについては、
-クイックスタートの :ref:`quickstart_deployment` を見て下さい。
+Self-hosted options
+-------------------
 
 .. toctree::
    :maxdepth: 2
 
-   mod_wsgi
    wsgi-standalone
    uwsgi
+   mod_wsgi
    fastcgi
    cgi

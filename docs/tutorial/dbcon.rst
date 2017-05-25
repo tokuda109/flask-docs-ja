@@ -1,83 +1,78 @@
 .. _tutorial-dbcon:
 
-ステップ4: データベース接続
--------------------------------
+Step 4: Database Connections
+----------------------------
 
-.. Step 4: Request Database Connections
-   ------------------------------------
+Let's continue building our code in the ``flaskr.py`` file.
+(Scroll to the end of the page for more about project layout.)
 
-.. Now we know how we can open database connections and use them for scripts,
-   but how can we elegantly do that for requests?  We will need the database
-   connection in all our functions so it makes sense to initialize them
-   before each request and shut them down afterwards.
+You currently have a function for establishing a database connection with
+`connect_db`, but by itself, it is not particularly useful.  Creating and
+closing database connections all the time is very inefficient, so you will
+need to keep it around for longer.  Because database connections
+encapsulate a transaction, you will need to make sure that only one
+request at a time uses the connection. An elegant way to do this is by
+utilizing the *application context*.
 
-データベースに接続をする方法がわかりました。そしてスクリプトで使いますが、リクエスト時にそれをどのように簡潔することができますか?
-全ての関数でデータベースに接続する必要があるので、個々のリクエストの前にデータベースを初期化して、その後接続を切ることは理に適っています。
+Flask provides two contexts: the *application context* and the
+*request context*.  For the time being, all you have to know is that there
+are special variables that use these.  For instance, the
+:data:`~flask.request` variable is the request object associated with
+the current request, whereas :data:`~flask.g` is a general purpose
+variable associated with the current application context.  The tutorial
+will cover some more details of this later on.
 
-.. Flask allows us to do that with the :meth:`~flask.Flask.before_request`,
-   :meth:`~flask.Flask.after_request` and :meth:`~flask.Flask.teardown_request`
-   decorators::
+For the time being, all you have to know is that you can store information
+safely on the :data:`~flask.g` object.
 
-Flaskは上述のことを、 :meth:`~flask.Flask.before_request` と :meth:`~flask.Flask.after_request` と
-:meth:`~flask.Flask.teardown_request` デコレーターでできます。
+So when do you put it on there?  To do that you can make a helper
+function.  The first time the function is called, it will create a database
+connection for the current context, and successive calls will return the
+already established connection::
 
-    @app.before_request
-    def before_request():
-        g.db = connect_db()
+    def get_db():
+        """Opens a new database connection if there is none yet for the
+        current application context.
+        """
+        if not hasattr(g, 'sqlite_db'):
+            g.sqlite_db = connect_db()
+        return g.sqlite_db
 
-    @app.teardown_request
-    def teardown_request(exception):
-        g.db.close()
+Now you know how to connect, but how can you properly disconnect?  For
+that, Flask provides us with the :meth:`~flask.Flask.teardown_appcontext`
+decorator.  It's executed every time the application context tears down::
 
-Functions marked with :meth:`~flask.Flask.before_request` are called before
-a request and passed no arguments.  Functions marked with
-:meth:`~flask.Flask.after_request` are called after a request and
-passed the response that will be sent to the client.  They have to return
-that response object or a different one.  They are however not guaranteed
-to be executed if an exception is raised, this is where functions marked with
-:meth:`~flask.Flask.teardown_request` come in.  They get called after the
-response has been constructed.  They are not allowed to modify the request, and
-their return values are ignored.  If an exception occurred while the request was
-being processed, it is passed to each function; otherwise, `None` is passed in.
+    @app.teardown_appcontext
+    def close_db(error):
+        """Closes the database again at the end of the request."""
+        if hasattr(g, 'sqlite_db'):
+            g.sqlite_db.close()
 
-.. We store our current database connection on the special :data:`~flask.g`
-   object that Flask provides for us.  This object stores information for one
-   request only and is available from within each function.  Never store such
-   things on other objects because this would not work with threaded
-   environments.  That special :data:`~flask.g` object does some magic behind
-   the scenes to ensure it does the right thing.
+Functions marked with :meth:`~flask.Flask.teardown_appcontext` are called
+every time the app context tears down.  What does this mean?
+Essentially, the app context is created before the request comes in and is
+destroyed (torn down) whenever the request finishes.  A teardown can
+happen because of two reasons: either everything went well (the error
+parameter will be ``None``) or an exception happened, in which case the error
+is passed to the teardown function.
 
-Flaskでは、特別な :data:`~flask.g` オブジェクトにデータベース接続を保管することができます。
-このオブジェクトは一つのリクエストで情報を保管し、別の関数から利用可能です。
-他のオブジェクトでそのようなことをすることはできません。なぜなら、これはスレッド上で動作していないからです。
-そのような特別な :data:`~flask.g` オブジェクトはオブジェクトが正しいことを保証するために裏側でいくつかのマジックを行います。
+Curious about what these contexts mean?  Have a look at the
+:ref:`app-context` documentation to learn more.
 
-.. Continue to :ref:`tutorial-views`.
+Continue to :ref:`tutorial-dbinit`.
 
-続いては :ref:`tutorial-views` 。
-
-.. Where do I put this code?
+.. hint:: Where do I put this code?
 
    If you've been following along in this tutorial, you might be wondering
    where to put the code from this step and the next.  A logical place is to
    group these module-level functions together, and put your new
-   ``before_request`` and ``teardown_request`` functions below your existing
-   ``init_db`` function (following the tutorial line-by-line).
+   ``get_db`` and ``close_db`` functions below your existing
+   ``connect_db`` function (following the tutorial line-by-line).
 
    If you need a moment to find your bearings, take a look at how the `example
    source`_ is organized.  In Flask, you can put all of your application code
    into a single Python module.  You don't have to, and if your app :ref:`grows
    larger <larger-applications>`, it's a good idea not to.
 
-.. hint:: このコードをどこに書けばいいですか?
-
-   このチュートリアルをこのステップと次のステップからコードを置く場所を不思議に思うかもしれません。
-   これらのモジュールレベルの関数と一緒にグループ化する
-   既にある ``init_db`` 関数の下に ``before_request`` と ``teardown_request`` 関数を置いて下さい。
-
-   ベアリングを探すための `example source`_ がどのように組織化されているか見てみましょう。
-   Flaskでは、アプリケーションコードの全てを一つのPythonモジュールにすることができます。
-   する必要はなくて、 :ref:`grows larger <larger-applications>` 、
-
 .. _example source:
-   http://github.com/mitsuhiko/flask/tree/master/examples/flaskr/
+   https://github.com/pallets/flask/tree/master/examples/flaskr/

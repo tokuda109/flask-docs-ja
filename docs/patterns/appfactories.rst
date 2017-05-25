@@ -1,24 +1,15 @@
 .. _app-factories:
 
-アプリケーションファクトリー
-==============================
+Application Factories
+=====================
 
-.. Application Factories
-   =====================
+If you are already using packages and blueprints for your application
+(:ref:`blueprints`) there are a couple of really nice ways to further improve
+the experience.  A common pattern is creating the application object when
+the blueprint is imported.  But if you move the creation of this object
+into a function, you can then create multiple instances of this app later.
 
-.. If you are already using packages and blueprints for your application
-   (:ref:`blueprints`) there are a couple of really nice ways to further improve
-   the experience.  A common pattern is creating the application object when
-   the blueprint is imported.  But if you move the creation of this object,
-   into a function, you can then create multiple instances of this and later.
-
-既にパッケージやBlueprints(:ref:`blueprints`)をアプリケーションで使っているなら、さらに良くするためのいい方法がいくつかあります。
-一般的なパターンは、Blueprintsをインポートした時にアプリケーションオブジェクトを作成することです。
-しかし、このオブジェクトの作成を関数に変えたい場合、後でこの複数のインスタンス作成することができます。
-
-.. So why would you want to do this?
-
-なぜこれをしたいのでしょうか?
+So why would you want to do this?
 
 1.  Testing.  You can have instances of the application with different
     settings to test every case.
@@ -30,17 +21,17 @@
 
 So how would you then actually implement that?
 
-.. Basic Factories
-   ---------------
-
-基本的なファクトリー
---------------------------
+Basic Factories
+---------------
 
 The idea is to set up the application in a function.  Like this::
 
     def create_app(config_filename):
         app = Flask(__name__)
         app.config.from_pyfile(config_filename)
+
+        from yourapplication.model import db
+        db.init_app(app)
 
         from yourapplication.views.admin import admin
         from yourapplication.views.frontend import frontend
@@ -63,23 +54,55 @@ get access to the application with the config?  Use
 
 Here we look up the name of a template in the config.
 
-.. Using Applications
-   ------------------
+Factories & Extensions
+----------------------
 
-アプリケーションを使う
--------------------------
+It's preferable to create your extensions and app factories so that the
+extension object does not initially get bound to the application.
+
+Using `Flask-SQLAlchemy <http://flask-sqlalchemy.pocoo.org/>`_,
+as an example, you should not do something along those lines::
+
+    def create_app(config_filename):
+        app = Flask(__name__)
+        app.config.from_pyfile(config_filename)
+
+        db = SQLAlchemy(app)
+
+But, rather, in model.py (or equivalent)::
+
+    db = SQLAlchemy()
+
+and in your application.py (or equivalent)::
+
+    def create_app(config_filename):
+        app = Flask(__name__)
+        app.config.from_pyfile(config_filename)
+
+        from yourapplication.model import db
+        db.init_app(app)
+
+Using this design pattern, no application-specific state is stored on the
+extension object, so one extension object can be used for multiple apps.
+For more information about the design of extensions refer to :doc:`/extensiondev`.
+
+Using Applications
+------------------
 
 So to use such an application you then have to create the application
-first.  Here an example `run.py` file that runs such an application::
+first in a separate file otherwise the :command:`flask` command won't be able
+to find it.  Here an example :file:`exampleapp.py` file that creates such
+an application::
 
     from yourapplication import create_app
     app = create_app('/path/to/config.cfg')
-    app.run()
 
-.. Factory Improvements
-   --------------------
+It can then be used with the :command:`flask` command::
 
-ファクトリーの改良
+    export FLASK_APP=exampleapp
+    flask run
+
+Factory Improvements
 --------------------
 
 The factory function from above is not very clever so far, you can improve

@@ -6,7 +6,7 @@
     Blueprints are the recommended way to implement larger or more
     pluggable applications in Flask 0.7 and later.
 
-    :copyright: (c) 2011 by Armin Ronacher.
+    :copyright: (c) 2015 by Armin Ronacher.
     :license: BSD, see LICENSE for more details.
 """
 from functools import update_wrapper
@@ -42,7 +42,7 @@ class BlueprintSetupState(object):
         if subdomain is None:
             subdomain = self.blueprint.subdomain
 
-        #: The subdomain that the blueprint should be active for, `None`
+        #: The subdomain that the blueprint should be active for, ``None``
         #: otherwise.
         self.subdomain = subdomain
 
@@ -77,17 +77,11 @@ class BlueprintSetupState(object):
 
 
 class Blueprint(_PackageBoundObject):
-    """
-    .. Represents a blueprint.  A blueprint is an object that records
-       functions that will be called with the
-       :class:`~flask.blueprint.BlueprintSetupState` later to register functions
-       or other things on the main application.  See :ref:`blueprints` for more
-       information.
-
-    blueprintを紹介します。
-    blueprintはメインのアプリケーションで機能やその他のことを登録するために、
-    後で、 :class:`~flask.blueprint.BlueprintSetupState` と一緒に呼ばれる関数を保持するオブジェクトです。
-    詳しくは、 :ref:`blueprints` を見て下さい。
+    """Represents a blueprint.  A blueprint is an object that records
+    functions that will be called with the
+    :class:`~flask.blueprints.BlueprintSetupState` later to register functions
+    or other things on the main application.  See :ref:`blueprints` for more
+    information.
 
     .. versionadded:: 0.7
     """
@@ -95,17 +89,25 @@ class Blueprint(_PackageBoundObject):
     warn_on_modifications = False
     _got_registered_once = False
 
+    #: Blueprint local JSON decoder class to use.
+    #: Set to ``None`` to use the app's :class:`~flask.app.Flask.json_encoder`.
+    json_encoder = None
+    #: Blueprint local JSON decoder class to use.
+    #: Set to ``None`` to use the app's :class:`~flask.app.Flask.json_decoder`.
+    json_decoder = None
+
     def __init__(self, name, import_name, static_folder=None,
                  static_url_path=None, template_folder=None,
-                 url_prefix=None, subdomain=None, url_defaults=None):
-        _PackageBoundObject.__init__(self, import_name, template_folder)
+                 url_prefix=None, subdomain=None, url_defaults=None,
+                 root_path=None):
+        _PackageBoundObject.__init__(self, import_name, template_folder,
+                                     root_path=root_path)
         self.name = name
         self.url_prefix = url_prefix
         self.subdomain = subdomain
         self.static_folder = static_folder
         self.static_url_path = static_url_path
         self.deferred_functions = []
-        self.view_functions = {}
         if url_defaults is None:
             url_defaults = {}
         self.url_values_defaults = url_defaults
@@ -173,7 +175,7 @@ class Blueprint(_PackageBoundObject):
         the :func:`url_for` function is prefixed with the name of the blueprint.
         """
         if endpoint:
-            assert '.' not in endpoint, "Blueprint endpoint's should not contain dot's"
+            assert '.' not in endpoint, "Blueprint endpoints should not contain dots"
         self.record(lambda s:
             s.add_url_rule(rule, endpoint, view_func, **options))
 
@@ -241,6 +243,34 @@ class Blueprint(_PackageBoundObject):
         """
         def register_template(state):
             state.app.jinja_env.tests[name or f.__name__] = f
+        self.record_once(register_template)
+
+    def app_template_global(self, name=None):
+        """Register a custom template global, available application wide.  Like
+        :meth:`Flask.template_global` but for a blueprint.
+
+        .. versionadded:: 0.10
+
+        :param name: the optional name of the global, otherwise the
+                     function name will be used.
+        """
+        def decorator(f):
+            self.add_app_template_global(f, name=name)
+            return f
+        return decorator
+
+    def add_app_template_global(self, f, name=None):
+        """Register a custom template global, available application wide.  Like
+        :meth:`Flask.add_template_global` but for a blueprint.  Works exactly
+        like the :meth:`app_template_global` decorator.
+
+        .. versionadded:: 0.10
+
+        :param name: the optional name of the global, otherwise the
+                     function name will be used.
+        """
+        def register_template(state):
+            state.app.jinja_env.globals[name or f.__name__] = f
         self.record_once(register_template)
 
     def before_request(self, f):
@@ -339,33 +369,23 @@ class Blueprint(_PackageBoundObject):
         return f
 
     def url_defaults(self, f):
-        """
-        .. Callback function for URL defaults for this blueprint.  It's called
-           with the endpoint and values and should update the values passed
-           in place.
-
-        このblueprintのデフォルトのURLのコールバック関数です。
-
+        """Callback function for URL defaults for this blueprint.  It's called
+        with the endpoint and values and should update the values passed
+        in place.
         """
         self.record_once(lambda s: s.app.url_default_functions
             .setdefault(self.name, []).append(f))
         return f
 
     def app_url_value_preprocessor(self, f):
-        """
-        .. Same as :meth:`url_value_preprocessor` but application wide.
-
-        :meth:`url_value_preprocessor` と同じですが、アプリケーション全体に
+        """Same as :meth:`url_value_preprocessor` but application wide.
         """
         self.record_once(lambda s: s.app.url_value_preprocessors
             .setdefault(None, []).append(f))
         return f
 
     def app_url_defaults(self, f):
-        """
-        .. Same as :meth:`url_defaults` but application wide.
-
-        :meth:`url_defaults` と同じですが、アプリケーション全体に
+        """Same as :meth:`url_defaults` but application wide.
         """
         self.record_once(lambda s: s.app.url_default_functions
             .setdefault(None, []).append(f))
@@ -387,3 +407,14 @@ class Blueprint(_PackageBoundObject):
                 self.name, code_or_exception, f))
             return f
         return decorator
+
+    def register_error_handler(self, code_or_exception, f):
+        """Non-decorator version of the :meth:`errorhandler` error attach
+        function, akin to the :meth:`~flask.Flask.register_error_handler`
+        application-wide function of the :class:`~flask.Flask` object but
+        for error handlers limited to this blueprint.
+
+        .. versionadded:: 0.11
+        """
+        self.record_once(lambda s: s.app._register_error_handler(
+            self.name, code_or_exception, f))

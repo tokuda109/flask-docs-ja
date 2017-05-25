@@ -1,34 +1,22 @@
 .. _message-flashing-pattern:
 
-フラッシュメッセージ
-=======================
+Message Flashing
+================
 
-.. Message Flashing
-   ================
+Good applications and user interfaces are all about feedback.  If the user
+does not get enough feedback they will probably end up hating the
+application.  Flask provides a really simple way to give feedback to a
+user with the flashing system.  The flashing system basically makes it
+possible to record a message at the end of a request and access it next
+request and only next request.  This is usually combined with a layout
+template that does this. Note that browsers and sometimes web servers enforce
+a limit on cookie sizes. This means that flashing messages that are too
+large for session cookies causes message flashing to fail silently.
 
-.. Good applications and user interfaces are all about feedback.  If the user
-   does not get enough feedback they will probably end up hating the
-   application.  Flask provides a really simple way to give feedback to a
-   user with the flashing system.  The flashing system basically makes it
-   possible to record a message at the end of a request and access it next
-   request and only next request.  This is usually combined with a layout
-   template that does this.
+Simple Flashing
+---------------
 
-いいアプリケーションといいユーザーインターフェースにはフィードバックが全てです。
-ユーザーフィードバックを十分に得ることができなければ、アプリケーションを嫌いになるかもしれません。
-Flaskは、フラッシュメッセージの仕組みを用いて本当にシンプルな方法でユーザーにフィードバックを与える方法が提供されています。
-フラッシュメッセージは基本的に、リクエストの終了時に次のアクセスするページへリクエストを出して、その時だけ有効なメッセージを記録しておくことができます。
-これをすることでレイアウトテンプレートに使いやすいように統合されています。
-
-.. Simple Flashing
-   ---------------
-
-簡単なフラッシュメッセージ
--------------------------------
-
-.. So here is a full example::
-
-では、以下に例を紹介します。 ::
+So here is a full example::
 
     from flask import Flask, flash, redirect, render_template, \
          request, url_for
@@ -52,13 +40,7 @@ Flaskは、フラッシュメッセージの仕組みを用いて本当にシン
                 return redirect(url_for('index'))
         return render_template('login.html', error=error)
 
-    if __name__ == "__main__":
-        app.run()
-
-
-.. And here the ``layout.html`` template which does the magic:
-
-そして、以下のようにすると ``layout.html`` テンプレートは魔法を使うことができます。 :
+And here is the :file:`layout.html` template which does the magic:
 
 .. sourcecode:: html+jinja
 
@@ -75,9 +57,7 @@ Flaskは、フラッシュメッセージの仕組みを用いて本当にシン
    {% endwith %}
    {% block body %}{% endblock %}
 
-.. And here the index.html template:
-
-そして、以下はindex.htmlテンプレートです。 :
+Here is the :file:`index.html` template which inherits from :file:`layout.html`:
 
 .. sourcecode:: html+jinja
 
@@ -87,9 +67,8 @@ Flaskは、フラッシュメッセージの仕組みを用いて本当にシン
      <p>Do you want to <a href="{{ url_for('login') }}">log in?</a>
    {% endblock %}
 
-.. And of course the login template:
-
-そして、もちろんログインテンプレートもです。 :
+And here is the :file:`login.html` template which also inherits from
+:file:`layout.html`:
 
 .. sourcecode:: html+jinja
 
@@ -99,7 +78,7 @@ Flaskは、フラッシュメッセージの仕組みを用いて本当にシン
      {% if error %}
        <p class=error><strong>Error:</strong> {{ error }}
      {% endif %}
-     <form action="" method=post>
+     <form method=post>
        <dl>
          <dt>Username:
          <dd><input type=text name=username value="{{
@@ -111,37 +90,24 @@ Flaskは、フラッシュメッセージの仕組みを用いて本当にシン
      </form>
    {% endblock %}
 
-.. Flashing With Categories
-   ------------------------
-
-カテゴリ付きのフラッシュメッセージ
-----------------------------------------
+Flashing With Categories
+------------------------
 
 .. versionadded:: 0.3
 
-.. It is also possible to provide categories when flashing a message.  The
-   default category if nothing is provided is ``'message'``.  Alternative
-   categories can be used to give the user better feedback.  For example
-   error messages could be displayed with a red background.
+It is also possible to provide categories when flashing a message.  The
+default category if nothing is provided is ``'message'``.  Alternative
+categories can be used to give the user better feedback.  For example
+error messages could be displayed with a red background.
 
-フラッシュメッセージを記録するときにカテゴリを追加することも可能です。
-指定をしなければ、デフォルトのカテゴリは ``'message'`` になります。
-他のカテゴリはユーザーにとっていいと思われるフィードバックを与えるために使って下さい。
-例えば、エラーメッセージを赤い背景で表示させる場合などです。
-
-.. To flash a message with a different category, just use the second argument
-   to the :func:`~flask.flash` function::
-
-異なるカテゴリでメッセージを記録するためには、 :func:`~flask.flash` 関数の二番目の引数を使って下さい。 ::
+To flash a message with a different category, just use the second argument
+to the :func:`~flask.flash` function::
 
     flash(u'Invalid password provided', 'error')
 
-.. Inside the template you then have to tell the
-   :func:`~flask.get_flashed_messages` function to also return the
-   categories.  The loop looks slightly different in that situation then:
-
-テンプレート内で、 :func:`~flask.get_flashed_messages` 関数がカテゴリを返すように指示しなければいけません。
-その場合にループ処理は少し違う形式になります。
+Inside the template you then have to tell the
+:func:`~flask.get_flashed_messages` function to also return the
+categories.  The loop looks slightly different in that situation then:
 
 .. sourcecode:: html+jinja
 
@@ -155,27 +121,18 @@ Flaskは、フラッシュメッセージの仕組みを用いて本当にシン
      {% endif %}
    {% endwith %}
 
-.. This is just one example of how to render these flashed messages.  One
-   might also use the category to add a prefix such as
-   ``<strong>Error:</strong>`` to the message.
+This is just one example of how to render these flashed messages.  One
+might also use the category to add a prefix such as
+``<strong>Error:</strong>`` to the message.
 
-これは、フラッシュメッセージを表示するための一つの例でしかありません。
-メッセージに ``<strong>Error:</strong>`` のような接頭詞を追加するためにカテゴリを使う場合もあるかもしれません。
-
-.. Filtering Flash Messages
-   ------------------------
-
-フラッシュメッセージのフィルタリング
----------------------------------------
+Filtering Flash Messages
+------------------------
 
 .. versionadded:: 0.9
 
-.. Optionally you can pass a list of categories which filters the results of
-   :func:`~flask.get_flashed_messages`.  This is useful if you wish to
-   render each category in a separate block.
-
-任意で、 :func:`~flask.get_flashed_messages` の結果をフィルタリングするカテゴリのリストを渡すことができます。
-これは異なるブロックに個々のカテゴリを表示させたい場合に便利です。
+Optionally you can pass a list of categories which filters the results of
+:func:`~flask.get_flashed_messages`.  This is useful if you wish to
+render each category in a separate block.
 
 .. sourcecode:: html+jinja
 

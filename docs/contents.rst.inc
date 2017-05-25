@@ -1,14 +1,9 @@
-.. User's Guide
-   ------------
+User's Guide
+------------
 
-ユーザーガイド
----------------
-
-.. This part of the documentation, which is mostly prose, begins with some
-   background information about Flask, then focuses on step-by-step
-   instructions for web development with Flask.
-
-ドキュメントのこのパートでは、Flaskの生い立ちを説明します。また、Flaskを使用したWeb開発をステップバイステップで紹介します。
+This part of the documentation, which is mostly prose, begins with some
+background information about Flask, then focuses on step-by-step
+instructions for web development with Flask.
 
 .. toctree::
    :maxdepth: 2
@@ -28,36 +23,28 @@
    reqcontext
    blueprints
    extensions
+   cli
+   server
    shell
    patterns/index
    deploying/index
    becomingbig
 
-.. API Reference
-   -------------
+API Reference
+-------------
 
-APIリファレンス
-----------------
-
-.. If you are looking for information on a specific function, class or
-   method, this part of the documentation is for you.
-
-具体的な機能やクラスやメソッドについての情報をさがしているなら、ドキュメントのこのパートが役に立つでしょう。
+If you are looking for information on a specific function, class or
+method, this part of the documentation is for you.
 
 .. toctree::
    :maxdepth: 2
 
    api
 
-.. Additional Notes
-   ----------------
+Additional Notes
+----------------
 
-追加の注意事項
--------------------
-
-.. Design notes, legal information and changelog are here for the interested.
-
-デザインに関する注意や利用規約や変更履歴はここにあります。
+Design notes, legal information and changelog are here for the interested.
 
 .. toctree::
    :maxdepth: 2
@@ -68,6 +55,7 @@ APIリファレンス
    unicode
    extensiondev
    styleguide
+   python3
    upgrading
    changelog
    license
