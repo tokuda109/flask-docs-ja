@@ -1,5 +1,19 @@
-.project
-.pydevproject
-.settings/*
-docs/_build
-Flask.egg-info/*
+.DS_Store
+*.pyc
+*.pyo
+env
+env*
+dist
+build
+*.egg
+*.egg-info
+_mailinglist
+.tox
+.cache/
+.idea/
+
+# Coverage reports
+htmlcov
+.coverage
+.coverage.*
+*,cover

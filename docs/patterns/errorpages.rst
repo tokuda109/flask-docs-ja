@@ -1,31 +1,20 @@
-.. Custom Error Pages
-   ==================
+.. _errorpages:
 
-カスタムエラーページ
-========================
+Custom Error Pages
+==================
 
-.. Flask comes with a handy :func:`~flask.abort` function that aborts a
-   request with an HTTP error code early.  It will also provide a plain black
-   and white error page for you with a basic description, but nothing fancy.
+Flask comes with a handy :func:`~flask.abort` function that aborts a
+request with an HTTP error code early.  It will also provide a plain black
+and white error page for you with a basic description, but nothing fancy.
 
-Flaskは、簡単にHTTPエラーコードでリクエストを中止することができる :func:`~flask.abort`
-関数があります。基本的な概要のみの単純な黒と白のエラーページを表示させることもできます。
+Depending on the error code it is less or more likely for the user to
+actually see such an error.
 
-.. Depending on the error code it is less or more likely for the user to
-   actually see such an error.
+Common Error Codes
+------------------
 
-エラーコードによって、そのようなエラーをユーザーに実際に表示するには
-
-.. Common Error Codes
-   ------------------
-
-一般的なエラーコード
---------------------------
-
-.. The following error codes are some that are often displayed to the user,
-   even if the application behaves correctly:
-
-以下のようなエラーコードは、まるでアプリケーションが正しく振舞ったかのようにユーザーに表示されます。
+The following error codes are some that are often displayed to the user,
+even if the application behaves correctly:
 
 *404 Not Found*
     The good old "chap, you made a mistake typing that URL" message.  So
@@ -50,52 +39,61 @@ Flaskは、簡単にHTTPエラーコードでリクエストを中止するこ�
 
 *500 Internal Server Error*
     Usually happens on programming errors or if the server is overloaded.
-    A terrible good idea to have a nice page there, because your
+    A terribly good idea is to have a nice page there, because your
     application *will* fail sooner or later (see also:
     :ref:`application-errors`).
 
 
-.. Error Handlers
-   --------------
+Error Handlers
+--------------
 
-エラーハンドラー
----------------------
-
-.. An error handler is a function, just like a view function, but it is
-   called when an error happens and is passed that error.  The error is most
-   likely a :exc:`~werkzeug.exceptions.HTTPException`, but in one case it
-   can be a different error: a handler for internal server errors will be
-   passed other exception instances as well if they are uncaught.
-
-エラーハンドラーはビュー関数みたいな関数ですが、エラーが発生した時呼ばれて、エラーが渡されます。
-エラーはほとんどが :exc:`~werkzeug.exceptions.HTTPException` ですが、
-内部のサーバーエラーの処理などのケースでは別のエラーになります。
+An error handler is a function that returns a response when a type of error is
+raised, similar to how a view is a function that returns a response when a
+request URL is matched. It is passed the instance of the error being handled,
+which is most likely a :exc:`~werkzeug.exceptions.HTTPException`. An error
+handler for "500 Internal Server Error" will be passed uncaught exceptions in
+addition to explicit 500 errors.
 
 An error handler is registered with the :meth:`~flask.Flask.errorhandler`
-decorator and the error code of the exception.  Keep in mind that Flask
-will *not* set the error code for you, so make sure to also provide the
-HTTP status code when returning a response.
+decorator or the :meth:`~flask.Flask.register_error_handler` method. A handler
+can be registered for a status code, like 404, or for an exception class.
 
-.. Here an example implementation for a "404 Page Not Found" exception::
+The status code of the response will not be set to the handler's code. Make
+sure to provide the appropriate HTTP status code when returning a response from
+a handler.
 
-"404 Page Not Found" の例外の実装の例を示します。 ::
+A handler for "500 Internal Server Error" will not be used when running in
+debug mode. Instead, the interactive debugger will be shown.
+
+Here is an example implementation for a "404 Page Not Found" exception::
 
     from flask import render_template
 
     @app.errorhandler(404)
     def page_not_found(e):
+        # note that we set the 404 status explicitly
         return render_template('404.html'), 404
 
-.. An example template might be this:
+When using the :ref:`application factory pattern <app-factories>`::
 
-テンプレートの例は以下のようになると思います。 :
+    from flask import Flask, render_template
+
+    def page_not_found(e):
+      return render_template('404.html'), 404
+
+    def create_app(config_filename):
+        app = Flask(__name__)
+        app.register_error_handler(404, page_not_found)
+        return app
+
+An example template might be this:
 
 .. sourcecode:: html+jinja
 
-   {% extends "layout.html" %}
-   {% block title %}Page Not Found{% endblock %}
-   {% block body %}
-     <h1>Page Not Found</h1>
-     <p>What you were looking for is just not there.
-     <p><a href="{{ url_for('index') }}">go somewhere nice</a>
-   {% endblock %}
+    {% extends "layout.html" %}
+    {% block title %}Page Not Found{% endblock %}
+    {% block body %}
+      <h1>Page Not Found</h1>
+      <p>What you were looking for is just not there.
+      <p><a href="{{ url_for('index') }}">go somewhere nice</a>
+    {% endblock %}

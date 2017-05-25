@@ -1,138 +1,101 @@
 .. _tutorial-setup:
 
-ステップ2: アプリケーションのセットアップコード
-===================================================
+Step 2: Application Setup Code
+==============================
 
-.. Step 2: Application Setup Code
-   ==============================
+Next, we will create the application module, :file:`flaskr.py`.  Just like the
+:file:`schema.sql` file you created in the previous step, this file should be
+placed inside of the :file:`flaskr/flaskr` folder.
 
-.. Now that we have the schema in place we can create the application module.
-   Let's call it `flaskr.py` inside the `flaskr` folder.  For starters we
-   will add the imports we will need as well as the config section.  For
-   small applications it's a possibility to drop the configuration directly
-   into the module which we will be doing here.  However a cleaner solution
-   would be to create a separate `.ini` or `.py` file and load that or import
-   the values from there.
+For this tutorial, all the Python code we use will be put into this file
+(except for one line in ``__init__.py``, and any testing or optional files you
+decide to create).
 
-スキーマがある場所にアプリケーションのモジュールを作成することができます。
-`flaskr` フォルダ内に、 `flaskr.py` というファイルを作成して下さい。
-最初に、設定が必要なのでインポートするものを追加して下さい。
-小さなアプリケーションでは、ここでするようにモジュールに直接設定を書いていくこともできます。
-しかし、 `.ini` や `.py` ファイルを分割したものを作成して、そのファイルから値をインポートして読み込むこともできます。 ::
+The first several lines of code in the application module are the needed import
+statements.  After that there will be a few lines of configuration code.
 
-.. In `flaskr.py`::
+For small applications like ``flaskr``, it is possible to drop the configuration
+directly into the module.  However, a cleaner solution is to create a separate
+``.py`` file, load that, and import the values from there.
 
-`flaskr.py` に ::
+Here are the import statements (in :file:`flaskr.py`)::
 
-    # all the imports
+    import os
     import sqlite3
-    from flask import Flask, request, session, g, redirect, url_for, \
-         abort, render_template, flash
 
-    # configuration
-    DATABASE = '/tmp/flaskr.db'
-    DEBUG = True
-    SECRET_KEY = 'development key'
-    USERNAME = 'admin'
-    PASSWORD = 'default'
+    from flask import (Flask, request, session, g, redirect, url_for, abort,
+        render_template, flash)
 
-.. Next we can create our actual application and initialize it with the
-   config from the same file, in `flaskr.py`::
+The next couple lines will create the actual application instance and
+initialize it with the config from the same file in :file:`flaskr.py`::
 
-次に、実際のアプリケーションを作成して、同じファイルから設定とともに初期化します。 ::
+    app = Flask(__name__) # create the application instance :)
+    app.config.from_object(__name__) # load config from this file , flaskr.py
 
-    # create our little application :)
-    app = Flask(__name__)
-    app.config.from_object(__name__)
-
-.. :meth:`~flask.Config.from_object` will look at the given object (if it's a
-   string it will import it) and then look for all uppercase variables
-   defined there.  In our case, the configuration we just wrote a few lines
-   of code above.  You can also move that into a separate file.
-
-:meth:`~flask.Config.from_object` は、与えられたオブジェクトを検査して(文字列の場合はインポートします)
-そこで定義されている全てのアッパーケースの変数を探します。
-今回の場合は、上述のように設定を2〜3行書くだけです。分割したファイルにそれを移すこともできます。
-
-.. Usually, it is a good idea to load a configuration from a configurable
-   file. This is what :meth:`~flask.Config.from_envvar` can do, replacing the
-   :meth:`~flask.Config.from_object` line above::
-
-設定ファイルから設定を読み込むことは、良いアイデアです。
-これは :meth:`~flask.Config.from_envvar` でも可能です。 ::
-
+    # Load default config and override config from an environment variable
+    app.config.update(dict(
+        DATABASE=os.path.join(app.root_path, 'flaskr.db'),
+        SECRET_KEY='development key',
+        USERNAME='admin',
+        PASSWORD='default'
+    ))
     app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
-.. That way someone can set an environment variable called
-   :envvar:`FLASKR_SETTINGS` to specify a config file to be loaded which will then
-   override the default values. The silent switch just tells Flask to not complain
-   if no such environment key is set.
+In the above code, the :class:`~flask.Config` object works similarly to a
+dictionary, so it can be updated with new values.
 
-その方法では、デフォルトの値を上書きするために読み込む設定ファイルを指定するために、 :envvar:`FLASKR_SETTINGS` という環境変数を設定することができます。
-silentは、設定されていない環境変数をFlaskに伝えないように切り替わります。
+.. admonition:: Database Path
 
-.. The `secret_key` is needed to keep the client-side sessions secure.
-   Choose that key wisely and as hard to guess and complex as possible.  The
-   debug flag enables or disables the interactive debugger.  *Never leave
-   debug mode activated in a production system*, because it will allow users to
-   execute code on the server!
+    Operating systems know the concept of a current working directory for
+    each process.  Unfortunately, you cannot depend on this in web
+    applications because you might have more than one application in the
+    same process.
 
-クライアントサイドでセッションをセキュアに保つために `secret_key` は必要です。
-推測が難しくて、可能な限り複雑になるように賢くキーを選んで下さい。
-デバッグフラグはインタラクティブデバッガーを有効化/無効化します。
-サーバーでコードを実行することができるようになるので、プロダクションのシステムでデバッグモードをアクティブにしないで下さい。
+    For this reason the ``app.root_path`` attribute can be used to
+    get the path to the application.  Together with the ``os.path`` module,
+    files can then easily be found.  In this example, we place the
+    database right next to it.
 
-.. We also add a method to easily connect to the database specified.  That
-   can be used to open a connection on request and also from the interactive
-   Python shell or a script.  This will come in handy later.
+    For a real-world application, it's recommended to use
+    :ref:`instance-folders` instead.
 
-データベースに簡単に接続するためのメソッドを追加します。
-リクエストやインタラクティブなPythonシェルかスクリプトからも接続することができます。
-これは後で役に立つ時が来るでしょう。
+Usually, it is a good idea to load a separate, environment-specific
+configuration file.  Flask allows you to import multiple configurations and it
+will use the setting defined in the last import.  This enables robust
+configuration setups.  :meth:`~flask.Config.from_envvar` can help achieve
+this. ::
 
-::
+   app.config.from_envvar('FLASKR_SETTINGS', silent=True)
+
+If you want to do this (not required for this tutorial) simply define the
+environment variable :envvar:`FLASKR_SETTINGS` that points to a config file
+to be loaded.  The silent switch just tells Flask to not complain if no such
+environment key is set.
+
+In addition to that, you can use the :meth:`~flask.Config.from_object`
+method on the config object and provide it with an import name of a
+module.  Flask will then initialize the variable from that module.  Note
+that in all cases, only variable names that are uppercase are considered.
+
+The ``SECRET_KEY`` is needed to keep the client-side sessions secure.
+Choose that key wisely and as hard to guess and complex as possible.
+
+Lastly, add a method that allows for easy connections to the specified
+database. ::
 
     def connect_db():
-        return sqlite3.connect(app.config['DATABASE'])
+        """Connects to the specific database."""
 
-.. Finally we just add a line to the bottom of the file that fires up the
-   server if we want to run that file as a standalone application::
+        rv = sqlite3.connect(app.config['DATABASE'])
+        rv.row_factory = sqlite3.Row
+        return rv
 
-最後に、単独のアプリケーションとしてファイルを起動する場合に、起動するためにファイルの一番下に一行追加するだけです。 ::
+This can be used to open a connection on request and also from the
+interactive Python shell or a script.  This will come in handy later.
+You can create a simple database connection through SQLite and then tell
+it to use the :class:`sqlite3.Row` object to represent rows. This allows
+the rows to be treated as if they were dictionaries instead of tuples.
 
-    if __name__ == '__main__':
-        app.run()
+In the next section you will see how to run the application.
 
-.. With that out of the way you should be able to start up the application
-   without problems.  Do this with the following command::
-
-問題なくアプリケーションを起動できるはずなので、以下のコマンドでこれを実行して下さい。 ::
-
-   python flaskr.py
-
-.. You will see a message telling you that server has started along with
-   the address at which you can access it.
-
-アクセスしたアドレスでサーバーが開始されたことを示すメッセージが表示されます。
-
-.. When you head over to the server in your browser you will get an 404
-   page not found error because we don't have any views yet.  But we will
-   focus on that a little later.  First we should get the database working.
-
-まだ任意のビューがないので、404 Page Not Foundのエラーが表示されます。
-しかし、少し後で取り上げます。まず、データベースを動作するようにしましょう。
-
-.. Externally Visible Server
-
-   Want your server to be publicly available?  Check out the
-   :ref:`externally visible server <public-server>` section for more
-   information.
-
-.. admonition:: 外部から見えるサーバー
-
-   サーバーを公開したいですか?
-   より詳しいことは、 :ref:`externally visible server <public-server>` の章を確認して下さい。
-
-.. Continue with :ref:`tutorial-dbinit`.
-
-続いては :ref:`tutorial-dbinit` 。
+Continue with :ref:`tutorial-packaging`.

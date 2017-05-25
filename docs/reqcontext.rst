@@ -1,30 +1,19 @@
 .. _request-context:
 
-リクエストコンテキスト
-======================
-
-.. The Request Context
-   ===================
+The Request Context
+===================
 
 This document describes the behavior in Flask 0.7 which is mostly in line
 with the old behavior but has some small, subtle differences.
 
-.. It is recommended that you read the :ref:`app-context` chapter first.
+It is recommended that you read the :ref:`app-context` chapter first.
 
-まず、 :ref:`app-context` の章を読むことを推奨しています。
+Diving into Context Locals
+--------------------------
 
-コンテキストローカルを試してみよう
------------------------------------------
-
-.. Diving into Context Locals
-   --------------------------
-
-.. Say you have a utility function that returns the URL the user should be
-   redirected to.  Imagine it would always redirect to the URL's ``next``
-   parameter or the HTTP referrer or the index page::
-
-ユーザーがリダイレクトされるべきURLを返すユーティリティー関数があります。
-その関数は常にURLの ``next`` パラメーター、HTTPリファラー、インデックスページにリダイレクトされることを想像してみてください。 ::
+Say you have a utility function that returns the URL the user should be
+redirected to.  Imagine it would always redirect to the URL's ``next``
+parameter or the HTTP referrer or the index page::
 
     from flask import request, url_for
 
@@ -33,89 +22,61 @@ with the old behavior but has some small, subtle differences.
                request.referrer or \
                url_for('index')
 
-.. As you can see, it accesses the request object.  If you try to run this
-   from a plain Python shell, this is the exception you will see:
-
-見て分かるとおり、リクエストオブジェクトにアクセスすることができます。
-Pythonの対話シェルからこれを実行しようとすると、以下のように例外を発生します。 :
+As you can see, it accesses the request object.  If you try to run this
+from a plain Python shell, this is the exception you will see:
 
 >>> redirect_url()
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 AttributeError: 'NoneType' object has no attribute 'request'
 
-.. That makes a lot of sense because we currently do not have a request we
-   could access.  So we have to make a request and bind it to the current
-   context.  The :attr:`~flask.Flask.test_request_context` method can create
-   us a :class:`~flask.ctx.RequestContext`:
-
-現在、アクセスできるリクエストがないのでこれは理にかなっています。
-リクエストを生成して、コンテキストにバインドする必要があります。
-:attr:`~flask.Flask.test_request_context` メソッドは、
-:class:`~flask.ctx.RequestContext` を作成することができます。 :
+That makes a lot of sense because we currently do not have a request we
+could access.  So we have to make a request and bind it to the current
+context.  The :attr:`~flask.Flask.test_request_context` method can create
+us a :class:`~flask.ctx.RequestContext`:
 
 >>> ctx = app.test_request_context('/?next=http://example.com/')
 
-.. This context can be used in two ways.  Either with the `with` statement
-   or by calling the :meth:`~flask.ctx.RequestContext.push` and
-   :meth:`~flask.ctx.RequestContext.pop` methods:
-
-このコンテキストは2つの使い方ができます。
-`with` 文か、 :meth:`~flask.ctx.RequestContext.push` と
-:meth:`~flask.ctx.RequestContext.pop` メソッドを呼び出すことで使えます。 :
+This context can be used in two ways.  Either with the ``with`` statement
+or by calling the :meth:`~flask.ctx.RequestContext.push` and
+:meth:`~flask.ctx.RequestContext.pop` methods:
 
 >>> ctx.push()
 
-.. From that point onwards you can work with the request object:
-
-その時点からは、リクエストオブジェクトを扱うことができます。 :
+From that point onwards you can work with the request object:
 
 >>> redirect_url()
 u'http://example.com/'
 
-.. Until you call `pop`:
-
-`pop` を呼び出すまで :
+Until you call `pop`:
 
 >>> ctx.pop()
 
-.. Because the request context is internally maintained as a stack you can
-   push and pop multiple times.  This is very handy to implement things like
-   internal redirects.
+Because the request context is internally maintained as a stack you can
+push and pop multiple times.  This is very handy to implement things like
+internal redirects.
 
-リクエストコンテキストは内部的にスタックとして維持されるので、何回もpushやpopができます。
-これは、内部​​リダイレクトのようなものを実装するために非常に便利です。
+For more information of how to utilize the request context from the
+interactive Python shell, head over to the :ref:`shell` chapter.
 
-.. For more information of how to utilize the request context from the
-   interactive Python shell, head over to the :ref:`shell` chapter.
+How the Context Works
+---------------------
 
-Pythonの対話シェルからのリクエストコンテキストを利用する方法の詳細については、
-:ref:`shell` の章を参照して下さい。
-
-.. How the Context Works
-   ---------------------
-
-コンテキストのしくみ
-------------------------
-
-.. If you look into how the Flask WSGI application internally works, you will
-   find a piece of code that looks very much like this::
-
-FlaskのWSGIアプリケーションがどのように内部処理が行われているか調べると、
-以下のようなコードがよく見つかると思います。 ::
+If you look into how the Flask WSGI application internally works, you will
+find a piece of code that looks very much like this::
 
     def wsgi_app(self, environ):
         with self.request_context(environ):
             try:
                 response = self.full_dispatch_request()
-            except Exception, e:
+            except Exception as e:
                 response = self.make_response(self.handle_exception(e))
             return response(environ, start_response)
 
 The method :meth:`~Flask.request_context` returns a new
 :class:`~flask.ctx.RequestContext` object and uses it in combination with
-the `with` statement to bind the context.  Everything that is called from
-the same thread from this point onwards until the end of the `with`
+the ``with`` statement to bind the context.  Everything that is called from
+the same thread from this point onwards until the end of the ``with``
 statement will have access to the request globals (:data:`flask.request`
 and others).
 
@@ -132,48 +93,25 @@ there is no application context for that application so far.
 
 .. _callbacks-and-errors:
 
-コールバックとエラー
------------------------
+Callbacks and Errors
+--------------------
 
-.. Callbacks and Errors
-   --------------------
+What happens if an error occurs in Flask during request processing?  This
+particular behavior changed in 0.7 because we wanted to make it easier to
+understand what is actually happening.  The new behavior is quite simple:
 
-.. What happens if an error occurs in Flask during request processing?  This
-   particular behavior changed in 0.7 because we wanted to make it easier to
-   understand what is actually happening.  The new behavior is quite simple:
+1.  Before each request, :meth:`~flask.Flask.before_request` functions are
+    executed.  If one of these functions return a response, the other
+    functions are no longer called.  In any case however the return value
+    is treated as a replacement for the view's return value.
 
-リクエストの処理中にFlaskでエラーが発生した場合何が起きるでしょうか?
-実際にどのようなことが起こっているのか簡単に把握できるようにしたかったので、バージョン0.7でこの振る舞いを変更しました。
-新しい振る舞いは非常に簡単です。 :
+2.  If the :meth:`~flask.Flask.before_request` functions did not return a
+    response, the regular request handling kicks in and the view function
+    that was matched has the chance to return a response.
 
-.. Before each request, :meth:`~flask.Flask.before_request` functions are
-   executed.  If one of these functions return a response, the other
-   functions are no longer called.  In any case however the return value
-   is treated as a replacement for the view's return value.
-
-.. If the :meth:`~flask.Flask.before_request` functions did not return a
-   response, the regular request handling kicks in and the view function
-   that was matched has the chance to return a response.
-
-.. The return value of the view is then converted into an actual response
-   object and handed over to the :meth:`~flask.Flask.after_request`
-   functions which have the chance to replace it or modify it in place.
-
-.. At the end of the request the :meth:`~flask.Flask.teardown_request`
-   functions are executed.  This always happens, even in case of an
-   unhandled exception down the road or if a before-request handler was
-   not executed yet or at all (for example in test environments sometimes
-   you might want to not execute before-request callbacks).
-
-1.  個々のリクエストが処理される前に、 :meth:`~flask.Flask.before_request` 関数は実行されます。
-    これらの関数の内の一つがレスポンスを返す場合、他の関数は呼ばれません。
-    In any case however the return value is treated as a replacement for the view's return value.
-
-2.  :meth:`~flask.Flask.before_request` 関数がレスポンスを返さなかった場合、
-    通常のリクエスト処理が作動し、一致したビュー関数はレスポンスを返すことができます。
-
-3.  ビューの戻り値は、実際のレスポンスオブジェクトに変換され、
-    置き換えるか変更するかできる :meth:`~flask.Flask.after_request` 関数に渡されます。
+3.  The return value of the view is then converted into an actual response
+    object and handed over to the :meth:`~flask.Flask.after_request`
+    functions which have the chance to replace it or modify it in place.
 
 4.  At the end of the request the :meth:`~flask.Flask.teardown_request`
     functions are executed.  This always happens, even in case of an
@@ -181,9 +119,9 @@ there is no application context for that application so far.
     not executed yet or at all (for example in test environments sometimes
     you might want to not execute before-request callbacks).
 
-Now what happens on errors?  In production mode if an exception is not
-caught, the 500 internal server handler is called.  In development mode
-however the exception is not further processed and bubbles up to the WSGI
+Now what happens on errors?  If you are not in debug mode and an exception is not    
+caught, the 500 internal server handler is called.  In debug mode   
+however the exception is not further processed and bubbles up to the WSGI 
 server.  That way things like the interactive debugger can provide helpful
 debug information.
 
@@ -192,19 +130,14 @@ longer post processed by the after request callbacks and after request
 callbacks are no longer guaranteed to be executed.  This way the internal
 dispatching code looks cleaner and is easier to customize and understand.
 
-.. The new teardown functions are supposed to be used as a replacement for
-   things that absolutely need to happen at the end of request.
+The new teardown functions are supposed to be used as a replacement for
+things that absolutely need to happen at the end of request.
 
-新しいteardown関数は、リクエストの終了時に必ず発生する処理を置き換えるものとして使われることになっています。
-
-.. Teardown Callbacks
-   ------------------
-
-Teardownコールバック
--------------------------
+Teardown Callbacks
+------------------
 
 The teardown callbacks are special callbacks in that they are executed at
-at different point.  Strictly speaking they are independent of the actual
+a different point.  Strictly speaking they are independent of the actual
 request handling as they are bound to the lifecycle of the
 :class:`~flask.ctx.RequestContext` object.  When the request context is
 popped, the :meth:`~flask.Flask.teardown_request` functions are called.
@@ -223,9 +156,7 @@ context from the command line::
     # are called.  Alternatively the same thing happens if another
     # request was triggered from the test client
 
-.. It's easy to see the behavior from the command line:
-
-コマンドラインから動作を確認するのは簡単です。 :
+It's easy to see the behavior from the command line:
 
 >>> app = Flask(__name__)
 >>> @app.teardown_request
@@ -246,11 +177,8 @@ your teardown-request handlers in a way that they will never fail.
 
 .. _notes-on-proxies:
 
-プロキシの注意
--------------------
-
-.. Notes On Proxies
-   ----------------
+Notes On Proxies
+----------------
 
 Some of the objects provided by Flask are proxies to other objects.  The
 reason behind this is that these proxies are shared between threads and
@@ -272,11 +200,8 @@ can use the :meth:`~werkzeug.local.LocalProxy._get_current_object` method::
     app = current_app._get_current_object()
     my_signal.send(app)
 
-.. Context Preservation on Error
-   -----------------------------
-
-エラー時のコンテキストの保存
---------------------------------
+Context Preservation on Error
+-----------------------------
 
 If an error occurs or not, at the end of the request the request context
 is popped and all data associated with it is destroyed.  During
@@ -289,10 +214,11 @@ provide you with important information.
 Starting with Flask 0.7 you have finer control over that behavior by
 setting the ``PRESERVE_CONTEXT_ON_EXCEPTION`` configuration variable.  By
 default it's linked to the setting of ``DEBUG``.  If the application is in
-debug mode the context is preserved, in production mode it's not.
+debug mode the context is preserved. If debug mode is set to off, the context
+is not preserved.
 
-Do not force activate ``PRESERVE_CONTEXT_ON_EXCEPTION`` in production mode
-as it will cause your application to leak memory on exceptions.  However
+Do not force activate ``PRESERVE_CONTEXT_ON_EXCEPTION`` if debug mode is set to off
+as it will cause your application to leak memory on exceptions. However,
 it can be useful during development to get the same error preserving
-behavior as in development mode when attempting to debug an error that
+behavior as debug  mode when attempting to debug an error that
 only occurs under production settings.

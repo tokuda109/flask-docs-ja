@@ -1,271 +1,175 @@
 .. _installation:
 
-インストールする方法
-======================
+Installation
+============
 
-.. Installation
-   ============
+Python Version
+--------------
 
-.. Flask depends on two external libraries, `Werkzeug
-   <http://werkzeug.pocoo.org/>`_ and `Jinja2 <http://jinja.pocoo.org/2/>`_.
-   Werkzeug is a toolkit for WSGI, the standard Python interface between web
-   applications and a variety of servers for both development and deployment.
-   Jinja2 renders templates.
+We recommend using the latest version of Python 3. Flask supports Python 3.3
+and newer, Python 2.6 and newer, and PyPy.
 
-Flaskは、 `Werkzeug <http://werkzeug.pocoo.org/>`_ と `Jinja2 <http://jinja.pocoo.org/2/>`_ の
-2つの外部ライブラリに依存しています。Werkzeugは、WSGIのツールキットで、開発やデプロイをする時に、
-ウェブアプリケーションと様々なサーバーの間の標準的なPythonインターフェースとなります。
-Jinja2は、テンプレートをレンダリングします。
+Dependencies
+------------
 
-.. So how do you get all that on your computer quickly?  There are many ways you
-   could do that, but the most kick-ass method is virtualenv, so let's have a look
-   at that first.
+These distributions will be installed automatically when installing Flask.
 
-手っ取り早くコンピューターにすべて取得するにはどのようにしますか?
-方法はたくさんありますが、virtualenvは素晴らしい手段です。
-では、まずは見てみましょう。
+* `Werkzeug`_ implements WSGI, the standard Python interface between
+  applications and servers.
+* `Jinja`_ is a template language that renders the pages your application
+  serves.
+* `MarkupSafe`_ comes with Jinja. It escapes untrusted input when rendering
+  templates to avoid injection attacks.
+* `ItsDangerous`_ securely signs data to ensure its integrity. This is used
+  to protect Flask's session cookie.
+* `Click`_ is a framework for writing command line applications. It provides
+  the ``flask`` command and allows adding custom management commands.
 
-.. You will need Python 2.5 or higher to get started, so be sure to have an
-   up-to-date Python 2.x installation.  At the time of writing, the WSGI
-   specification has not yet been finalized for Python 3, so Flask cannot support
-   the 3.x series of Python.
+.. _Werkzeug: http://werkzeug.pocoo.org/
+.. _Jinja: http://jinja.pocoo.org/
+.. _MarkupSafe: https://pypi.python.org/pypi/MarkupSafe
+.. _ItsDangerous: https://pythonhosted.org/itsdangerous/
+.. _Click: http://click.pocoo.org/
 
-使うにはPython 2.5かそれ以上のバージョンが必要なので、Python 2.xの最新バージョンにするようにして下さい。
-これを書いている時点で、WSGIの仕様はPython 3でまだ最終決定していないので、FlaskはPython 3.xシリーズをサポートしていません。
+Optional dependencies
+~~~~~~~~~~~~~~~~~~~~~
 
-.. _virtualenv:
+These distributions will not be installed automatically. Flask will detect and
+use them if you install them.
 
-virtualenv
-----------
+* `Blinker`_ provides support for :ref:`signals`.
+* `SimpleJSON`_ is a fast JSON implementation that is compatible with
+  Python's ``json`` module. It is preferred for JSON operations if it is
+  installed.
 
-.. Virtualenv is probably what you want to use during development, and if you have
-   shell access to your production machines, you'll probably want to use it there,
-   too.
+.. _Blinker: https://pythonhosted.org/blinker/
+.. _SimpleJSON: https://simplejson.readthedocs.io/
 
-Virtualenvは、開発中に使いたいと思うもので、本番環境においてもシェルでアクセスする場合におそらく使いたいと思うものだと思います。
+Virtual environments
+--------------------
 
-.. What problem does virtualenv solve?  If you like Python as much as I do,
-   chances are you want to use it for other projects besides Flask-based web
-   applications.  But the more projects you have, the more likely it is that you
-   will be working with different versions of Python itself, or at least different
-   versions of Python libraries.  Let's face it: quite often libraries break
-   backwards compatibility, and it's unlikely that any serious application will
-   have zero dependencies.  So what do you do if two or more of your projects have
-   conflicting dependencies?
+Use a virtual environment to manage the dependencies for your project, both in
+development and in production.
 
-Virtualenvはどのような問題を解決するのでしょうか?
-私がそうであるようにあなたもPythonが好きなら、Flaskベースのウェブアプリケーション以外の他のプロジェクトでも使う可能性があります。
-しかし、他のプロジェクトがあるなら、異なるPythonのバージョンや異なるPythonライブラリのバージョンで作業する可能性が高いと思います。
-そういう状況に直面したら、ライブラリはかなりの頻度で後方互換性がなくなります。
-そして、アプリケーションが依存関係を持っていないということはまずありません。
-プロジェクトで2つ、もしくはそれ以上の依存関係で競合しているなら、どうすればいいのでしょうか?
+What problem does a virtual environment solve? The more Python projects you
+have, the more likely it is that you need to work with different versions of
+Python libraries, or even Python itself. Newer versions of libraries for one
+project can break compatibility in another project.
 
-.. Virtualenv to the rescue!  Virtualenv enables multiple side-by-side
-   installations of Python, one for each project.  It doesn't actually install
-   separate copies of Python, but it does provide a clever way to keep different
-   project environments isolated.  Let's see how virtualenv works.
+Virtual environments are independent groups of Python libraries, one for each
+project. Packages installed for one project will not affect other projects or
+the operating system's packages.
 
-Virtualenvが解決します!
-Virtualenvはそれぞれのプロジェクト毎に一つ、Pythonを複数インストールすることができます。
-実際はPythonのコピーを別々にインストールするのではなく、異なるプロジェクト環境毎に隔離された方法を提供します。
-では、Virtualenvをどのように使うか見てみましょう!
+Python 3 comes bundled with the :mod:`venv` module to create virtual
+environments. If you're using a modern version of Python, you can continue on
+to the next section.
 
-.. If you are on Mac OS X or Linux, chances are that one of the following two
-   commands will work for you::
+If you're using Python 2, see :ref:`install-install-virtualenv` first.
 
-Mac OS XかLinuxを使っているなら、以下の2つのコマンドの内のどちらかで使うことができるでしょう。 ::
+.. _install-create-env:
 
-    $ sudo easy_install virtualenv
+Create an environment
+~~~~~~~~~~~~~~~~~~~~~
 
-.. or even better::
+Create a project folder and a :file:`venv` folder within:
 
-またはよりいい方法として、 ::
+.. code-block:: sh
 
-    $ sudo pip install virtualenv
+    mkdir myproject
+    cd myproject
+    python3 -m venv venv
 
-.. One of these will probably install virtualenv on your system.  Maybe it's even
-   in your package manager.  If you use Ubuntu, try::
+On Windows:
 
-以上の方法のどちらかで、システムにVirtualenvがインストールされるでしょう。
-もしかすると、パッケージマネージャーを使いたくて、もしUbuntuを使っているなら以下を試して下さい。 ::
+.. code-block:: bat
 
-    $ sudo apt-get install python-virtualenv
+    py -3 -m venv venv
 
-.. If you are on Windows and don't have the `easy_install` command, you must
-   install it first.  Check the :ref:`windows-easy-install` section for more
-   information about how to do that.  Once you have it installed, run the same
-   commands as above, but without the `sudo` prefix.
+If you needed to install virtualenv because you are on an older version of
+Python, use the following command instead:
 
-もしWindowsを使っていて、 `easy_install` コマンドが入っていないなら、まずそれをインストールして下さい。
-インストールする方法についての詳細は、 :ref:`windows-easy-install` の章をチェックして下さい。
-一度インストールしているなら上の同じコマンドを `sudo` プリフィックスなしで実行して下さい。
+.. code-block:: sh
 
-.. Once you have virtualenv installed, just fire up a shell and create
-   your own environment.  I usually create a project folder and a `venv`
-   folder within::
+    virtualenv venv
 
-Virtualenvをインストールしているなら、シェルを立ち上げて、自身の環境を作成して下さい。
-通常は `env` フォルダ内やプロジェクトフォルダを作成します。 ::
+On Windows:
 
-    $ mkdir myproject
-    $ cd myproject
-    $ virtualenv venv
-    New python executable in venv/bin/python
-    Installing distribute............done.
+.. code-block:: bat
 
-.. Now, whenever you want to work on a project, you only have to activate the
-   corresponding environment.  On OS X and Linux, do the following::
+    \Python27\Scripts\virtualenv.exe venv
 
-プロジェクトで作業する場合環境をアクティベートする必要があります。
-OS XとLinuxでは、以下のコマンドを実行します。 ::
+Activate the environment
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-    $ . env/bin/activate
+Before you work on your project, activate the corresponding environment:
 
-.. If you are a Windows user, the following command is for you::
+.. code-block:: sh
 
-Windowsユーザーなら、以下のコマンドを実行して下さい。 ::
+    . venv/bin/activate
 
-    $ venv\scripts\activate
+On Windows:
 
-.. Either way, you should now be using your virtualenv (notice how the prompt of
-   your shell has changed to show the active environment).
+.. code-block:: bat
 
-いずれにせよ、Virtualenvを使える状態になっています(シェルのプロンプトがvirtualenvの表示に切り替わっているのが分かると思います)。
+    venv\Scripts\activate
 
-.. Now you can just enter the following command to get Flask activated in your
-   virtualenv::
+Your shell prompt will change to show the name of the activated environment.
 
-Virtualenvがアクティブの状態で、以下のコマンドを実行するだけでFlaskを取得することができます。 ::
+Install Flask
+-------------
 
-    $ pip install Flask
+Within the activated environment, use the following command to install Flask:
 
-.. A few seconds later and you are good to go.
+.. code-block:: sh
 
-数秒後には使えます。
+    pip install Flask
 
-.. System-Wide Installation
-   ------------------------
+Living on the edge
+~~~~~~~~~~~~~~~~~~
 
-システムにインストールする方法
------------------------------------
+If you want to work with the latest Flask code before it's released, install or
+update the code from the master branch:
 
-.. This is possible as well, though I do not recommend it.  Just run
-   `easy_install` with root privileges::
+.. code-block:: sh
 
-これは同じことができますが、私はおすすめはしません。
-root権限で `easy_install` を実行するだけです。 ::
+    pip install -U https://github.com/pallets/flask/archive/master.tar.gz
 
-    $ sudo pip install Flask
+.. _install-install-virtualenv:
 
-.. (On Windows systems, run it in a command-prompt window with administrator
-   privileges, and leave out `sudo`.)
-
-(Windowsでは、 `sudo` なしで管理者権限でコマンドプロンプトで実行できます。)
-
-.. Living on the Edge
-   ------------------
-
-Living on the Edge
+Install virtualenv
 ------------------
 
-.. If you want to work with the latest version of Flask, there are two ways: you
-   can either let `pip` pull in the development version, or you can tell
-   it to operate on a git checkout.  Either way, virtualenv is recommended.
+If you are using Python 2, the venv module is not available. Instead,
+install `virtualenv`_.
 
-もし、Flaskの最新バージョンで作業する場合は、2つの方法があります。:
-`pip` で開発バージョンをプルするかgit checkoutで操作するように指示するかのどちらかをできます。
-いずれにせよ、Virtualenvをお勧めします。
+On Linux, virtualenv is provided by your package manager:
 
-.. Get the git checkout in a new virtualenv and run in development mode::
+.. code-block:: sh
 
-新しいVirtualenvでgit checkoutで取得して、開発モードで実行します。 ::
+    # Debian, Ubuntu
+    sudo apt-get install python-virtualenv
 
-    $ git clone http://github.com/mitsuhiko/flask.git
-    Initialized empty Git repository in ~/dev/flask/.git/
-    $ cd flask
-    $ virtualenv venv --distribute
-    New python executable in venv/bin/python
-    Installing distribute............done.
-    $ . venv/bin/activate
-    $ python setup.py develop
-    ...
-    Finished processing dependencies for Flask
+    # CentOS, Fedora
+    sudo yum install python-virtualenv
 
-.. This will pull in the dependencies and activate the git head as the current
-   version inside the virtualenv.  Then all you have to do is run ``git pull
-   origin`` to update to the latest version.
+    # Arch
+    sudo pacman -S python-virtualenv
 
-これは依存するものもプルして、Virtualenv内の現在のバージョンにgit headを有効化します。
-それから、最新バージョンを取得するために ``git pull origin`` をする必要があります。
+If you are on Mac OS X or Windows, download `get-pip.py`_, then:
 
-.. To just get the development version without git, do this instead::
+.. code-block:: sh
 
-gitを使わずに開発バージョンを使うためには、代わりに以下を実行して下さい。 ::
+    sudo python2 Downloads/get-pip.py
+    sudo python2 -m pip install virtualenv
 
-    $ mkdir flask
-    $ cd flask
-    $ virtualenv venv --distribute
-    $ . venv/bin/activate
-    New python executable in venv/bin/python
-    Installing distribute............done.
-    $ pip install Flask==dev
-    ...
-    Finished processing dependencies for Flask==dev
+On Windows, as an administrator:
 
-.. _windows-easy-install:
+.. code-block:: bat
 
-Windowsで `pip` と `distribute`
------------------------------------
+    \Python27\python.exe Downloads\get-pip.py
+    \Python27\python.exe -m pip install virtualenv
 
-.. `pip` and `distribute` on Windows
-   -----------------------------------
+Now you can continue to :ref:`install-create-env`.
 
-.. On Windows, installation of `easy_install` is a little bit trickier, but still
-   quite easy.  The easiest way to do it is to download the
-   `distribute_setup.py`_ file and run it.  The easiest way to run the file is to
-   open your downloads folder and double-click on the file.
-
-Windowsにおいて `easy_install` のインストールは少しトリッキーですが、まだ簡単です。
-一番簡単な方法は、 `distribute_setup.py`_ ファイルをダウンロードして実行するだけです。
-ファイルを実行する一番簡単な方法は、ダウンロードしたフォルダを開いて、ファイルをダブルクリックして下さい。
-
-.. Next, add the `easy_install` command and other Python scripts to the
-   command search path, by adding your Python installation's Scripts folder
-   to the `PATH` environment variable.  To do that, right-click on the
-   "Computer" icon on the Desktop or in the Start menu, and choose "Properties".
-   Then click on "Advanced System settings" (in Windows XP, click on the
-   "Advanced" tab instead).  Then click on the "Environment variables" button.
-   Finally, double-click on the "Path" variable in the "System variables" section,
-   and add the path of your Python interpreter's Scripts folder. Be sure to
-   delimit it from existing values with a semicolon.  Assuming you are using
-   Python 2.7 on the default path, add the following value::
-
-次に、PythonインタープリターのScriptsフォルダを `PATH` 環境変数に追加することによって、
-`easy_install` コマンドと他のPythonスクリプトをコマンドサーチパスに追加します。
-それをするためには、デスクトップ上の "Computer" アイコンかスタートメニューのアイコンを右クリックして
-"Properties" を選択して下さい。
-それから、Windows VistaとWindows 7では、 "Advanced System settings" をクリックして下さい。
-Windows XPでは代わりに "Advanced" タブをクリックして下さい。
-それから、 "Environment variables" ボタンをクリックして、 "System variables" セクションの
-"Path" をダブルクリックして下さい。PythonインタープリターのScriptsフォルダのパスを追加して下さい。
-デフォルトのパスにPython 2.7を使っていると仮定する場合は、以下の値を追加して下さい。 ::
-
-    ;C:\Python27\Scripts
-
-.. And you are done!  To check that it worked, open the Command Prompt and execute
-   ``easy_install``.  If you have User Account Control enabled on Windows Vista or
-   Windows 7, it should prompt you for administrator privileges.
-
-これで終わりです。
-動作するかチェックするには、コマンドプロンプトを開いて、 ``easy_install`` を実行して下さい。
-Windows VistaかWindows でユーザーアカウントコントロールが有効なら、管理者権限でプロンプトを
-表示して下さい。
-
-.. Now that you have ``easy_install``, you can use it to install ``pip``::
-
-``easy_install`` があるので、 ``pip`` をインストールするために使います。 ::
-
-    > easy_install pip
-
-
-.. _distribute_setup.py: http://python-distribute.org/distribute_setup.py
+.. _virtualenv: https://virtualenv.pypa.io/
+.. _get-pip.py: https://bootstrap.pypa.io/get-pip.py

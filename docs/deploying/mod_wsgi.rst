@@ -3,11 +3,9 @@
 mod_wsgi (Apache)
 =================
 
-.. If you are using the `Apache`_ webserver, consider using `mod_wsgi`_.
+If you are using the `Apache`_ webserver, consider using `mod_wsgi`_.
 
-`Apache`_ ウェブサーバーを使っている場合、 `mod_wsgi`_ を使うことを検討してみて下さい。
-
-.. Watch Out
+.. admonition:: Watch Out
 
    Please make sure in advance that any ``app.run()`` calls you might
    have in your application file are inside an ``if __name__ ==
@@ -15,107 +13,70 @@ mod_wsgi (Apache)
    not called because this will always start a local WSGI server which
    we do not want if we deploy that application to mod_wsgi.
 
-.. admonition:: 注意すること
+.. _Apache: https://httpd.apache.org/
 
-   事前に確認して下さい。
-   アプリケーションファイルが、 ``if __name__ == '__main__':`` ブロックや
-   ので、それが呼ばれていないことを確認することができます。
-   なぜなら、これは常にローカルのWSGIサーバー
+Installing `mod_wsgi`
+---------------------
 
-.. _Apache: http://httpd.apache.org/
+If you don't have `mod_wsgi` installed yet you have to either install it
+using a package manager or compile it yourself.  The mod_wsgi
+`installation instructions`_ cover source installations on UNIX systems.
 
-.. Installing `mod_wsgi`
-   ---------------------
-
-`mod_wsgi` のインストール
-------------------------------
-
-.. If you don't have `mod_wsgi` installed yet you have to either install it
-   using a package manager or compile it yourself.  The mod_wsgi
-   `installation instructions`_ cover source installations on UNIX systems.
-
-`mod_wsgi` のインストールがまだなら、パッケージマネージャーを使うか自身でコンパイルしてインストールするかしなければいけません。
-mod_wsgiの `installation instructions`_ で、UNIXシステムにソースからインストールする方法が書かれています。
-
-.. If you are using Ubuntu/Debian you can apt-get it and activate it as
-   follows:
-
-Ubuntu/Debianを使っているなら、以下のように、apt-getを使ってインストールすることができます。 :
+If you are using Ubuntu/Debian you can apt-get it and activate it as
+follows:
 
 .. sourcecode:: text
 
     # apt-get install libapache2-mod-wsgi
 
-.. On FreeBSD install `mod_wsgi` by compiling the `www/mod_wsgi` port or by
-   using pkg_add:
-
-FreeBSDの場合、pkg_addを使うか、
-`www/mod_wsgi` ポートをコンパイルすることで `mod_wsgi` をインストールすることができます。 :
+If you are using a yum based distribution (Fedora, OpenSUSE, etc..) you
+can install it as follows:
 
 .. sourcecode:: text
 
-    # pkg_add -r mod_wsgi
+    # yum install mod_wsgi
 
-.. If you are using pkgsrc you can install `mod_wsgi` by compiling the
-   `www/ap2-wsgi` package.
+On FreeBSD install `mod_wsgi` by compiling the `www/mod_wsgi` port or by
+using pkg_add:
 
-pkgsrcを使っている場合、
-`www/ap2-wsgi` パッケージをコンパイルすることで `mod_wsgi` をインストールすることができます。
+.. sourcecode:: text
 
-.. If you encounter segfaulting child processes after the first apache
-   reload you can safely ignore them.  Just restart the server.
+    # pkg install ap22-mod_wsgi2
 
-最初のApache再読み込みをした後、子プロセスでセグメンテーション違反に遭遇した場合、間違いなく無視できます。
-サーバーを再起動するだけです。
+If you are using pkgsrc you can install `mod_wsgi` by compiling the
+`www/ap2-wsgi` package.
 
-.. Creating a `.wsgi` file
-   -----------------------
+If you encounter segfaulting child processes after the first apache
+reload you can safely ignore them.  Just restart the server.
 
-`.wsgi` ファイルの作成
---------------------------
+Creating a `.wsgi` file
+-----------------------
 
-.. To run your application you need a `yourapplication.wsgi` file.  This file
-   contains the code `mod_wsgi` is executing on startup to get the application
-   object.  The object called `application` in that file is then used as
-   application.
+To run your application you need a :file:`yourapplication.wsgi` file.  This file
+contains the code `mod_wsgi` is executing on startup to get the application
+object.  The object called `application` in that file is then used as
+application.
 
-アプリケーションを起動するには `yourapplication.wsgi` ファイルが必要です。
-このファイルにはコードが含まれていて、 `mod_wsgi` はアプリケーションオブジェクトを取得するために起動して実行されます。
-そのファイルにある `application` というオブジェクトはアプリケーションとして使われます。
-
-.. For most applications the following file should be sufficient::
-
-ほとんどのアプリケーションは、以下のようなファイルで十分です。 ::
+For most applications the following file should be sufficient::
 
     from yourapplication import app as application
 
-.. If you don't have a factory function for application creation but a singleton
-   instance you can directly import that one as `application`.
+If you don't have a factory function for application creation but a singleton
+instance you can directly import that one as `application`.
 
-アプリケーションの作成のためのファクトリ関数がないがシングルトンインスタンスがある場合、
-`application` として直接インポートすることができます。
-
-.. Store that file somewhere that you will find it again (e.g.:
-   `/var/www/yourapplication`) and make sure that `yourapplication` and all
-   the libraries that are in use are on the python load path.  If you don't
-   want to install it system wide consider using a `virtual python`_
-   instance.  Keep in mind that you will have to actually install your
-   application into the virtualenv as well.  Alternatively there is the
-   option to just patch the path in the `.wsgi` file before the import::
-
-再び探すことができるようにそのファイルをどこかに保管して、 `yourapplication` や全てのライブラリ。
-システム全体にインストールしたくない場合は、 `virtual python`_ のインスタンスを使うことを考えてみてください。
-virtualenvに
-別の方法として、インポートの前に `.wsgi` ファイルにのパスにパッチを当てる方法もあります。 ::
+Store that file somewhere that you will find it again (e.g.:
+:file:`/var/www/yourapplication`) and make sure that `yourapplication` and all
+the libraries that are in use are on the python load path.  If you don't
+want to install it system wide consider using a `virtual python`_
+instance.  Keep in mind that you will have to actually install your
+application into the virtualenv as well.  Alternatively there is the
+option to just patch the path in the ``.wsgi`` file before the import::
 
     import sys
     sys.path.insert(0, '/path/to/the/application')
 
-.. Configuring Apache
-   ------------------
-
-Apacheの設定
----------------------
+Configuring Apache
+------------------
 
 The last thing you have to do is to create an Apache configuration file
 for your application.  In this example we are telling `mod_wsgi` to
@@ -142,21 +103,39 @@ refuse to run with the above configuration. On a Windows system, eliminate those
 
 .. sourcecode:: apache
 
-  <VirtualHost *>
-    ServerName example.com
-    WSGIScriptAlias / C:\yourdir\yourapp.wsgi
-    <Directory C:\yourdir>
-      Order deny,allow
-      Allow from all
-    </Directory>
-  </VirtualHost>
+	<VirtualHost *>
+		ServerName example.com
+		WSGIScriptAlias / C:\yourdir\yourapp.wsgi
+		<Directory C:\yourdir>
+			Order deny,allow
+			Allow from all
+		</Directory>
+	</VirtualHost>
 
-For more information consult the `mod_wsgi wiki`_.
+Note: There have been some changes in access control configuration for `Apache 2.4`_.
 
-.. _mod_wsgi: http://code.google.com/p/modwsgi/
-.. _installation instructions: http://code.google.com/p/modwsgi/wiki/QuickInstallationGuide
-.. _virtual python: http://pypi.python.org/pypi/virtualenv
-.. _mod_wsgi wiki: http://code.google.com/p/modwsgi/wiki/
+.. _Apache 2.4: https://httpd.apache.org/docs/trunk/upgrading.html
+
+Most notably, the syntax for directory permissions has changed from httpd 2.2
+
+.. sourcecode:: apache
+
+    Order allow,deny
+    Allow from all
+
+to httpd 2.4 syntax
+
+.. sourcecode:: apache
+
+    Require all granted
+
+
+For more information consult the `mod_wsgi documentation`_.
+
+.. _mod_wsgi: https://github.com/GrahamDumpleton/mod_wsgi
+.. _installation instructions: https://modwsgi.readthedocs.io/en/develop/installation.html
+.. _virtual python: https://pypi.python.org/pypi/virtualenv
+.. _mod_wsgi documentation: https://modwsgi.readthedocs.io/en/develop/index.html
 
 Troubleshooting
 ---------------
@@ -164,10 +143,10 @@ Troubleshooting
 If your application does not run, follow this guide to troubleshoot:
 
 **Problem:** application does not run, errorlog shows SystemExit ignored
-    You have a ``app.run()`` call in your application file that is not
+    You have an ``app.run()`` call in your application file that is not
     guarded by an ``if __name__ == '__main__':`` condition.  Either
     remove that :meth:`~flask.Flask.run` call from the file and move it
-    into a separate `run.py` file or put it into such an if block.
+    into a separate :file:`run.py` file or put it into such an if block.
 
 **Problem:** application gives permission errors
     Probably caused by your application running as the wrong user.  Make
@@ -206,7 +185,7 @@ Support for Automatic Reloading
 -------------------------------
 
 To help deployment tools you can activate support for automatic
-reloading.  Whenever something changes the `.wsgi` file, `mod_wsgi` will
+reloading.  Whenever something changes the ``.wsgi`` file, `mod_wsgi` will
 reload all the daemon processes for us.
 
 For that, just add the following directive to your `Directory` section:
@@ -215,30 +194,24 @@ For that, just add the following directive to your `Directory` section:
 
    WSGIScriptReloading On
 
-.. Working with Virtual Environments
-   ---------------------------------
+Working with Virtual Environments
+---------------------------------
 
-仮想環境上で動かす
---------------------------
+Virtual environments have the advantage that they never install the
+required dependencies system wide so you have a better control over what
+is used where.  If you want to use a virtual environment with mod_wsgi
+you have to modify your ``.wsgi`` file slightly.
 
-.. Virtual environments have the advantage that they never install the
-   required dependencies system wide so you have a better control over what
-   is used where.  If you want to use a virtual environment with mod_wsgi
-   you have to modify your `.wsgi` file slightly.
-
-仮想環境は、システム全体に依存しているものをインストールする必要がないというアドバンテージがあるので、
-そこで使われているものの管理が簡単です。
-mod_wsgiを仮想環境で使いたいなら、 `.wsgi` ファイルを修正しなければいけません。
-
-.. Add the following lines to the top of your `.wsgi` file::
-
-`.wsgi` ファイルの上の行に、以下の行を追加して下さい。 ::
+Add the following lines to the top of your ``.wsgi`` file::
 
     activate_this = '/path/to/env/bin/activate_this.py'
     execfile(activate_this, dict(__file__=activate_this))
 
-.. This sets up the load paths according to the settings of the virtual
-   environment.  Keep in mind that the path has to be absolute.
+For Python 3 add the following lines to the top of your ``.wsgi`` file::
 
-これは、仮想環境の設定を読み込むためのパスを設定します。
-パスは絶対パスにしなければいけないことに注意して下さい。
+    activate_this = '/path/to/env/bin/activate_this.py'
+    with open(activate_this) as file_:
+        exec(file_.read(), dict(__file__=activate_this))
+
+This sets up the load paths according to the settings of the virtual
+environment.  Keep in mind that the path has to be absolute.

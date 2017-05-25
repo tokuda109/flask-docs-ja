@@ -1,36 +1,31 @@
 .. _tutorial-folders:
 
-ステップ0: フォルダを作成する
-===============================
+Step 0: Creating The Folders
+============================
 
-.. Step 0: Creating The Folders
-   ============================
+It is recommended to install your Flask application within a virtualenv. Please
+read the :ref:`installation` section to set up your environment.
 
-.. Before we get started, let's create the folders needed for this
-   application::
-
-始める前に、このアプリケーションで必要なフォルダを作成しましょう。 ::
+Now that you have installed Flask, you will need to create the folders required
+for this tutorial. Your directory structure will look like this::
 
     /flaskr
-        /static
-        /templates
+        /flaskr
+            /static
+            /templates
 
-.. The `flaskr` folder is not a python package, but just something where we
-   drop our files.  Directly into this folder we will then put our database
-   schema as well as main module in the following steps.  The files inside
-   the `static` folder are available to users of the application via `HTTP`.
-   This is the place where css and javascript files go.  Inside the
-   `templates` folder Flask will look for `Jinja2`_ templates.  The
-   templates you create later in the tutorial will go in this directory.
+The application will be installed and run as Python package.  This is the
+recommended way to install and run Flask applications.  You will see exactly
+how to run ``flaskr`` later on in this tutorial.
 
-`flaskr` フォルダはPythonのパッケージではなく、ファイルを置くための場所です。
-このフォルダに以下のステップでメインモジュールとしてデータベーススキーマを直接作成していきます。
-`HTTP` 経由でアプリケーションのユーザーが利用可能な `static` フォルダにファイルがあります。
-これはCSSやJavaScriptファイルを置く場所です。 `templates` フォルダ内からFlaskは、 `Jinja2`_ テンプレートを探します。
-チュートリアルの後で作成したテンプレートはこのディレクトリに置いて下さい。
+For now go ahead and create the applications directory structure.  In the next
+few steps you will be creating the database schema as well as the main module.
 
-.. Continue with :ref:`tutorial-schema`.
+As a quick side note, the files inside of the :file:`static` folder are
+available to users of the application via HTTP.  This is the place where CSS and
+JavaScript files go.  Inside the :file:`templates` folder, Flask will look for
+`Jinja2`_ templates.  You will see examples of this later on.
 
-続いては :ref:`tutorial-schema` 。
+For now you should continue with :ref:`tutorial-schema`.
 
-.. _Jinja2: http://jinja.pocoo.org/2/
+.. _Jinja2: http://jinja.pocoo.org/

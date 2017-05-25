@@ -1,35 +1,19 @@
-.. Streaming Contents
-   ==================
-
-コンテンツのストリーミング
-====================================
+Streaming Contents
+==================
 
 Sometimes you want to send an enormous amount of data to the client, much
 more than you want to keep in memory.  When you are generating the data on
 the fly though, how do you send that back to the client without the
 roundtrip to the filesystem?
 
-時々クライアントにかなりの量のデータを送りたい場合もあり、
-よりたくさんメモリーに保持しておきたい
-データを生成している時、ファイルシステムに対するラウンドトリップがないクライアントに戻る
+The answer is by using generators and direct responses.
 
-.. The answer is by using generators and direct responses.
-
-答えはジェネレーターを使って、直接レスポンスを返します。
-
-.. Basic Usage
-   -----------
-
-基本的な使い方
-----------------------
+Basic Usage
+-----------
 
 This is a basic view function that generates a lot of CSV data on the fly.
 The trick is to have an inner function that uses a generator to generate
 data and to then invoke that function and pass it to a response object::
-
-これはたくさんのCSVデータを生成する基本的なビュー関数です。
-トリックはデータを生成するジェネレーターを使う内部関数を持つことです。
-
 
     from flask import Response
 
@@ -40,7 +24,7 @@ data and to then invoke that function and pass it to a response object::
                 yield ','.join(row) + '\n'
         return Response(generate(), mimetype='text/csv')
 
-Each ``yield`` expression is directly sent to the browser.  Now though
+Each ``yield`` expression is directly sent to the browser.  Note though
 that some WSGI middlewares might break streaming, so be careful there in
 debug environments with profilers and other things you might have enabled.
 
@@ -79,19 +63,12 @@ might want to buffer up a few items in the template which you can do with
 Streaming with Context
 ----------------------
 
-コンテキスト
-
 .. versionadded:: 0.9
 
 Note that when you stream data, the request context is already gone the
 moment the function executes.  Flask 0.9 provides you with a helper that
 can keep the request context around during the execution of the
 generator::
-
-リクエストコンテキストは関数を実行する瞬間に
-データをストリームする際に注意して下さい。
-Flask 0.9ではジェネレーターが実行している間は、
-リクエストコンテキストを保持することができるヘルパーを提供しています。
 
     from flask import stream_with_context, request, Response
 
@@ -105,7 +82,3 @@ Flask 0.9ではジェネレーターが実行している間は、
 
 Without the :func:`~flask.stream_with_context` function you would get a
 :class:`RuntimeError` at that point.
-
-:func:`~flask.stream_with_context` 関数なしで、
-:class:`RuntimeError` 取得
-

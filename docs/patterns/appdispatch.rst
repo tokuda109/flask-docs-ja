@@ -1,17 +1,14 @@
 .. _app-dispatch:
 
-アプリケーションのディスパッチ
-==================================
-
-.. Application Dispatching
-   =======================
+Application Dispatching
+=======================
 
 Application dispatching is the process of combining multiple Flask
-applications on the WSGI level.  You can not only combine Flask
-applications into something larger but any WSGI application.  This would
-even allow you to run a Django and a Flask application in the same
-interpreter side by side if you want.  The usefulness of this depends on
-how the applications work internally.
+applications on the WSGI level.  You can combine not only Flask
+applications but any WSGI application.  This would allow you to run a
+Django and a Flask application in the same interpreter side by side if
+you want.  The usefulness of this depends on how the applications work
+internally.
 
 The fundamental difference from the :ref:`module approach
 <larger-applications>` is that in this case you are running the same or
@@ -33,9 +30,9 @@ at :func:`werkzeug.serving.run_simple`::
 Note that :func:`run_simple <werkzeug.serving.run_simple>` is not intended for
 use in production.  Use a :ref:`full-blown WSGI server <deployment>`.
 
-In order to use the interactive debuggger, debugging must be enables both on
-the application and the simple server, here is the "hello world" example with
-debugging and :func:`run_simple <werkzeug.serving.run_simple>` :
+In order to use the interactive debugger, debugging must be enabled both on
+the application and the simple server. Here is the "hello world" example with
+debugging and :func:`run_simple <werkzeug.serving.run_simple>`::
 
     from flask import Flask
     from werkzeug.serving import run_simple
@@ -51,6 +48,7 @@ debugging and :func:`run_simple <werkzeug.serving.run_simple>` :
         run_simple('localhost', 5000, app,
                    use_reloader=True, use_debugger=True, use_evalex=True)
 
+
 Combining Applications
 ----------------------
 
@@ -58,11 +56,11 @@ If you have entirely separated applications and you want them to work next
 to each other in the same Python interpreter process you can take
 advantage of the :class:`werkzeug.wsgi.DispatcherMiddleware`.  The idea
 here is that each Flask application is a valid WSGI application and they
-are combined by the dispatcher middleware into a larger one that
+are combined by the dispatcher middleware into a larger one that is
 dispatched based on prefix.
 
-For example you could have your main application run on `/` and your
-backend interface on `/backend`::
+For example you could have your main application run on ``/`` and your
+backend interface on ``/backend``::
 
     from werkzeug.wsgi import DispatcherMiddleware
     from frontend_app import application as frontend
@@ -146,7 +144,7 @@ Dispatch by Path
 ----------------
 
 Dispatching by a path on the URL is very similar.  Instead of looking at
-the `Host` header to figure out the subdomain one simply looks at the
+the ``Host`` header to figure out the subdomain one simply looks at the
 request path up to the first slash::
 
     from threading import Lock
@@ -178,7 +176,7 @@ request path up to the first slash::
             return app(environ, start_response)
 
 The big difference between this and the subdomain one is that this one
-falls back to another application if the creator function returns `None`::
+falls back to another application if the creator function returns ``None``::
 
     from myapplication import create_app, default_app, get_user_for_prefix
 
