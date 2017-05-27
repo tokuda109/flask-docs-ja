@@ -28,10 +28,10 @@ Flaskのドキュメントにようこそ。このドキュメントはいくつ
 Flaskの内部まで踏み込みたい場合は :ref:`api` ドキュメントをチェックしてください。
 一般的なパターンについては、 :ref:`patterns` の章で後述しています。
 
-Flask depends on two external libraries: the `Jinja2`_ template
-engine and the `Werkzeug`_ WSGI toolkit.  These libraries are not documented
-here.  If you want to dive into their documentation, check out the
-following links:
+.. Flask depends on two external libraries: the `Jinja2`_ template
+   engine and the `Werkzeug`_ WSGI toolkit.  These libraries are not documented
+   here.  If you want to dive into their documentation, check out the
+   following links:
 
 Flaskは `Jinja2`_ テンプレートエンジンと `Werkzeug`_ WSGIツールキットの2つの外部ライブラリに依存しています。
 これらのライブラリはここではドキュメントにしていません。これらのライブラリのドキュメントを見たい場合は以下のリンクをチェックして下さい。
