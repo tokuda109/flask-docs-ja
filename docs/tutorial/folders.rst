@@ -42,7 +42,8 @@ Flask をインストールしたら、このチュートリアルで必要な�
    JavaScript files go.  Inside the :file:`templates` folder, Flask will look for
    `Jinja2`_ templates.  You will see examples of this later on.
 
-注意することとして、:file:`static` フォルダの中にあるファイルは、HTTP を介してアプリケーションのユーザーが
+注意することとして、:file:`static` フォルダの中にあるファイルは、
+HTTP を介してアプリケーションのユーザーが利用するものです。
 このフォルダには、CSS と JavaScript ファイルがあります。
 :file:`templates` フォルダの中から Flask は `Jinja2`_ のテンプレートを探します。
 この例は、後々説明します。
