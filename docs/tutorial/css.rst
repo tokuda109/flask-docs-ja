@@ -1,11 +1,17 @@
 .. _tutorial-css:
 
-Step 8: Adding Style
-====================
+.. Step 8: Adding Style
+   ====================
 
-Now that everything else works, it's time to add some style to the
-application.  Just create a stylesheet called :file:`style.css` in the
-:file:`static` folder:
+Step 8: スタイルの追加
+=======================
+
+.. Now that everything else works, it's time to add some style to the
+   application.  Just create a stylesheet called :file:`style.css` in the
+   :file:`static` folder:
+
+他の部分は動作したので、アプリケーションにスタイルを追加します。
+:file:`static` フォルダに :file:`style.css` というスタイルシートを作成するだけです。:
 
 .. sourcecode:: css
 
@@ -28,4 +34,6 @@ application.  Just create a stylesheet called :file:`style.css` in the
                       border: 1px solid #aacbe2; }
     .error          { background: #f0d6d6; padding: 0.5em; }
 
-Continue with :ref:`tutorial-testing`.
+.. Continue with :ref:`tutorial-testing`.
+
+続いては、:ref:`tutorial-testing 。
